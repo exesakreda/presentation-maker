@@ -4,7 +4,8 @@ type Presentation = {
 }
 
 type Slide = {
-    id: string,                  // Уникальный идентификатор слайда
+    id: string,                  // id слайда
+    position: number,
     backgroundColor: string,     // Цвет фона слайда
     elementsList: SlideElement[], // Массив элементов слайда
 }
@@ -41,11 +42,11 @@ type Figure = SlideElement & {
 
 // Изображение
 type Image = SlideElement & {
-    source: string,              // Источник изображения (URL или путь к файлу)
+    source: string,              // Источник изображения
 }
 
 // Выделенные элементы
 type SelectedElements = {
-    idList: number[],            // Массив уникальных идентификаторов выделенных элементов
+    idList: number[],            // Массив id выделенных элементов
     amount: number,              // Количество выделенных элементов
 }

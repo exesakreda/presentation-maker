@@ -32,4 +32,10 @@ function updateSlidePosition (presentation: Presentation, slideId: String, newPo
 
     const movedSlideArray = presentation.slideList.splice(currentIndex, 1)
     presentation.slideList.splice(newPosition, 0, movedSlideArray[0])
+
+    presentation.slideList.forEach((slide, index) => {
+        slide.position = index
+    })
+
+    return presentation
 }
