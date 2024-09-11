@@ -1,52 +1,37 @@
 type Presentation = {
-    title: string,               // Заголовок презентации
-    slideList: Slide[],          // Массив слайдов
+    title: string,
+    slideList: Slide[],
 }
 
 type Slide = {
-    id: string,                  // id слайда
-    position: number,
-    backgroundColor: string,     // Цвет фона слайда
-    elementsList: SlideElement[], // Массив элементов слайда
+    id: string,
+    background: 'color' | 'image',
+    objects: SlideObject[],
 }
 
-type SlideElement = {
-    id: string,                  // Уникальный идентификатор элемента
-    type: ElementType,           // Тип элемента (textarea, figure, image)
-    x: number,                   // Координата X элемента на слайде
-    y: number,                   // Координата Y элемента на слайде
-    height: number,              // Высота элемента
-    width: number,               // Ширина элемента
+type SelectedSlides = {
+    selectedSlideID: string,
 }
 
-type ElementType = 'textarea' | 'figure' | 'image'  // Возможные типы элемента
-type FigureType = 'rectangle' | 'circle' | 'triangle' // Возможные типы фигуры
-// Дополнительные стили для текстовых полей
-type TextStyling = 'bold' | 'italic' | 'underlined'
+type SlideObject = {
+    id: string,
+    position: {
+        x: number,
+        y: number,
+    }
 
-// Текстовое поле
-type TextArea = SlideElement & {
-    color: string,               // Цвет текста
-    backgroundColor: string,     // Цвет фона текстового поля
-    font: string,                // Шрифт текста
-    textSize: number,            // Размер текста
-    styling: TextStyling,        // Стиль текста (жирный, курсив, подчёркнутый)
+    size: {
+        h: number,
+        w: number,
+    }
 }
 
-// Фигура
-type Figure = SlideElement & {
-    color: string,               // Цвет фигуры
-    borderWidth: number,         // Толщина границы фигуры
-    borderColor: string,         // Цвет границы фигуры
+type TextArea = SlideObject & {
+    value: string, 
+    fontFamily: string,
+    textSize: number,
 }
 
-// Изображение
-type Image = SlideElement & {
-    source: string,              // Источник изображения
-}
-
-// Выделенные элементы
-type SelectedElements = {
-    idList: number[],            // Массив id выделенных элементов
-    amount: number,              // Количество выделенных элементов
+type Image = SlideObject & {
+    src: string,
 }
