@@ -1,37 +1,56 @@
 type Presentation = {
     title: string,
     slideList: Slide[],
+    selectedSlides: string[],
 }
 
 type Slide = {
     id: string,
-    background: 'color' | 'image',
+    background: Background,
     objects: SlideObject[],
 }
 
-type SelectedSlides = {
-    selectedSlideID: string,
+type SlideObject = TextArea | ImageArea
+
+type Background = Color | Image
+
+type Color = {
+    value: string
 }
 
-type SlideObject = {
+type Image = {
+    src: string
+}
+
+type SelectedObjects = { 
+    slideId: string,
+    selectedObjects: string[],
+}
+
+type CommonObject = {
     id: string,
-    position: {
-        x: number,
-        y: number,
-    }
-
-    size: {
-        h: number,
-        w: number,
-    }
+    position: Position,
+    size: Size,
 }
 
-type TextArea = SlideObject & {
+type Position = {
+    x: number,
+    y: number,
+}
+
+type Size = {
+    h: number,
+    w: number,
+}
+
+type TextArea = CommonObject & {
     value: string, 
     fontFamily: string,
     textSize: number,
+    type: 'text',
 }
 
-type Image = SlideObject & {
+type ImageArea = CommonObject & {
     src: string,
+    type: 'image',
 }

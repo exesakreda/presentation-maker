@@ -1,7 +1,5 @@
-import { text } from "stream/consumers"
-
 // Изменение названия презентации
-function rename (presentation: Presentation, newTitle: string): Presentation {
+function changePresentationTitle(presentation: Presentation, newTitle: string): Presentation {
     return {
         ...presentation,
         title: newTitle,
@@ -9,7 +7,7 @@ function rename (presentation: Presentation, newTitle: string): Presentation {
 }
 
 // Создание слайда
-function createSlide (presentation: Presentation, newSlide: Slide): Presentation {
+function addSlide(presentation: Presentation, newSlide: Slide): Presentation {
     return {
         ...presentation,
         slideList: [...presentation.slideList, newSlide]
@@ -17,7 +15,7 @@ function createSlide (presentation: Presentation, newSlide: Slide): Presentation
 }
 
 // Удаление слайда
-function deleteSlide (presentation: Presentation, slideId: string): Presentation {
+function deleteSlide(presentation: Presentation, slideId: string): Presentation {
     return {
         ...presentation,
         slideList: presentation.slideList.filter(slide => slide.id !== slideId)
@@ -25,10 +23,10 @@ function deleteSlide (presentation: Presentation, slideId: string): Presentation
 }
 
 // Изменение позиции слайда
-function changeSlidePosition (presentation: Presentation, slideId: string, newIndex: number): Presentation {
+function changeSlidePosition(presentation: Presentation, slideId: string, newIndex: number): Presentation {
     const updatedSlideList = [...presentation.slideList]
     
-    const oldIndex = updatedSlideList.findIndex(slide => slide.id == slideId)
+    const oldIndex = updatedSlideList.findIndex(slide => slide.id === slideId)
     if (oldIndex !== -1) {
         const [slide] = updatedSlideList.splice(oldIndex, 1)
         updatedSlideList.splice(newIndex, 0, slide)
@@ -41,7 +39,7 @@ function changeSlidePosition (presentation: Presentation, slideId: string, newIn
 }
 
 // Добавление объекта 
-function createSlideObject(presentation: Presentation, slideId: string, newObject: SlideObject): Presentation {
+function addSlideObject(presentation: Presentation, slideId: string, newObject: SlideObject): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id == slideId) {
             return {
@@ -77,13 +75,13 @@ function deleteSlideObject(presentation: Presentation, slideId: string, objectId
 }
 
 // Изменение позиции текста/картинки
-function changeObjectPosition(presentation: Presentation, slideId: string, objectId: string, newPositionX: number, newPositionY: number): Presentation {
+function changeObjectPosition(presentation: Presentation, slideId: string, objectId: string, newPosition: Position): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id == slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
                 if (object.id == objectId) {
-                    object.position.x = newPositionX
-                    object.position.y = newPositionY
+                    object.position.x = newPosition.x
+                    object.position.y = newPosition.y
                 }    
                 return object
             })
@@ -143,7 +141,7 @@ function changeTextAreaValue(presentation: Presentation, slideId: string, object
 }
 
 // Изменение размера текста
-function changeTextAreaTextSize(presentation: Presentation, slideId: string, objectId: string, newTextSize: string): Presentation {
+function changeTextAreaTextSize(presentation: Presentation, slideId: string, objectId: string, newTextSize: number): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id == slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
@@ -188,4 +186,11 @@ function changeTextAreaFontFamily(presentation: Presentation, slideId: string, o
     }
 }
 
-// Изменение фона слайда
+// // Изменение фона слайда
+// function changeSlideBackground(presentation: Presentation, slideId: string, newBacground: Background) {
+//     const updatedSlideList = presentation.slideList.map(slide => {
+//         if (slide.id == slideId) {
+            
+//         }
+//     })
+// }
