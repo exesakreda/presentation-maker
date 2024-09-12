@@ -41,7 +41,7 @@ function changeSlidePosition(presentation: Presentation, slideId: string, newInd
 // Добавление объекта 
 function addSlideObject(presentation: Presentation, slideId: string, newObject: SlideObject): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             return {
                 ...slide,
                 objects: [...slide.objects, newObject]
@@ -59,7 +59,7 @@ function addSlideObject(presentation: Presentation, slideId: string, newObject: 
 // Удаление объекта 
 function deleteSlideObject(presentation: Presentation, slideId: string, objectId: string): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             return {
                 ...slide,
                 objects: slide.objects.filter(object => object.id !== objectId)
@@ -77,9 +77,9 @@ function deleteSlideObject(presentation: Presentation, slideId: string, objectId
 // Изменение позиции текста/картинки
 function changeObjectPosition(presentation: Presentation, slideId: string, objectId: string, newPosition: Position): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id == objectId) {
+                if (object.id === objectId) {
                     object.position.x = newPosition.x
                     object.position.y = newPosition.y
                 }    
@@ -99,9 +99,9 @@ function changeObjectPosition(presentation: Presentation, slideId: string, objec
 // Изменение размера текста/картинки
 function changeObjectSize(presentation: Presentation, slideId: string, objectId: string, newHeight: number, newWidth: number): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id == objectId) {
+                if (object.id === objectId) {
                     object.size.h = newHeight
                     object.size.w = newWidth
                 }    
@@ -120,9 +120,9 @@ function changeObjectSize(presentation: Presentation, slideId: string, objectId:
 // Изменение текста
 function changeTextAreaValue(presentation: Presentation, slideId: string, objectId: string, newValue: string): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id == objectId) {
+                if (object.id === objectId) {
                     return {
                         ...object,
                         value: newValue
@@ -143,9 +143,9 @@ function changeTextAreaValue(presentation: Presentation, slideId: string, object
 // Изменение размера текста
 function changeTextAreaTextSize(presentation: Presentation, slideId: string, objectId: string, newTextSize: number): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id == objectId) {
+                if (object.id === objectId) {
                     return {
                         ...object,
                         textSize: newTextSize
@@ -166,9 +166,9 @@ function changeTextAreaTextSize(presentation: Presentation, slideId: string, obj
 // Изменение шрифта текста
 function changeTextAreaFontFamily(presentation: Presentation, slideId: string, objectId: string, newFontFamily: string): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
-        if (slide.id == slideId) {
+        if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id == objectId) {
+                if (object.id === objectId) {
                     return {
                         ...object,
                         fontFamily: newFontFamily
@@ -189,7 +189,7 @@ function changeTextAreaFontFamily(presentation: Presentation, slideId: string, o
 // // Изменение фона слайда
 // function changeSlideBackground(presentation: Presentation, slideId: string, newBacground: Background) {
 //     const updatedSlideList = presentation.slideList.map(slide => {
-//         if (slide.id == slideId) {
+//         if (slide.id === slideId) {
             
 //         }
 //     })
