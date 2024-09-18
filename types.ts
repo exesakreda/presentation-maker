@@ -1,49 +1,49 @@
-type Presentation = {
+export type Presentation = {
     title: string,
     slideList: Slide[],
     selectedSlides: string[],
 }
 
-type Slide = {
+export type Slide = {
     id: string,
     background: Background,
     objects: SlideObject[],
 }
 
-type SlideObject = TextArea | ImageArea
+export type SlideObject = TextArea | ImageArea
 
-type Background = Color | Image
+export type Background = Color | Image
 
-type Color = {
+export type Color = {
     value: string
 }
 
-type Image = {
+export type Image = {
     src: string
 }
 
-type SelectedObjects = { 
+export type SelectedObjects = { 
     slideId: string,
     selectedObjects: string[],
 }
 
-type CommonObject = {
+export type CommonObject = {
     id: string,
     position: Position,
     size: Size,
 }
 
-type Position = {
+export type Position = {
     x: number,
     y: number,
 }
 
-type Size = {
+export type Size = {
     h: number,
     w: number,
 }
 
-type TextArea = CommonObject & {
+export type TextArea = CommonObject & {
     value: string, 
     fontFamily: string,
     textSize: number,
