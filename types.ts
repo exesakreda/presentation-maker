@@ -8,6 +8,7 @@ export type Slide = {
     id: string,
     background: Background,
     objects: SlideObject[],
+    selectedObjects: string[]
 }
 
 export type SlideObject = TextArea | ImageArea
@@ -15,16 +16,13 @@ export type SlideObject = TextArea | ImageArea
 export type Background = Color | Image
 
 export type Color = {
+    type: 'color',
     value: string
 }
 
 export type Image = {
+    type: 'image',
     src: string
-}
-
-export type SelectedObjects = { 
-    slideId: string,
-    selectedObjects: string[],
 }
 
 export type CommonObject = {
@@ -53,4 +51,10 @@ export type TextArea = CommonObject & {
 type ImageArea = CommonObject & {
     src: string,
     type: 'image',
+}
+
+
+// 1 export type
+export type {
+
 }

@@ -1,4 +1,4 @@
-import { Presentation, Slide, Position, SlideObject, TextArea } from "./types"
+import { Presentation, Slide, Position, SlideObject, TextArea, Size, Image, Color } from "./types"
 
 // Изменение названия презентации
 function changePresentationTitle(presentation: Presentation, newTitle: string): Presentation {
@@ -82,8 +82,10 @@ function changeObjectPosition(presentation: Presentation, slideId: string, objec
         if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
                 if (object.id === objectId) {
-                    object.position.x = newPosition.x
-                    object.position.y = newPosition.y
+                    return {
+                        ...object, 
+                        position: newPosition
+                    }
                 }    
                 return object
             })
@@ -99,13 +101,15 @@ function changeObjectPosition(presentation: Presentation, slideId: string, objec
 
 
 // Изменение размера текста/картинки
-function changeObjectSize(presentation: Presentation, slideId: string, objectId: string, newHeight: number, newWidth: number): Presentation {
+function changeObjectSize(presentation: Presentation, slideId: string, objectId: string, newSize: Size): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
                 if (object.id === objectId) {
-                    object.size.h = newHeight
-                    object.size.w = newWidth
+                    return {
+                        ...object,
+                        size: newSize
+                    }
                 }    
                 return object
             })
@@ -178,7 +182,7 @@ function changeTextAreaFontFamily(presentation: Presentation, slideId: string, o
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id === slideId) {
             const updatedSlideObjects = slide.objects.map(object => {
-                if (object.id === objectId) {
+                if (object.id === objectId && object.type === 'text') {
                     return {
                         ...object,
                         fontFamily: newFontFamily
@@ -201,30 +205,37 @@ function changeTextAreaFontFamily(presentation: Presentation, slideId: string, o
 }
 
 // Изменение фона слайда
-function changeSlideBackground(presentation: Presentation, slideId: string, newBackgroundType: string, newBackground: string): Presentation {
+function changeSlideBackground(presentation: Presentation, slideId: string, newBackgroundType: 'color' | 'image', newBackground: string): Presentation {
     const updatedSlideList = presentation.slideList.map(slide => {
         if (slide.id === slideId) {
-            if (newBackgroundType === 'Color') {
-                slide.background = { src: '' }
+            if (newBackgroundType === 'color') {
                 return {
                     ...slide,
-                    background: { value: newBackground }
-                }
-            } else if (newBackgroundType === 'Image') {
-                slide.background = { value: '' }
+                    background: {
+                        type: 'color',
+                        value: newBackground
+                    } as Color
+                };
+            }
+            else {
                 return {
-                    ...slide, 
-                    background: { src: newBackground }
-                }
+                    ...slide,
+                    background: {
+                        type: 'image',
+                        src: newBackground
+                    } as Image
+                };
             }
         }
-        return slide
-    })
+        return slide;
+    });
+
     return {
         ...presentation,
         slideList: updatedSlideList
-    }
+    };
 }
+
 
 
 
@@ -237,9 +248,9 @@ function testMinimum() {
     }
 
     const slides: Slide[] = [
-        { id: '1', background: { value: '#FFFFFF' }, objects: [] },
-        { id: '2', background: { value: '#000000' }, objects: [] },
-        { id: '3', background: { src: '/icons/icon1.svg' }, objects: [] }
+        { id: '1', background: { type: 'color', value: '#FFFFFF'}, objects: [], selectedObjects: [] },
+        { id: '2', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
+        { id: '3', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
     ]
 
     const textObject: TextArea = {
@@ -295,7 +306,7 @@ function testMinimum() {
 
     console.log('\n\n\nchangeObjectSize()')
     console.log('old object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
-    presentation = changeObjectSize(presentation, '2', 'text1', 150, 300)
+    presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 150})
     console.log('new object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
     
     console.log('\nchangeTextAreaTextSize()')
@@ -315,7 +326,7 @@ function testMinimum() {
     console.log('\nchangeSlideBackground()')
     const oldSlide = presentation.slideList.find(slide => slide.id === '3')?.background
     console.log('old slide bg:', oldSlide)
-    presentation = changeSlideBackground(presentation, '3', 'Image', '/images/image1.png')
+    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
     const newSlide = presentation.slideList.find(slide => slide.id === '3')?.background
     console.log('new slide bg:', newSlide)
 
@@ -328,7 +339,7 @@ function testMaximum() {
         slideList: [
             { 
                 id: '1', 
-                background: { value: '#FFFFFF' }, 
+                background: { type:'color', value: '#FFFFFF' }, 
                 objects: [
                     { 
                         id: '1', 
@@ -338,22 +349,51 @@ function testMaximum() {
                         fontFamily: 'Arial', 
                         textSize: 14, 
                         type: 'text' 
-                    } as TextArea 
-                ] 
+                    } as TextArea,
+                    { 
+                        id: '2', 
+                        position: { x: 300, y: 150 }, 
+                        size: { h: 120, w: 80 }, 
+                        value: 'Sample Text 2', 
+                        fontFamily: 'Arial', 
+                        textSize: 14, 
+                        type: 'text' 
+                    } as TextArea,
+                ],
+                selectedObjects: [],
             },
             { 
-                id: '2', 
-                background: { src: '/icons/icon1.svg' }, 
-                objects: [] 
+                id: '3', 
+                background: { type: 'image', src: '/icons/icon1.svg' }, 
+                objects: [
+                    {
+                        id: 'text5',
+                        position: { x: 10, y: 20 },
+                        size: { h: 100, w: 200 },
+                        value: 'Hello, World!',
+                        fontFamily: 'Arial',
+                        textSize: 16,
+                        type: 'text'
+                    },
+                    {
+                        id: 'text4',
+                        position: { x: 10, y: 20 },
+                        size: { h: 100, w: 200 },
+                        value: 'Hello, World! HELLO!',
+                        fontFamily: 'Arial',
+                        textSize: 16,
+                        type: 'text'
+                    }
+                ],
+                selectedObjects: []
             }
         ],
         selectedSlides: []
     }
 
     const slides: Slide[] = [
-        { id: '3', background: { value: '#FFFFFF' }, objects: [] },
-        { id: '4', background: { value: '#000000' }, objects: [] },
-        { id: '5', background: { src: '/icons/icon1.svg' }, objects: [] }
+        { id: '4', background: { type:'color', value: '#000000' }, objects: [], selectedObjects: [] },
+        { id: '5', background: { type:'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
     ]
 
     const textObject: TextArea = {
@@ -409,7 +449,7 @@ function testMaximum() {
     console.log('\n\n\nchangeObjectSize()')
     const oldSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
     console.log('old object size:', oldSize.size)
-    presentation = changeObjectSize(presentation, '2', 'text1', 150, 300)
+    presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 200})
     const newSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
     console.log('new object size:', newSize.size)
 
@@ -430,7 +470,7 @@ function testMaximum() {
     console.log('\nchangeSlideBackground()')
     const oldBackground = presentation.slideList.find(slide => slide.id === '3')?.background
     console.log('old slide bg:', oldBackground)
-    presentation = changeSlideBackground(presentation, '3', 'Image', '/images/image1.png')
+    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
     const newBackground = presentation.slideList.find(slide => slide.id === '3')?.background
     console.log('new slide bg:', newBackground)
 

@@ -68,8 +68,7 @@ function changeObjectPosition(presentation, slideId, objectId, newPosition) {
         if (slide.id === slideId) {
             var updatedSlideObjects = slide.objects.map(function (object) {
                 if (object.id === objectId) {
-                    object.position.x = newPosition.x;
-                    object.position.y = newPosition.y;
+                    return __assign(__assign({}, object), { position: newPosition });
                 }
                 return object;
             });
@@ -79,13 +78,12 @@ function changeObjectPosition(presentation, slideId, objectId, newPosition) {
     return __assign(__assign({}, presentation), { slideList: updatedSlideList });
 }
 // Изменение размера текста/картинки
-function changeObjectSize(presentation, slideId, objectId, newHeight, newWidth) {
+function changeObjectSize(presentation, slideId, objectId, newSize) {
     var updatedSlideList = presentation.slideList.map(function (slide) {
         if (slide.id === slideId) {
             var updatedSlideObjects = slide.objects.map(function (object) {
                 if (object.id === objectId) {
-                    object.size.h = newHeight;
-                    object.size.w = newWidth;
+                    return __assign(__assign({}, object), { size: newSize });
                 }
                 return object;
             });
@@ -131,7 +129,7 @@ function changeTextAreaFontFamily(presentation, slideId, objectId, newFontFamily
     var updatedSlideList = presentation.slideList.map(function (slide) {
         if (slide.id === slideId) {
             var updatedSlideObjects = slide.objects.map(function (object) {
-                if (object.id === objectId) {
+                if (object.id === objectId && object.type === 'text') {
                     return __assign(__assign({}, object), { fontFamily: newFontFamily });
                 }
                 return object;
@@ -146,13 +144,17 @@ function changeTextAreaFontFamily(presentation, slideId, objectId, newFontFamily
 function changeSlideBackground(presentation, slideId, newBackgroundType, newBackground) {
     var updatedSlideList = presentation.slideList.map(function (slide) {
         if (slide.id === slideId) {
-            if (newBackgroundType === 'Color') {
-                slide.background = { src: '' };
-                return __assign(__assign({}, slide), { background: { value: newBackground } });
+            if (newBackgroundType === 'color') {
+                return __assign(__assign({}, slide), { background: {
+                        type: 'color',
+                        value: newBackground
+                    } });
             }
-            else if (newBackgroundType === 'Image') {
-                slide.background = { value: '' };
-                return __assign(__assign({}, slide), { background: { src: newBackground } });
+            else {
+                return __assign(__assign({}, slide), { background: {
+                        type: 'image',
+                        src: newBackground
+                    } });
             }
         }
         return slide;
@@ -167,9 +169,9 @@ function testMinimum() {
         selectedSlides: []
     };
     var slides = [
-        { id: '1', background: { value: '#FFFFFF' }, objects: [] },
-        { id: '2', background: { value: '#000000' }, objects: [] },
-        { id: '3', background: { src: '/icons/icon1.svg' }, objects: [] }
+        { id: '1', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] },
+        { id: '2', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
+        { id: '3', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
     ];
     var textObject = {
         id: 'text1',
@@ -215,7 +217,7 @@ function testMinimum() {
     console.log('new text area value:', newTextArea.value);
     console.log('\n\n\nchangeObjectSize()');
     console.log('old object size:', (_c = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _c === void 0 ? void 0 : _c.objects.find(function (textarea) { return textarea.id === 'text1'; }));
-    presentation = changeObjectSize(presentation, '2', 'text1', 150, 300);
+    presentation = changeObjectSize(presentation, '2', 'text1', { h: 150, w: 150 });
     console.log('new object size:', (_d = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _d === void 0 ? void 0 : _d.objects.find(function (textarea) { return textarea.id === 'text1'; }));
     console.log('\nchangeTextAreaTextSize()');
     var oldTextSize = presentation.slideList[1].objects.find(function (obj) { return obj.id === 'text1'; });
@@ -232,7 +234,7 @@ function testMinimum() {
     console.log('\nchangeSlideBackground()');
     var oldSlide = (_e = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _e === void 0 ? void 0 : _e.background;
     console.log('old slide bg:', oldSlide);
-    presentation = changeSlideBackground(presentation, '3', 'Image', '/images/image1.png');
+    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png');
     var newSlide = (_f = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _f === void 0 ? void 0 : _f.background;
     console.log('new slide bg:', newSlide);
     console.log();
@@ -244,7 +246,7 @@ function testMaximum() {
         slideList: [
             {
                 id: '1',
-                background: { value: '#FFFFFF' },
+                background: { type: 'color', value: '#FFFFFF' },
                 objects: [
                     {
                         id: '1',
@@ -254,21 +256,23 @@ function testMaximum() {
                         fontFamily: 'Arial',
                         textSize: 14,
                         type: 'text'
-                    }
-                ]
+                    },
+                ],
+                selectedObjects: [],
             },
             {
                 id: '2',
-                background: { src: '/icons/icon1.svg' },
-                objects: []
+                background: { type: 'image', src: '/icons/icon1.svg' },
+                objects: [],
+                selectedObjects: []
             }
         ],
         selectedSlides: []
     };
     var slides = [
-        { id: '3', background: { value: '#FFFFFF' }, objects: [] },
-        { id: '4', background: { value: '#000000' }, objects: [] },
-        { id: '5', background: { src: '/icons/icon1.svg' }, objects: [] }
+        { id: '3', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] },
+        { id: '4', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
+        { id: '5', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
     ];
     var textObject = {
         id: 'text1',
@@ -315,7 +319,7 @@ function testMaximum() {
     console.log('\n\n\nchangeObjectSize()');
     var oldSize = (_c = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _c === void 0 ? void 0 : _c.objects.find(function (textarea) { return textarea.id === 'text1'; });
     console.log('old object size:', oldSize.size);
-    presentation = changeObjectSize(presentation, '2', 'text1', 150, 300);
+    presentation = changeObjectSize(presentation, '2', 'text1', { h: 150, w: 200 });
     var newSize = (_d = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _d === void 0 ? void 0 : _d.objects.find(function (textarea) { return textarea.id === 'text1'; });
     console.log('new object size:', newSize.size);
     console.log('\nchangeTextAreaTextSize()');
@@ -333,7 +337,7 @@ function testMaximum() {
     console.log('\nchangeSlideBackground()');
     var oldBackground = (_j = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _j === void 0 ? void 0 : _j.background;
     console.log('old slide bg:', oldBackground);
-    presentation = changeSlideBackground(presentation, '3', 'Image', '/images/image1.png');
+    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png');
     var newBackground = (_k = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _k === void 0 ? void 0 : _k.background;
     console.log('new slide bg:', newBackground);
     console.log();
