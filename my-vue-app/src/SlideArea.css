@@ -1,0 +1,11 @@
+.slidearea {
+    height: 740px;
+    width: 1310px;
+
+    border: 2px solid #929AAB;
+    background-color: #F7F7F7;
+
+    position: absolute;
+    top: 125px;
+    left: 400px;
+}

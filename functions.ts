@@ -482,3 +482,17 @@ testMaximum()
 
 // testMinimum()
 
+export { 
+    changePresentationTitle, 
+    addSlide, 
+    deleteSlide, 
+    changeSlidePosition, 
+    addSlideObject, 
+    deleteSlideObject, 
+    changeObjectPosition, 
+    changeObjectSize, 
+    changeTextAreaValue, 
+    changeTextAreaTextSize, 
+    changeTextAreaFontFamily, 
+    changeSlideBackground 
+}

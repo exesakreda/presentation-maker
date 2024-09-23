@@ -1,0 +1,41 @@
+.actionbar {
+    background-color: #F7F7F7;
+    height: 50px;
+    width: 1677px;
+    position: relative;
+    top: 0;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 15px;
+}
+
+.actionbar__image {
+    height: 35px;
+    width: 35px;
+}
+
+.abtext {
+    margin-left: 16px;
+}
+
+.abtext__title {
+    color: #393E46;
+    font-size: 16px;
+}
+
+.abtext__actions {
+    color: #929AAB;
+    display: flex;
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.actions__item {
+    font-size: 12px;
+    margin-right: 16px;
+}

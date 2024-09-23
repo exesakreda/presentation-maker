@@ -1,0 +1,76 @@
+.toolbar {
+    margin-left: 38px;
+    background-color: #EEEEEE;
+    width: 1677px;
+    position: relative;
+    border-radius: 45px;
+    height: 37px;
+    display: flex;
+    align-items: center;
+}
+
+.button2 {
+    height: 37px;
+    border: 1px solid #929AAB;
+    border-radius: 45px;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    display: flex;
+    align-items: center;
+
+    font-size: 10px;
+    color: #393E46;
+
+    cursor: pointer;
+}
+.button2:hover {
+    background-color: #D9D9D9;
+}
+
+.newslide__icon {
+    height: 17px;
+    width: 17px;
+}
+
+.newslide__text {
+    margin-left: 2px;
+}
+
+.button1 {
+    height: 30px;
+    width: 30px;
+    background-color: #EEEEEE;
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+.button1:hover {
+    background-color: #D9D9D9;
+}
+
+
+.toolbar__undo {
+    margin-left: 11px;
+}
+
+.toolbar__redo {
+    margin-left: 2px;
+
+}
+
+.toolbar__divider {
+    margin-left: 11px;
+}
+
+.toolbar__cursor {
+    margin-left: 11px;
+}
+
+.renderMin {
+    margin-left: auto;
+}
