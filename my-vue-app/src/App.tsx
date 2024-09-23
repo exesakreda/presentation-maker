@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import Actionbar from './Actionbar'
 import Toolbar from './Toolbar'
@@ -6,35 +6,51 @@ import Slidelist from './SlideList'
 import SlideArea from './SlideArea' 
 import Render from './Render'
 
+import '../../types.ts'
+import { Presentation } from '../../types.ts'
+
+import { 
+  changePresentationTitle, 
+  addSlide, 
+  deleteSlide, 
+  changeSlidePosition, 
+  addSlideObject, 
+  deleteSlideObject, 
+  changeObjectPosition, 
+  changeObjectSize, 
+  changeTextAreaValue, 
+  changeTextAreaTextSize, 
+  changeTextAreaFontFamily, 
+  changeSlideBackground 
+} from '../../functions.ts';
+
+let initialPresentation: Presentation = {
+  title: 'Новая презентация',
+  slideList: [],
+  selectedSlides: [],
+}
 
 function App() {
-  let title = 'Новая презентация'
+  const [presentation, setPresentation] = useState<Presentation>(initialPresentation)
 
   const minClick = () => {
-    title = 'Презентация с минимальными данными'
-    updateTitle()
+    const updatedPresentation = changePresentationTitle(presentation, 'Презентация с минимальными данными')
+    setPresentation(updatedPresentation)
   }
 
   const maxClick = () => {
-    title = 'Презентация с максимальными данными'
-    updateTitle()
+    const updatedPresentation = changePresentationTitle(presentation, 'Презентация с максимальными данными')
+    setPresentation(updatedPresentation)
   }
   
   const resetClick = () => {
-    title = 'Новая презентация'
-    updateTitle()
-  }
-
-  const updateTitle = () => {
-    const titleField = document.getElementById('titleField')
-    if (titleField) {
-      titleField.innerText = title
-    }
+    const updatedPresentation = changePresentationTitle(presentation, 'Новая презентация')
+    setPresentation(updatedPresentation)
   }
 
   return (
     <>
-      <Actionbar title={title}/>
+      <Actionbar title={presentation.title}/>
       <Toolbar />
       
       <Slidelist />

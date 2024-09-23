@@ -240,244 +240,244 @@ function changeSlideBackground(presentation: Presentation, slideId: string, newB
 
 
 
-function testMinimum() {
-    let presentation: Presentation = {
-        title: 'test minimum',
-        slideList: [],
-        selectedSlides: []
-    }
+// function testMinimum() {
+//     let presentation: Presentation = {
+//         title: 'test minimum',
+//         slideList: [],
+//         selectedSlides: []
+//     }
 
-    const slides: Slide[] = [
-        { id: '1', background: { type: 'color', value: '#FFFFFF'}, objects: [], selectedObjects: [] },
-        { id: '2', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
-        { id: '3', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
-    ]
+//     const slides: Slide[] = [
+//         { id: '1', background: { type: 'color', value: '#FFFFFF'}, objects: [], selectedObjects: [] },
+//         { id: '2', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
+//         { id: '3', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
+//     ]
 
-    const textObject: TextArea = {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    }
+//     const textObject: TextArea = {
+//         id: 'text1',
+//         position: { x: 10, y: 20 },
+//         size: { h: 100, w: 200 },
+//         value: 'Hello, World!',
+//         fontFamily: 'Arial',
+//         textSize: 16,
+//         type: 'text'
+//     }
 
-    console.log('\nchangePresentationTitle()')
-    console.log('old title:', presentation.title)
-    presentation = changePresentationTitle(presentation, 'changed title')
-    console.log('new title:', presentation.title)
+//     console.log('\nchangePresentationTitle()')
+//     console.log('old title:', presentation.title)
+//     presentation = changePresentationTitle(presentation, 'changed title')
+//     console.log('new title:', presentation.title)
 
-    console.log('\n\n\naddSlide()')
-    console.log('old slideList:', presentation.slideList)
-    slides.forEach(slide => {
-        presentation = addSlide(presentation, slide)
-    })
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\naddSlide()')
+//     console.log('old slideList:', presentation.slideList)
+//     slides.forEach(slide => {
+//         presentation = addSlide(presentation, slide)
+//     })
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\ndeleteSlide()')
-    console.log('old slideList:', presentation.slideList)
-    presentation = deleteSlide(presentation, '1')
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\ndeleteSlide()')
+//     console.log('old slideList:', presentation.slideList)
+//     presentation = deleteSlide(presentation, '1')
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\nchangeSlidePosition()')
-    console.log('old slideList:', presentation.slideList)
-    presentation = changeSlidePosition(presentation, '3', 0)
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\nchangeSlidePosition()')
+//     console.log('old slideList:', presentation.slideList)
+//     presentation = changeSlidePosition(presentation, '3', 0)
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\naddSlideObject()')
-    console.log('old slide objects:', presentation.slideList[1].objects)
-    presentation = addSlideObject(presentation, '2', textObject)
-    console.log('new slide objects:', presentation.slideList[1].objects)
+//     console.log('\n\n\naddSlideObject()')
+//     console.log('old slide objects:', presentation.slideList[1].objects)
+//     presentation = addSlideObject(presentation, '2', textObject)
+//     console.log('new slide objects:', presentation.slideList[1].objects)
 
-    console.log('\n\n\naddSlideObject()')
-    console.log('old slide objects:', presentation.slideList[1].objects)
-    presentation = deleteSlideObject(presentation, '2', 'text1')
-    console.log('new slide objects:', presentation.slideList[1].objects)
-    presentation = addSlideObject(presentation, '2', textObject)
+//     console.log('\n\n\naddSlideObject()')
+//     console.log('old slide objects:', presentation.slideList[1].objects)
+//     presentation = deleteSlideObject(presentation, '2', 'text1')
+//     console.log('new slide objects:', presentation.slideList[1].objects)
+//     presentation = addSlideObject(presentation, '2', textObject)
 
-    console.log('\n\n\nchangeTextAreaValue()')
-    const oldTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('old text area value:', oldTextArea.value)
-    presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text')
-    const newTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('new text area value:', newTextArea.value)
+//     console.log('\n\n\nchangeTextAreaValue()')
+//     const oldTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('old text area value:', oldTextArea.value)
+//     presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text')
+//     const newTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('new text area value:', newTextArea.value)
     
 
-    console.log('\n\n\nchangeObjectSize()')
-    console.log('old object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
-    presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 150})
-    console.log('new object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
+//     console.log('\n\n\nchangeObjectSize()')
+//     console.log('old object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
+//     presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 150})
+//     console.log('new object size:', presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea)
     
-    console.log('\nchangeTextAreaTextSize()')
-    const oldTextSize = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
-    console.log('old textSize:', oldTextSize.textSize)
-    presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24)
-    const newTextSize = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
-    console.log('new textSize:', newTextSize.textSize)
+//     console.log('\nchangeTextAreaTextSize()')
+//     const oldTextSize = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
+//     console.log('old textSize:', oldTextSize.textSize)
+//     presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24)
+//     const newTextSize = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
+//     console.log('new textSize:', newTextSize.textSize)
 
-    console.log('\nchangeTextAreaFontFamily():')
-    const oldFontFamily = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
-    console.log('old ff:', oldFontFamily.fontFamily)
-    presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana')
-    const newFontFamily = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
-    console.log('new ff:', newFontFamily.fontFamily)
+//     console.log('\nchangeTextAreaFontFamily():')
+//     const oldFontFamily = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
+//     console.log('old ff:', oldFontFamily.fontFamily)
+//     presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana')
+//     const newFontFamily = presentation.slideList[1].objects.find(obj => obj.id === 'text1') as TextArea
+//     console.log('new ff:', newFontFamily.fontFamily)
 
-    console.log('\nchangeSlideBackground()')
-    const oldSlide = presentation.slideList.find(slide => slide.id === '3')?.background
-    console.log('old slide bg:', oldSlide)
-    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
-    const newSlide = presentation.slideList.find(slide => slide.id === '3')?.background
-    console.log('new slide bg:', newSlide)
+//     console.log('\nchangeSlideBackground()')
+//     const oldSlide = presentation.slideList.find(slide => slide.id === '3')?.background
+//     console.log('old slide bg:', oldSlide)
+//     presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
+//     const newSlide = presentation.slideList.find(slide => slide.id === '3')?.background
+//     console.log('new slide bg:', newSlide)
 
-    console.log()
-}
+//     console.log()
+// }
 
-function testMaximum() {
-    let presentation: Presentation = {
-        title: 'test maximum',
-        slideList: [
-            { 
-                id: '1', 
-                background: { type:'color', value: '#FFFFFF' }, 
-                objects: [
-                    { 
-                        id: '1', 
-                        position: { x: 100, y: 50 }, 
-                        size: { h: 100, w: 100 }, 
-                        value: 'Sample Text', 
-                        fontFamily: 'Arial', 
-                        textSize: 14, 
-                        type: 'text' 
-                    } as TextArea,
-                    { 
-                        id: '2', 
-                        position: { x: 300, y: 150 }, 
-                        size: { h: 120, w: 80 }, 
-                        value: 'Sample Text 2', 
-                        fontFamily: 'Arial', 
-                        textSize: 14, 
-                        type: 'text' 
-                    } as TextArea,
-                ],
-                selectedObjects: [],
-            },
-            { 
-                id: '3', 
-                background: { type: 'image', src: '/icons/icon1.svg' }, 
-                objects: [
-                    {
-                        id: 'text5',
-                        position: { x: 10, y: 20 },
-                        size: { h: 100, w: 200 },
-                        value: 'Hello, World!',
-                        fontFamily: 'Arial',
-                        textSize: 16,
-                        type: 'text'
-                    },
-                    {
-                        id: 'text4',
-                        position: { x: 10, y: 20 },
-                        size: { h: 100, w: 200 },
-                        value: 'Hello, World! HELLO!',
-                        fontFamily: 'Arial',
-                        textSize: 16,
-                        type: 'text'
-                    }
-                ],
-                selectedObjects: []
-            }
-        ],
-        selectedSlides: []
-    }
+// function testMaximum() {
+//     let presentation: Presentation = {
+//         title: 'test maximum',
+//         slideList: [
+//             { 
+//                 id: '1', 
+//                 background: { type:'color', value: '#FFFFFF' }, 
+//                 objects: [
+//                     { 
+//                         id: '1', 
+//                         position: { x: 100, y: 50 }, 
+//                         size: { h: 100, w: 100 }, 
+//                         value: 'Sample Text', 
+//                         fontFamily: 'Arial', 
+//                         textSize: 14, 
+//                         type: 'text' 
+//                     } as TextArea,
+//                     { 
+//                         id: '2', 
+//                         position: { x: 300, y: 150 }, 
+//                         size: { h: 120, w: 80 }, 
+//                         value: 'Sample Text 2', 
+//                         fontFamily: 'Arial', 
+//                         textSize: 14, 
+//                         type: 'text' 
+//                     } as TextArea,
+//                 ],
+//                 selectedObjects: [],
+//             },
+//             { 
+//                 id: '3', 
+//                 background: { type: 'image', src: '/icons/icon1.svg' }, 
+//                 objects: [
+//                     {
+//                         id: 'text5',
+//                         position: { x: 10, y: 20 },
+//                         size: { h: 100, w: 200 },
+//                         value: 'Hello, World!',
+//                         fontFamily: 'Arial',
+//                         textSize: 16,
+//                         type: 'text'
+//                     },
+//                     {
+//                         id: 'text4',
+//                         position: { x: 10, y: 20 },
+//                         size: { h: 100, w: 200 },
+//                         value: 'Hello, World! HELLO!',
+//                         fontFamily: 'Arial',
+//                         textSize: 16,
+//                         type: 'text'
+//                     }
+//                 ],
+//                 selectedObjects: []
+//             }
+//         ],
+//         selectedSlides: []
+//     }
 
-    const slides: Slide[] = [
-        { id: '4', background: { type:'color', value: '#000000' }, objects: [], selectedObjects: [] },
-        { id: '5', background: { type:'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
-    ]
+//     const slides: Slide[] = [
+//         { id: '4', background: { type:'color', value: '#000000' }, objects: [], selectedObjects: [] },
+//         { id: '5', background: { type:'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
+//     ]
 
-    const textObject: TextArea = {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    }
+//     const textObject: TextArea = {
+//         id: 'text1',
+//         position: { x: 10, y: 20 },
+//         size: { h: 100, w: 200 },
+//         value: 'Hello, World!',
+//         fontFamily: 'Arial',
+//         textSize: 16,
+//         type: 'text'
+//     }
 
-    console.log('\nchangePresentationTitle()')
-    console.log('old title:', presentation.title)
-    presentation = changePresentationTitle(presentation, 'changed title')
-    console.log('new title:', presentation.title)
+//     console.log('\nchangePresentationTitle()')
+//     console.log('old title:', presentation.title)
+//     presentation = changePresentationTitle(presentation, 'changed title')
+//     console.log('new title:', presentation.title)
 
-    console.log('\n\n\naddSlide()')
-    console.log('old slideList:', presentation.slideList)
-    slides.forEach(slide => {
-        presentation = addSlide(presentation, slide)
-    })
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\naddSlide()')
+//     console.log('old slideList:', presentation.slideList)
+//     slides.forEach(slide => {
+//         presentation = addSlide(presentation, slide)
+//     })
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\ndeleteSlide()')
-    console.log('old slideList:', presentation.slideList)
-    presentation = deleteSlide(presentation, '1')
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\ndeleteSlide()')
+//     console.log('old slideList:', presentation.slideList)
+//     presentation = deleteSlide(presentation, '1')
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\nchangeSlidePosition()')
-    console.log('old slideList:', presentation.slideList)
-    presentation = changeSlidePosition(presentation, '3', 0)
-    console.log('new slideList:', presentation.slideList)
+//     console.log('\n\n\nchangeSlidePosition()')
+//     console.log('old slideList:', presentation.slideList)
+//     presentation = changeSlidePosition(presentation, '3', 0)
+//     console.log('new slideList:', presentation.slideList)
 
-    console.log('\n\n\naddSlideObject()')
-    console.log('old slide objects:', presentation.slideList[1].objects)
-    presentation = addSlideObject(presentation, '2', textObject)
-    console.log('new slide objects:', presentation.slideList[1].objects)
+//     console.log('\n\n\naddSlideObject()')
+//     console.log('old slide objects:', presentation.slideList[1].objects)
+//     presentation = addSlideObject(presentation, '2', textObject)
+//     console.log('new slide objects:', presentation.slideList[1].objects)
 
-    console.log('\n\n\ndeleteSlideObject()')
-    console.log('old slide objects:', presentation.slideList[1].objects)
-    presentation = deleteSlideObject(presentation, '2', 'text1')
-    console.log('new slide objects:', presentation.slideList[1].objects)
-    presentation = addSlideObject(presentation, '2', textObject)
+//     console.log('\n\n\ndeleteSlideObject()')
+//     console.log('old slide objects:', presentation.slideList[1].objects)
+//     presentation = deleteSlideObject(presentation, '2', 'text1')
+//     console.log('new slide objects:', presentation.slideList[1].objects)
+//     presentation = addSlideObject(presentation, '2', textObject)
 
-    console.log('\n\n\nchangeTextAreaValue()')
-    const oldTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('old text area value:', oldTextArea.value)
-    presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text')
-    const newTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('new text area value:', newTextArea.value)
+//     console.log('\n\n\nchangeTextAreaValue()')
+//     const oldTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('old text area value:', oldTextArea.value)
+//     presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text')
+//     const newTextArea = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('new text area value:', newTextArea.value)
 
-    console.log('\n\n\nchangeObjectSize()')
-    const oldSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('old object size:', oldSize.size)
-    presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 200})
-    const newSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('new object size:', newSize.size)
+//     console.log('\n\n\nchangeObjectSize()')
+//     const oldSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('old object size:', oldSize.size)
+//     presentation = changeObjectSize(presentation, '2', 'text1', {h: 150, w: 200})
+//     const newSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('new object size:', newSize.size)
 
-    console.log('\nchangeTextAreaTextSize()')
-    const oldTextSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('old textSize:', oldTextSize.textSize)
-    presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24)
-    const newTextSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('new textSize:', newTextSize.textSize)
+//     console.log('\nchangeTextAreaTextSize()')
+//     const oldTextSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('old textSize:', oldTextSize.textSize)
+//     presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24)
+//     const newTextSize = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('new textSize:', newTextSize.textSize)
 
-    console.log('\nchangeTextAreaFontFamily()')
-    const oldFontFamily = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('old fontFamily:', oldFontFamily.fontFamily)
-    presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana')
-    const newFontFamily = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
-    console.log('new fontFamily:', newFontFamily.fontFamily)
+//     console.log('\nchangeTextAreaFontFamily()')
+//     const oldFontFamily = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('old fontFamily:', oldFontFamily.fontFamily)
+//     presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana')
+//     const newFontFamily = presentation.slideList.find(slide => slide.id === '2')?.objects.find(textarea => textarea.id === 'text1') as TextArea
+//     console.log('new fontFamily:', newFontFamily.fontFamily)
 
-    console.log('\nchangeSlideBackground()')
-    const oldBackground = presentation.slideList.find(slide => slide.id === '3')?.background
-    console.log('old slide bg:', oldBackground)
-    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
-    const newBackground = presentation.slideList.find(slide => slide.id === '3')?.background
-    console.log('new slide bg:', newBackground)
+//     console.log('\nchangeSlideBackground()')
+//     const oldBackground = presentation.slideList.find(slide => slide.id === '3')?.background
+//     console.log('old slide bg:', oldBackground)
+//     presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png')
+//     const newBackground = presentation.slideList.find(slide => slide.id === '3')?.background
+//     console.log('new slide bg:', newBackground)
 
-    console.log()
-}
+//     console.log()
+// }
 
-testMaximum()
+// testMaximum()
 
 
 // testMinimum()

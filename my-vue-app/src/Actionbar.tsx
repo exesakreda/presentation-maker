@@ -11,7 +11,7 @@ function Actionbar({ title } : titleProps) {
         <div className="actionbar">
                 <img src="/src/assets/file-pdf.svg" alt="" className="actionbar__image"/>
                 <div className="actionbar__text abtext">
-                    <p className="abtext__title" id="titleField"><Title title={title}></Title></p>
+                    <a className="abtext__title" id="titleField"><Title title={title}></Title></a>
                     <div className="abtext__actions actions">
                         <p className="actions__item">Файл</p>
                         <p className="actions__item">Правка</p>

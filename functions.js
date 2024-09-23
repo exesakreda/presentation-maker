@@ -20,6 +20,18 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.changePresentationTitle = changePresentationTitle;
+exports.addSlide = addSlide;
+exports.deleteSlide = deleteSlide;
+exports.changeSlidePosition = changeSlidePosition;
+exports.addSlideObject = addSlideObject;
+exports.deleteSlideObject = deleteSlideObject;
+exports.changeObjectPosition = changeObjectPosition;
+exports.changeObjectSize = changeObjectSize;
+exports.changeTextAreaValue = changeTextAreaValue;
+exports.changeTextAreaTextSize = changeTextAreaTextSize;
+exports.changeTextAreaFontFamily = changeTextAreaFontFamily;
+exports.changeSlideBackground = changeSlideBackground;
 // Изменение названия презентации
 function changePresentationTitle(presentation, newTitle) {
     return __assign(__assign({}, presentation), { title: newTitle });
@@ -161,186 +173,3 @@ function changeSlideBackground(presentation, slideId, newBackgroundType, newBack
     });
     return __assign(__assign({}, presentation), { slideList: updatedSlideList });
 }
-function testMinimum() {
-    var _a, _b, _c, _d, _e, _f;
-    var presentation = {
-        title: 'test minimum',
-        slideList: [],
-        selectedSlides: []
-    };
-    var slides = [
-        { id: '1', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] },
-        { id: '2', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
-        { id: '3', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
-    ];
-    var textObject = {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    };
-    console.log('\nchangePresentationTitle()');
-    console.log('old title:', presentation.title);
-    presentation = changePresentationTitle(presentation, 'changed title');
-    console.log('new title:', presentation.title);
-    console.log('\n\n\naddSlide()');
-    console.log('old slideList:', presentation.slideList);
-    slides.forEach(function (slide) {
-        presentation = addSlide(presentation, slide);
-    });
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\ndeleteSlide()');
-    console.log('old slideList:', presentation.slideList);
-    presentation = deleteSlide(presentation, '1');
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\nchangeSlidePosition()');
-    console.log('old slideList:', presentation.slideList);
-    presentation = changeSlidePosition(presentation, '3', 0);
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\naddSlideObject()');
-    console.log('old slide objects:', presentation.slideList[1].objects);
-    presentation = addSlideObject(presentation, '2', textObject);
-    console.log('new slide objects:', presentation.slideList[1].objects);
-    console.log('\n\n\naddSlideObject()');
-    console.log('old slide objects:', presentation.slideList[1].objects);
-    presentation = deleteSlideObject(presentation, '2', 'text1');
-    console.log('new slide objects:', presentation.slideList[1].objects);
-    presentation = addSlideObject(presentation, '2', textObject);
-    console.log('\n\n\nchangeTextAreaValue()');
-    var oldTextArea = (_a = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _a === void 0 ? void 0 : _a.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('old text area value:', oldTextArea.value);
-    presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text');
-    var newTextArea = (_b = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _b === void 0 ? void 0 : _b.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('new text area value:', newTextArea.value);
-    console.log('\n\n\nchangeObjectSize()');
-    console.log('old object size:', (_c = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _c === void 0 ? void 0 : _c.objects.find(function (textarea) { return textarea.id === 'text1'; }));
-    presentation = changeObjectSize(presentation, '2', 'text1', { h: 150, w: 150 });
-    console.log('new object size:', (_d = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _d === void 0 ? void 0 : _d.objects.find(function (textarea) { return textarea.id === 'text1'; }));
-    console.log('\nchangeTextAreaTextSize()');
-    var oldTextSize = presentation.slideList[1].objects.find(function (obj) { return obj.id === 'text1'; });
-    console.log('old textSize:', oldTextSize.textSize);
-    presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24);
-    var newTextSize = presentation.slideList[1].objects.find(function (obj) { return obj.id === 'text1'; });
-    console.log('new textSize:', newTextSize.textSize);
-    console.log('\nchangeTextAreaFontFamily():');
-    var oldFontFamily = presentation.slideList[1].objects.find(function (obj) { return obj.id === 'text1'; });
-    console.log('old ff:', oldFontFamily.fontFamily);
-    presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana');
-    var newFontFamily = presentation.slideList[1].objects.find(function (obj) { return obj.id === 'text1'; });
-    console.log('new ff:', newFontFamily.fontFamily);
-    console.log('\nchangeSlideBackground()');
-    var oldSlide = (_e = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _e === void 0 ? void 0 : _e.background;
-    console.log('old slide bg:', oldSlide);
-    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png');
-    var newSlide = (_f = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _f === void 0 ? void 0 : _f.background;
-    console.log('new slide bg:', newSlide);
-    console.log();
-}
-function testMaximum() {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
-    var presentation = {
-        title: 'test maximum',
-        slideList: [
-            {
-                id: '1',
-                background: { type: 'color', value: '#FFFFFF' },
-                objects: [
-                    {
-                        id: '1',
-                        position: { x: 100, y: 50 },
-                        size: { h: 100, w: 100 },
-                        value: 'Sample Text',
-                        fontFamily: 'Arial',
-                        textSize: 14,
-                        type: 'text'
-                    },
-                ],
-                selectedObjects: [],
-            },
-            {
-                id: '2',
-                background: { type: 'image', src: '/icons/icon1.svg' },
-                objects: [],
-                selectedObjects: []
-            }
-        ],
-        selectedSlides: []
-    };
-    var slides = [
-        { id: '3', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] },
-        { id: '4', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] },
-        { id: '5', background: { type: 'image', src: '/icons/icon1.svg' }, objects: [], selectedObjects: [] }
-    ];
-    var textObject = {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    };
-    console.log('\nchangePresentationTitle()');
-    console.log('old title:', presentation.title);
-    presentation = changePresentationTitle(presentation, 'changed title');
-    console.log('new title:', presentation.title);
-    console.log('\n\n\naddSlide()');
-    console.log('old slideList:', presentation.slideList);
-    slides.forEach(function (slide) {
-        presentation = addSlide(presentation, slide);
-    });
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\ndeleteSlide()');
-    console.log('old slideList:', presentation.slideList);
-    presentation = deleteSlide(presentation, '1');
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\nchangeSlidePosition()');
-    console.log('old slideList:', presentation.slideList);
-    presentation = changeSlidePosition(presentation, '3', 0);
-    console.log('new slideList:', presentation.slideList);
-    console.log('\n\n\naddSlideObject()');
-    console.log('old slide objects:', presentation.slideList[1].objects);
-    presentation = addSlideObject(presentation, '2', textObject);
-    console.log('new slide objects:', presentation.slideList[1].objects);
-    console.log('\n\n\ndeleteSlideObject()');
-    console.log('old slide objects:', presentation.slideList[1].objects);
-    presentation = deleteSlideObject(presentation, '2', 'text1');
-    console.log('new slide objects:', presentation.slideList[1].objects);
-    presentation = addSlideObject(presentation, '2', textObject);
-    console.log('\n\n\nchangeTextAreaValue()');
-    var oldTextArea = (_a = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _a === void 0 ? void 0 : _a.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('old text area value:', oldTextArea.value);
-    presentation = changeTextAreaValue(presentation, '2', 'text1', 'new text');
-    var newTextArea = (_b = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _b === void 0 ? void 0 : _b.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('new text area value:', newTextArea.value);
-    console.log('\n\n\nchangeObjectSize()');
-    var oldSize = (_c = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _c === void 0 ? void 0 : _c.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('old object size:', oldSize.size);
-    presentation = changeObjectSize(presentation, '2', 'text1', { h: 150, w: 200 });
-    var newSize = (_d = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _d === void 0 ? void 0 : _d.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('new object size:', newSize.size);
-    console.log('\nchangeTextAreaTextSize()');
-    var oldTextSize = (_e = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _e === void 0 ? void 0 : _e.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('old textSize:', oldTextSize.textSize);
-    presentation = changeTextAreaTextSize(presentation, '2', 'text1', 24);
-    var newTextSize = (_f = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _f === void 0 ? void 0 : _f.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('new textSize:', newTextSize.textSize);
-    console.log('\nchangeTextAreaFontFamily()');
-    var oldFontFamily = (_g = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _g === void 0 ? void 0 : _g.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('old fontFamily:', oldFontFamily.fontFamily);
-    presentation = changeTextAreaFontFamily(presentation, '2', 'text1', 'Verdana');
-    var newFontFamily = (_h = presentation.slideList.find(function (slide) { return slide.id === '2'; })) === null || _h === void 0 ? void 0 : _h.objects.find(function (textarea) { return textarea.id === 'text1'; });
-    console.log('new fontFamily:', newFontFamily.fontFamily);
-    console.log('\nchangeSlideBackground()');
-    var oldBackground = (_j = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _j === void 0 ? void 0 : _j.background;
-    console.log('old slide bg:', oldBackground);
-    presentation = changeSlideBackground(presentation, '3', 'image', '/images/image1.png');
-    var newBackground = (_k = presentation.slideList.find(function (slide) { return slide.id === '3'; })) === null || _k === void 0 ? void 0 : _k.background;
-    console.log('new slide bg:', newBackground);
-    console.log();
-}
-testMaximum();
-// testMinimum()
