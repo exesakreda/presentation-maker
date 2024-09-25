@@ -17,7 +17,7 @@ function Toolbar() {
                 <div className="toolbar__redo redo button1">
                     <img src="/src/assets/redo.svg" alt="" className="redo__image"/>
                 </div>
-               <img src="/src/assets/divider.svg" alt="" className="actionbar__divider"/>
+               <img src="/src/assets/divider.svg" alt="" className="toolbar__divider"/>
 
                <div className="toolbar__cursor cursor button1">
                     <img src="/src/assets/cursor.svg" alt="" className="cursor__image"/>
