@@ -1,7 +1,7 @@
 type Presentation = {
     title: string,
     slideList: Slide[],
-    selectedSlides: string[],
+    selectedSlide: string,
 }
 
 type Slide = {
