@@ -1,37 +1,37 @@
 import React, { useState } from 'react'
 import './App.css'
-import Actionbar from './Actionbar'
-import Toolbar from './Toolbar'
-import Slidelist from './SlideList'
-import SlideArea from './SlideArea' 
+import { Actionbar } from './Actionbar'
+import { Toolbar } from './Toolbar'
+import { Slidelist } from './SlideList'
+import { SlideArea } from './SlideArea'
 
 import '../../types.ts'
-import { Presentation } from '../../types.ts'
+import { Presentation } from '../../types'
 
-import { 
-  changePresentationTitle, 
-  addSlide, 
-  deleteSlide, 
-  changeSlidePosition, 
-  addSlideObject, 
-  deleteSlideObject, 
-  changeObjectPosition, 
-  changeObjectSize, 
-  changeTextAreaValue, 
-  changeTextAreaTextSize, 
-  changeTextAreaFontFamily, 
-  changeSlideBackground 
+import {
+  changePresentationTitle,
+  addSlide,
+  deleteSlide,
+  changeSlidePosition,
+  addSlideObject,
+  deleteSlideObject,
+  changeObjectPosition,
+  changeObjectSize,
+  changeTextAreaValue,
+  changeTextAreaTextSize,
+  changeTextAreaFontFamily,
+  changeSlideBackground
 } from '../../functions.ts';
 
 export let minPresentation: Presentation = {
   title: 'Презентация с минимальными данными',
   slideList: [{
     id: '1',
-    background: { type: 'color', value: '#F7F7F7'},
+    background: { type: 'color', value: '#F7F7F7' },
     objects: [],
     selectedObjects: []
   }],
-  selectedSlide: '1',
+  selectedSlides: ['1'],
 }
 
 export let maxPresentation: Presentation = {
@@ -39,7 +39,7 @@ export let maxPresentation: Presentation = {
   slideList: [
     {
       id: '1',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [
         {
           id: 'obj1',
@@ -50,90 +50,119 @@ export let maxPresentation: Presentation = {
           textSize: 24,
           type: 'text',
         },
+        {
+          id: 'obj2',
+          position: { x: 20, y: 20 },
+          size: { h: 150, w: 300 },
+          value: 'Текст',
+          fontFamily: 'Calibri',
+          textSize: 12,
+          type: 'text',
+        },
       ],
       selectedObjects: [],
     },
     {
       id: '2',
-      background: { type: 'color', value: '#F7F7F7'},
-      objects: [],
+      background: { type: 'image', src: '../../images/backgrounds/mountains.png' },
+      objects: [
+        {
+          id: 'obj3',
+          position: { x: 10, y: 20 },
+          size: { h: 500, w: 500 },
+          src: '../../images/image1.png',
+          type: 'image',
+        },
+        {
+          id: 'obj4',
+          position: { x: 20, y: 20 },
+          size: { h: 150, w: 300 },
+          value: 'Текст',
+          fontFamily: 'Calibri',
+          textSize: 12,
+          type: 'text',
+        },
+      ],
       selectedObjects: [],
     },
     {
       id: '3',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '4',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '5',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '6',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '7',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '8',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '9',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
     {
       id: '10',
-      background: { type: 'color', value: '#F7F7F7'},
+      background: { type: 'color', value: '#F7F7F7' },
       objects: [],
       selectedObjects: [],
     },
   ],
-  selectedSlide: '1',
+  selectedSlides: ['1'],
 }
 
+export let isMax = true
+
 function App() {
-  let isMax = true
   if (isMax) {
     return (
       <>
-        <Actionbar title={'Презентация с максимальными данными'}/>
+        <Actionbar title={'Презентация с максимальными данными'} />
         <Toolbar />
-        
-        <Slidelist slides={maxPresentation.slideList} selectedSlide={'1'} />
-        <SlideArea slide={maxPresentation.slideList[0]}/>
-      </>
-    )
-  } else {
-    return (
-      <>
-        <Actionbar title={minPresentation.title}/>
-        <Toolbar />
-        
-        <Slidelist slides={minPresentation.slideList} selectedSlide={minPresentation.selectedSlide}/>
-        <SlideArea slide={minPresentation.slideList[0]}/>
+
+        <Slidelist slides={maxPresentation.slideList} selectedSlides={maxPresentation.selectedSlides} />
+        <SlideArea slide={maxPresentation.slideList[Number(maxPresentation.selectedSlides[0]) - 1]} />
       </>
     )
   }
+  return (
+    <>
+      <Actionbar title={minPresentation.title} />
+      <Toolbar />
+
+      <Slidelist slides={minPresentation.slideList} selectedSlides={minPresentation.selectedSlides} />
+      <SlideArea slide={minPresentation.slideList[Number(minPresentation.selectedSlides[0]) - 1]} />
+    </>
+  )
+
 }
 
-export default App
+export {
+  App
+}

@@ -1,7 +1,7 @@
 type Presentation = {
     title: string,
     slideList: Slide[],
-    selectedSlide: string,
+    selectedSlides: string[],
 }
 
 type Slide = {
@@ -42,7 +42,7 @@ type Size = {
 }
 
 type TextArea = CommonObject & {
-    value: string, 
+    value: string,
     fontFamily: string,
     textSize: number,
     type: 'text',

@@ -1,7 +1,7 @@
 .actionbar {
     background-color: #F7F7F7;
-    height: 50px;
-    width: 1677px;
+    height: 45px;
+    width: 1700px;
     position: relative;
     top: 0;
 
@@ -9,14 +9,17 @@
     flex-direction: row;
     align-items: center;
     
-    padding-top: 10px;
-    padding-left: 20px;
+    padding-top: 16px;
+    padding-left: 24px;
     padding-bottom: 15px;
+
+    margin-bottom: 8px;
 }
 
 .actionbar__image {
-    height: 35px;
-    width: 35px;
+    height: 40px;
+    width: 40px;
+    margin-top: 3px;
 }
 
 .abtext {
@@ -25,14 +28,14 @@
 
 .abtext__title {
     color: #393E46;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .abtext__actions {
     color: #929AAB;
     display: flex;
     flex-direction: row;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 .actions__item {

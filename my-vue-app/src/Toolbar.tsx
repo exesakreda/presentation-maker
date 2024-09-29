@@ -35,4 +35,6 @@ function Toolbar() {
     )
 }
 
-export default Toolbar
+export {
+    Toolbar
+}
