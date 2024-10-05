@@ -2,7 +2,6 @@ import * as React from "react"
 import './Actionbar.css' 
 import Title from './Title.tsx'
 
-//
 type TitleProps = {
     title: string
 }
@@ -26,4 +25,4 @@ function Actionbar({ title } : TitleProps) {
 export {
     Actionbar,
 } 
-    
+

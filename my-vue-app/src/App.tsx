@@ -8,21 +8,6 @@ import { SlideArea } from './SlideArea'
 import '../../types.ts'
 import { Presentation } from '../../types'
 
-import {
-  changePresentationTitle,
-  addSlide,
-  deleteSlide,
-  changeSlidePosition,
-  addSlideObject,
-  deleteSlideObject,
-  changeObjectPosition,
-  changeObjectSize,
-  changeTextAreaValue,
-  changeTextAreaTextSize,
-  changeTextAreaFontFamily,
-  changeSlideBackground
-} from '../../functions.ts';
-
 export let minPresentation: Presentation = {
   title: 'Презентация с минимальными данными',
   slideList: [{
@@ -134,7 +119,7 @@ export let maxPresentation: Presentation = {
       selectedObjects: [],
     },
   ],
-  selectedSlides: ['1'],
+  selectedSlides: ['1', '2'],
 }
 
 export let isMax = true

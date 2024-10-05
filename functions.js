@@ -84,6 +84,7 @@ function changeObjectPosition(presentation, slideId, objectId, newPosition) {
                 }
                 return object;
             });
+            return __assign(__assign({}, slide), { objects: updatedSlideObjects });
         }
         return slide;
     });
@@ -99,6 +100,7 @@ function changeObjectSize(presentation, slideId, objectId, newSize) {
                 }
                 return object;
             });
+            return __assign(__assign({}, slide), { objects: updatedSlideObjects });
         }
         return slide;
     });
@@ -191,7 +193,7 @@ var maxPresentation = {
             background: { type: 'color', value: '#F7F7F7' },
             objects: [
                 {
-                    id: 'obj1',
+                    id: 'text1',
                     position: { x: 10, y: 20 },
                     size: { h: 100, w: 200 },
                     value: 'Заголовок',
@@ -200,7 +202,7 @@ var maxPresentation = {
                     type: 'text',
                 },
                 {
-                    id: 'obj2',
+                    id: 'text2',
                     position: { x: 20, y: 20 },
                     size: { h: 150, w: 300 },
                     value: 'Текст',
@@ -234,34 +236,41 @@ var maxPresentation = {
             ],
             selectedObjects: [],
         },
-        {
-            id: '3',
-            background: { type: 'color', value: '#F7F7F7' },
-            objects: [],
-            selectedObjects: [],
-        },
     ],
-    selectedSlides: ['2', '3', '1'],
+    selectedSlides: ['2', '1'],
 };
 function testMinimum() {
-    console.log('----------------------------------------TEST MINIMUM----------------------------------------');
-    console.log('\n\nchangePresentationTitle() \nold title:', minPresentation.title);
-    var tempPresentation = changePresentationTitle(minPresentation, 'new title!');
-    console.log('\nnew title', tempPresentation.title);
-    console.log('\n\addSlide() \nold slideList:', minPresentation.slideList);
-    var tempPresentation = addSlide(minPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    console.log('\nnew slideList', tempPresentation.slideList);
-    var tempPresentation = addSlide(minPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    console.log('\n\ndeleteslide() \nold slideList:', tempPresentation.slideList);
-    tempPresentation = deleteSlide(tempPresentation, '1');
-    console.log('\nnew slideList', tempPresentation.slideList);
-    var tempPresentation = addSlide(minPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    tempPresentation = addSlide(tempPresentation, { id: '3', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] });
-    console.log('\n\nchangeSlidePosition() \nold slideList:', tempPresentation.slideList);
-    tempPresentation = changeSlidePosition(tempPresentation, '2', 1);
-    console.log('\nnew slideList', tempPresentation.slideList);
-    console.log('\n\naddSlideObject() \nold objectList:', minPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
+    console.log('\n\n\n----------------------------------------TEST MINIMUM----------------------------------------');
+    console.log('\n\n----------changePresentationTitle()----------\nold title:', minPresentation.title);
+    var newTitlePresentation = changePresentationTitle(minPresentation, 'new title!');
+    console.log('new title:', newTitlePresentation.title);
+    console.log('\n\n----------addSlide()---------- \nold slideList:', minPresentation.slideList);
+    var addedSlidePresentation = addSlide(minPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
+    console.log('new slideList:', addedSlidePresentation.slideList);
+    console.log('\n\n----------deleteSlide()----------');
+    console.log('old slideList:', minPresentation.slideList);
+    var deletedSlidePresentation = deleteSlide(minPresentation, '1');
+    console.log('new slideList:', deletedSlidePresentation.slideList);
+    console.log('\n\n----------changeSlidePosition()----------');
+    var changeSlidePositionInitPres = __assign(__assign({}, minPresentation), { slideList: [
+            {
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [],
+                selectedObjects: []
+            },
+            {
+                id: '2',
+                background: { type: 'color', value: '#000000' },
+                objects: [],
+                selectedObjects: []
+            }
+        ] });
+    console.log('old slideList:', changeSlidePositionInitPres.slideList);
+    var changedSlidePosPresentation = changeSlidePosition(changeSlidePositionInitPres, '2', 0);
+    console.log('new slideList:', changedSlidePosPresentation.slideList);
+    console.log('\n\n----------addSlideObject()---------- \nold objectList:', minPresentation.slideList[0]);
+    var addedSlideObjPresentation = addSlideObject(minPresentation, '1', {
         id: 'text1',
         position: { x: 10, y: 20 },
         size: { h: 100, w: 200 },
@@ -270,180 +279,167 @@ function testMinimum() {
         textSize: 16,
         type: 'text'
     });
-    console.log('new objectList:', tempPresentation.slideList[0]);
-    console.log('\n\naddSlideObject() \nold objectList:', minPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = deleteSlide(tempPresentation, '1');
-    console.log('new objectList:', tempPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    console.log('\n\nchangeObjectPosition() \nold object:', tempPresentation.slideList[0].objects[0].position);
-    tempPresentation = changeObjectPosition(tempPresentation, '1', 'text1', { x: 120, y: 300 });
-    console.log('new objectList:', tempPresentation.slideList[0].objects[0].position);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    console.log('\n\nchangeObjectSize() \nold object:', tempPresentation.slideList[0].objects[0].size);
-    tempPresentation = changeObjectSize(tempPresentation, '1', 'text1', { h: 120, w: 300 });
-    console.log('new object:', tempPresentation.slideList[0].objects[0].size);
-    console.log('\n\nchangeTextAreaValue() \nold objectList:', minPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaValue(tempPresentation, '1', 'text1', 'Changed Value');
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
-    console.log('\n\nchangeTextAreaTextSize() \nold objectList:', minPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaTextSize(tempPresentation, '1', 'text1', 24);
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
-    console.log('\n\nchangeTextAreaFontFamily() \nold objectList:', minPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(minPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaFontFamily(tempPresentation, '1', 'text1', 'Times NewRoman');
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
+    console.log('new objectList:', addedSlideObjPresentation.slideList[0]);
+    console.log('\n\n----------changeObjectPosition()----------');
+    var changeObjectPositionInitPres = __assign(__assign({}, minPresentation), { slideList: [{
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [
+                    {
+                        id: 'obj3',
+                        position: { x: 10, y: 20 },
+                        size: { h: 500, w: 500 },
+                        src: '../../images/image1.png',
+                        type: 'image',
+                    }
+                ],
+                selectedObjects: []
+            }] });
+    console.log('old object:', changeObjectPositionInitPres.slideList[0].objects[0].position);
+    var changedObjectPosPresentation = changeObjectPosition(changeObjectPositionInitPres, '1', 'text1', { x: 120, y: 300 });
+    console.log('new object:', changedObjectPosPresentation.slideList[0].objects[0].position);
+    console.log('\n\n----------changeObjectSize()----------');
+    var changeObjectSizeInitPres = __assign(__assign({}, minPresentation), { slideList: [
+            {
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [
+                    {
+                        id: 'obj3',
+                        position: { x: 10, y: 20 },
+                        size: { h: 500, w: 500 },
+                        src: '../../images/image1.png',
+                        type: 'image',
+                    }
+                ],
+                selectedObjects: []
+            }
+        ] });
+    console.log('old object:', changeObjectSizeInitPres.slideList[0].objects[0].size);
+    var changedObjectSizePresentation = changeObjectSize(changeObjectSizeInitPres, '1', 'text1', { h: 120, w: 300 });
+    console.log('new object:', changedObjectSizePresentation.slideList[0].objects[0].size);
+    console.log('\n\n----------changeTextAreaValue()---------- \nold object:');
+    var changeTextAreaValueInitPres = __assign(__assign({}, minPresentation), { slideList: [
+            {
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [
+                    {
+                        id: 'text1',
+                        position: { x: 10, y: 20 },
+                        size: { h: 100, w: 200 },
+                        value: 'Hello, World!',
+                        fontFamily: 'Arial',
+                        textSize: 16,
+                        type: 'text'
+                    }
+                ],
+                selectedObjects: []
+            }
+        ] });
+    console.log(changeTextAreaValueInitPres.slideList[0].objects[0]);
+    var changedTextAreaValuePresentation = changeTextAreaValue(changeTextAreaValueInitPres, '1', 'text1', 'Changed Value');
+    console.log('new object:', changedTextAreaValuePresentation.slideList[0].objects[0]);
+    console.log('\n\n----------changeTextAreaTextSize()---------- \nold objectList:');
+    var changeTextAreaTextSizeInitPres = __assign(__assign({}, minPresentation), { slideList: [
+            {
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [
+                    {
+                        id: 'text1',
+                        position: { x: 10, y: 20 },
+                        size: { h: 100, w: 200 },
+                        value: 'Hello, World!',
+                        fontFamily: 'Arial',
+                        textSize: 16,
+                        type: 'text'
+                    }
+                ],
+                selectedObjects: []
+            }
+        ] });
+    console.log(changeTextAreaTextSizeInitPres.slideList[0].objects[0]);
+    var changedTextAreaTexiSizePresentation = changeTextAreaTextSize(changeTextAreaTextSizeInitPres, '1', 'text1', 24);
+    console.log('new objectList:', changedTextAreaTexiSizePresentation.slideList[0].objects[0]);
+    console.log('\n\n----------changeTextAreaFontFamily()---------- \nold objectList:');
+    var changeTextAreaFontFamilyInitPres = __assign(__assign({}, minPresentation), { slideList: [
+            {
+                id: '1',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [
+                    {
+                        id: 'text1',
+                        position: { x: 10, y: 20 },
+                        size: { h: 100, w: 200 },
+                        value: 'Hello, World!',
+                        fontFamily: 'Arial',
+                        textSize: 16,
+                        type: 'text'
+                    }
+                ],
+                selectedObjects: []
+            }
+        ] });
+    console.log(changeTextAreaFontFamilyInitPres.slideList[0].objects[0]);
+    var changedTextAreaFontFamilyPresentation = changeTextAreaFontFamily(changeTextAreaFontFamilyInitPres, '1', 'text1', 'Times NewRoman');
+    console.log('new objectList:', changedTextAreaFontFamilyPresentation.slideList[0].objects[0]);
+    console.log('----------changeSlideBackground()----------');
+    console.log('old slide bg:', minPresentation.slideList[0].background);
+    var changedSlideBackgroundPresentation = changeSlideBackground(minPresentation, '1', 'color', '#FF0000');
+    console.log('new slide bg: ', changedSlideBackgroundPresentation.slideList[0].background);
 }
 function testMaximum() {
-    console.log('----------------------------------------TEST MAXIMUM----------------------------------------');
-    console.log('\n\nchangePresentationTitle() \nold title:', maxPresentation.title);
-    var tempPresentation = changePresentationTitle(maxPresentation, 'new title!');
-    console.log('\nnew title', tempPresentation.title);
-    console.log('\n\addSlide() \nold slideList:', maxPresentation.slideList);
-    var tempPresentation = addSlide(maxPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    console.log('\nnew slideList', tempPresentation.slideList);
-    var tempPresentation = addSlide(maxPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    console.log('\n\ndeleteslide() \nold slideList:', tempPresentation.slideList);
-    tempPresentation = deleteSlide(tempPresentation, '1');
-    console.log('\nnew slideList', tempPresentation.slideList);
-    var tempPresentation = addSlide(maxPresentation, { id: '2', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
-    tempPresentation = addSlide(tempPresentation, { id: '3', background: { type: 'color', value: '#000000' }, objects: [], selectedObjects: [] });
-    console.log('\n\nchangeSlidePosition() \nold slideList:', tempPresentation.slideList);
-    tempPresentation = changeSlidePosition(tempPresentation, '2', 1);
-    console.log('\nnew slideList', tempPresentation.slideList);
-    console.log('\n\naddSlideObject() \nold objectList:', maxPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
+    console.log('\n\n\n----------------------------------------TEST MAXIMUM----------------------------------------');
+    console.log('\n\n----------changePresentationTitle()n----------\nold title:', maxPresentation.title);
+    var newTitlePresentation = changePresentationTitle(maxPresentation, 'new title!');
+    console.log('new title:', newTitlePresentation.title);
+    console.log('\n\n----------addSlide()---------- \nold slideList:', maxPresentation.slideList);
+    var addedSlidePresentation = addSlide(maxPresentation, { id: '3', background: { type: 'color', value: '#FFFFFF' }, objects: [], selectedObjects: [] });
+    console.log('new slideList', addedSlidePresentation.slideList);
+    console.log('\n\n----------deleteSlide()----------');
+    console.log('old slideList:', maxPresentation.slideList);
+    var deletedSlidePresentation = deleteSlide(maxPresentation, '1');
+    console.log('new slideList', deletedSlidePresentation.slideList);
+    console.log('\n\n----------changeSlidePosition()----------');
+    console.log('old slideList:', maxPresentation.slideList);
+    var changedSlidePosPresentation = changeSlidePosition(maxPresentation, '2', 0);
+    console.log('new slideList', changedSlidePosPresentation.slideList);
+    console.log('\n\n----------addSlideObject()---------- \nold objectList:', maxPresentation.slideList[0].objects);
+    var addedSlideObjPresentation = addSlideObject(maxPresentation, '1', {
+        id: 'text3',
         position: { x: 10, y: 20 },
         size: { h: 100, w: 200 },
-        value: 'Hello, World!',
+        value: 'HI, World!',
         fontFamily: 'Arial',
         textSize: 16,
         type: 'text'
     });
-    console.log('new objectList:', tempPresentation.slideList[0]);
-    console.log('\n\naddSlideObject() \nold objectList:', maxPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = deleteSlide(tempPresentation, '1');
-    console.log('new objectList:', tempPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    console.log('\n\nchangeObjectPosition() \nold object:', tempPresentation.slideList[0].objects[0].position);
-    tempPresentation = changeObjectPosition(tempPresentation, '1', 'text1', { x: 120, y: 300 });
-    console.log('new objectList:', tempPresentation.slideList[0].objects[0].position);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    console.log('\n\nchangeObjectSize() \nold object:', tempPresentation.slideList[0].objects[0].size);
-    tempPresentation = changeObjectSize(tempPresentation, '1', 'text1', { h: 120, w: 300 });
-    console.log('new object:', tempPresentation.slideList[0].objects[0].size);
-    console.log('\n\nchangeTextAreaValue() \nold objectList:', maxPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaValue(tempPresentation, '1', 'text1', 'Changed Value');
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
-    console.log('\n\nchangeTextAreaTextSize() \nold objectList:', maxPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaTextSize(tempPresentation, '1', 'text1', 24);
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
-    console.log('\n\nchangeTextAreaFontFamily() \nold objectList:', maxPresentation.slideList[0]);
-    var tempPresentation = addSlideObject(maxPresentation, '1', {
-        id: 'text1',
-        position: { x: 10, y: 20 },
-        size: { h: 100, w: 200 },
-        value: 'Hello, World!',
-        fontFamily: 'Arial',
-        textSize: 16,
-        type: 'text'
-    });
-    tempPresentation = changeTextAreaFontFamily(tempPresentation, '1', 'text1', 'Times NewRoman');
-    console.log('new objectList:', tempPresentation.slideList[0].objects);
+    console.log('new objectList:', addedSlideObjPresentation.slideList[0].objects);
+    console.log('\n\n----------changeObjectPosition()----------');
+    console.log('old object:', maxPresentation.slideList[0].objects[0].position);
+    var changedObjectPosPresentation = changeObjectPosition(maxPresentation, '1', 'text1', { x: 100, y: 350 });
+    console.log('new object:', changedObjectPosPresentation.slideList[0].objects[0].position);
+    console.log('\n\n----------changeObjectSize()----------');
+    console.log('old object:', maxPresentation.slideList[0].objects[0].size);
+    var changedObjectSizePresentation = changeObjectSize(maxPresentation, '1', 'text1', { h: 120, w: 300 });
+    console.log('new object:', changedObjectSizePresentation.slideList[0].objects[0].size);
+    console.log('\n\n----------changeTextAreaValue()---------- \nold object:');
+    console.log(maxPresentation.slideList[0].objects[0]);
+    var changedTextAreaValuePresentation = changeTextAreaValue(maxPresentation, '1', 'text1', 'Changed Value');
+    console.log('new object:', changedTextAreaValuePresentation.slideList[0].objects[0]);
+    console.log('\n\n----------changeTextAreaTextSize()---------- \nold objectList:');
+    console.log(maxPresentation.slideList[0].objects[0]);
+    var changedTextAreaTexiSizePresentation = changeTextAreaTextSize(maxPresentation, '1', 'text1', 32);
+    console.log('new objectList:', changedTextAreaTexiSizePresentation.slideList[0].objects[0]);
+    console.log('\n\n----------changeTextAreaFontFamily()---------- \nold objectList:');
+    console.log(maxPresentation.slideList[0].objects[0]);
+    var changedTextAreaFontFamilyPresentation = changeTextAreaFontFamily(maxPresentation, '1', 'text1', 'Times New Roman');
+    console.log('new objectList:', changedTextAreaFontFamilyPresentation.slideList[0].objects[0]);
+    console.log('----------changeSlideBackground()----------');
+    console.log('old slide bg:', maxPresentation.slideList[0].background);
+    var changedSlideBackgroundPresentation = changeSlideBackground(maxPresentation, '1', 'image', '../images/black_background.png');
+    console.log('new slide bg: ', changedSlideBackgroundPresentation.slideList[0].background);
 }
 testMinimum();
 testMaximum();
