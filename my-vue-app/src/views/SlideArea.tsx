@@ -1,15 +1,14 @@
-import React from "react"
-import { Slide } from "../../types"
+import { Presentation } from "../../../types"
 import styles from './SlideArea.module.css'
 
-import { TextArea, ImageArea } from "../../types"
+import { TextArea, ImageArea } from "../../../types"
 
 type SlideAreaProps = {
-    slide: Slide
+    presentation: Presentation
 }
 
 function SlideArea(props: SlideAreaProps) {
-    const slide = props.slide
+    const slide = props.presentation.slideList[Number(props.presentation.selectedSlides[0]) - 1]
     const slideObjects = slide.objects.map(obj => 
         <>
             <p><strong>object id: </strong>{obj.id}</p>
@@ -25,7 +24,7 @@ function SlideArea(props: SlideAreaProps) {
     return (
         <div className={styles.slideArea}>
             <div className={styles.slidearea__content}>
-                {/* {slideObjects} */}
+                {slideObjects}
             </div>
         </div>
     )

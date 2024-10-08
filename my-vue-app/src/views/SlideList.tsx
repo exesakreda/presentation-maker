@@ -1,11 +1,6 @@
-import React from "react"
 import styles from './SlideList.module.css'
-import { Slide } from "../../types"
-import { minPresentation } from "./App"
-import { maxPresentation } from "./App"
-import { isMax } from "./App"
+import { Slide } from "../../../types"
 import { SlidePreview } from "./SlidePreview"
-
 
 type SlideListProps = {
     slides: Slide[],

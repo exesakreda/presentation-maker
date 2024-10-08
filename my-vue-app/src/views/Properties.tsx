@@ -1,14 +1,12 @@
-import React from "react"
-
 import styles from './Properties.module.css'
-import { Slide } from "../../types"
+import { Presentation } from "../../../types"
 
 type PropertiesProps = {
-    slide: Slide
+    presentation: Presentation
 }
 
 function Properties(props: PropertiesProps) {
-    const slide = props.slide
+    const slide = props.presentation.slideList[Number(props.presentation.selectedSlides[0]) - 1]
 
     return (
         <div className={styles.properties}>

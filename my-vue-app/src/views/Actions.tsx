@@ -1,17 +1,17 @@
-import React from "react"
-import { Title } from "./Title"
 import { SlideList } from "./SlideList"
 
-import { Slide } from "../../types"
+import { Presentation } from "../../../types"
 
 import styles from './Actions.module.css'
 
 type ActionsProps = {
-    slides: Slide[],
-    selectedSlides: string[]
+    presentation: Presentation
 }
 
 function Actions(props: ActionsProps) {
+    const slides = props.presentation.slideList
+    const selectedSlides = props.presentation.selectedSlides
+
     return(
         <div className={styles.actionbar}>
             <div className={styles.actionbar__menu}>
@@ -19,7 +19,7 @@ function Actions(props: ActionsProps) {
             </div>
 
             <div className={styles.actionbar__title}>
-                <Title />
+                <div className={styles.title}>{props.presentation.title}</div>
             </div>
             
             <div className={styles.divider} /> 
@@ -31,7 +31,7 @@ function Actions(props: ActionsProps) {
             
             <div className={styles.divider} /> 
 
-            <SlideList slides={props.slides} selectedSlides={props.selectedSlides}/>
+            <SlideList slides={slides} selectedSlides={selectedSlides}/>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { Presentation, Slide, Position, SlideObject, TextArea, Size, Image, Color } from "./types"
+import { Presentation, Slide, Position, SlideObject, Size, Image, Color } from "./types"
 
 // Изменение названия презентации
 function changePresentationTitle(presentation: Presentation, newTitle: string): Presentation {
@@ -243,9 +243,6 @@ function changeSlideBackground(presentation: Presentation, slideId: string, newB
         slideList: updatedSlideList
     };
 }
-
-
-
 
 const minPresentation: Presentation = {
     title: 'Презентация с минимальными данными',
