@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 :root {
-  font-family: "Geologica", sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 400;
 
   font-synthesis: none;
@@ -7,7 +9,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background-color: #F7F7F7;
+  background-color: #1E1E1E;
 }
 
 * {

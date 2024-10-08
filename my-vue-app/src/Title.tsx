@@ -1,15 +1,20 @@
 import React from "react"
 
-type titleProps = {
-    title: string,
-}
+import styles from './Title.module.css'
 
-function Title(props: titleProps) {
+import { minPresentation } from "./App"
+import { maxPresentation } from "./App"
+import { isMax } from "./App"
+
+function Title() {
+    if (isMax) {
+        return(
+            <div className={styles.title}>{maxPresentation.title}</div>
+        )
+    }
     return(
-        <p className="abtext__title">
-            {props.title}
-        </p>
+        <div className={styles.title}>{minPresentation.title}</div>
     )
 }
 
-export default Title
+export { Title }

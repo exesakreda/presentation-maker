@@ -1,41 +1,36 @@
 import React from "react"
-import './SlideList.css'
+import styles from './SlideList.module.css'
 import { Slide } from "../../types"
+import { minPresentation } from "./App"
+import { maxPresentation } from "./App"
+import { isMax } from "./App"
+import { SlidePreview } from "./SlidePreview"
+
 
 type SlideListProps = {
     slides: Slide[],
-    selectedSlides: string[],
+    selectedSlides: string[]
 }
 
-function Slidelist(props: SlideListProps) {
-    const slides: Array<Slide> = props.slides
-    let isSelected: boolean
+function SlideList(props: SlideListProps) {
+    const slides: Slide[] = props.slides
+    const selectedSlides: string[] = props.selectedSlides
 
     const slideListItems = slides.map(slide => {
-        if (props.selectedSlides.includes(slide.id)) {
-            isSelected = true
-        } else {
-            isSelected = false
-        }
-
-        return (
-            <div key={slide.id} className="slideList__slide small-slide">
-                <p className="small-slide__number">{slides.indexOf(slide) + 1}</p>
-                <div
-                    className={`small-slide__preview ${isSelected ? 'selectedSlide' : ''}`}
-                ></div>
+        return(
+            <div key={slide.id} className={`${styles.slide} ${selectedSlides.includes(slide.id) ? styles.selectedSlide : ''}`}>
+                <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
+                <SlidePreview />
             </div>
         )
-
     })
 
     return (
-        <div className="slideList">
+        <div className={styles.slidelist}>
             {slideListItems}
         </div>
     )
+
 }
 
-export {
-    Slidelist
-}
+export { SlideList }

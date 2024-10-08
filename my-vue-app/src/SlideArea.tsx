@@ -1,43 +1,34 @@
 import React from "react"
-import './SlideArea.css'
-import { Color, Image, Slide } from "../../types"
-import { TextArea } from "../../types"
-import { ImageArea } from "../../types"
+import { Slide } from "../../types"
+import styles from './SlideArea.module.css'
+
+import { TextArea, ImageArea } from "../../types"
 
 type SlideAreaProps = {
-    slide: Slide,
+    slide: Slide
 }
 
 function SlideArea(props: SlideAreaProps) {
-    const slide: Slide = props.slide
-    const slideObjects = slide.objects.map(obj =>
+    const slide = props.slide
+    const slideObjects = slide.objects.map(obj => 
         <>
-            <p> - object id: {obj.id} </p>
-            <p> - position:  x: {obj.position.x} | y: {obj.position.y}</p>
-            <p> - size: h: {obj.size.h} | w: {obj.size.w}</p>
-            <p> - type: {obj.type}</p>
-
-            {obj.type === 'text' && <p> - value: {(obj as TextArea).value}</p>}
-            {obj.type === 'image' && <p> - src: {(obj as ImageArea).src}</p>}
-
-            <p>----------------------------</p>
+            <p><strong>object id: </strong>{obj.id}</p>
+            <p><strong>x: </strong>{obj.position.x}; <strong>y: </strong>{obj.position.y}</p>
+            <p><strong>h: </strong>{obj.size.h} <strong>w: </strong>{obj.size.w}</p>
+            <p><strong>type: </strong>{obj.type}</p>
+            {obj.type === 'text' && <p><strong>value: </strong>{(obj as TextArea).value}</p>}
+            {obj.type === 'image' && <p><strong>src: </strong>{(obj as ImageArea).src}</p>}
+            <br></br>
         </>
     )
+
     return (
-        <div className="slidearea">
-            <div className="slidearea__content">
-                <p> <strong> slide id: {slide.id} </strong> </p>
-                <p> background type: {slide.background.type}</p>
-                {slide.background.type === 'color' && <p>background color: {(slide.background as Color).value}</p>}
-                {slide.background.type === 'image' && <p>background image: {(slide.background as Image).src}</p>}
-                <p> objects: </p>
-                {slideObjects}
-                <p> selectedObjects: {slide.selectedObjects} </p>
+        <div className={styles.slideArea}>
+            <div className={styles.slidearea__content}>
+                {/* {slideObjects} */}
             </div>
         </div>
     )
 }
 
-export {
-    SlideArea
-}
+export { SlideArea }

@@ -1,0 +1,120 @@
+.properties {
+    background-color: #2C2C2C;
+    border: 1px solid #595959;
+    width: 215px;
+    height: calc(100vh - 20px);
+    border-radius: 10px;
+
+    right: 10px;
+    top: 10px;
+    position: absolute;
+
+    margin-bottom: 10px;
+
+    box-sizing: border-box;
+}
+
+.slideid {
+    font-size: 14px;
+    color: #FFFFFF;
+
+    font-weight: 700;
+
+    margin-left: 14px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.divider{
+    width: 213px;
+    height: 1px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    background-color: #595959;
+}
+
+.backgroudSettings {
+    margin-left: 14px;
+    margin-top: 14px;
+}
+
+.backgroudSettings__title {
+    font-weight: 600;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+
+.backgroudSettings__bgType {
+    margin-top: 14px;
+    width: 186px;
+    height: 21px;
+
+    display: flex;
+    flex-direction: row;
+
+    background-color: #595959;
+
+    border-radius: 5px;
+}
+
+.bgType__color {
+    width: 93px;
+    height: 19px;
+    background-color: #2C2C2C;
+
+    border: 1px solid #595959;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bgType__image {
+    width: 93px;
+    height: 19px;
+    background-color: #595959;
+
+    border: 1px solid #595959;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.backgroudSettings__colorField {
+    width: 187px;
+    height: 24px;
+    border-radius: 5px;
+    background-color: #595959;
+
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+}
+
+
+.currentColor {
+    height: 10px;
+    width: 10px;
+    border-radius: 1px;
+    background-color: #ffffff;
+
+    margin-left: 8px;
+}
+
+.currentColorText {
+    margin-left: 8px;
+
+    font-size: 10px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.colorField__arrow {
+    margin-left: 109px;
+}

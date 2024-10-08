@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
-import './App.css'
-import { Actionbar } from './Actionbar'
-import { Toolbar } from './Toolbar'
-import { Slidelist } from './SlideList'
-import { SlideArea } from './SlideArea'
-
 import '../../types.ts'
 import { Presentation } from '../../types'
+
+import { Actions } from './Actions.tsx'
+import { SlideArea } from './SlideArea.tsx'
+import { Tools } from './Tools.tsx' 
+import { Properties } from './Properties.tsx'
 
 export let minPresentation: Presentation = {
   title: 'Презентация с минимальными данными',
@@ -119,7 +117,7 @@ export let maxPresentation: Presentation = {
       selectedObjects: [],
     },
   ],
-  selectedSlides: ['1', '2'],
+  selectedSlides: ['1', '2', '4'],
 }
 
 export let isMax = true
@@ -128,24 +126,22 @@ function App() {
   if (isMax) {
     return (
       <>
-        <Actionbar title={'Презентация с максимальными данными'} />
-        <Toolbar />
-
-        <Slidelist slides={maxPresentation.slideList} selectedSlides={maxPresentation.selectedSlides} />
-        <SlideArea slide={maxPresentation.slideList[Number(maxPresentation.selectedSlides[0]) - 1]} />
+        <SlideArea slide={maxPresentation.slideList[0]}/>
+        <Actions slides={maxPresentation.slideList} selectedSlides={maxPresentation.selectedSlides}/>
+        <Tools />
+        <Properties slide={maxPresentation.slideList[0]}/>
       </>
     )
-  }
+  } 
+
   return (
     <>
-      <Actionbar title={minPresentation.title} />
-      <Toolbar />
-
-      <Slidelist slides={minPresentation.slideList} selectedSlides={minPresentation.selectedSlides} />
-      <SlideArea slide={minPresentation.slideList[Number(minPresentation.selectedSlides[0]) - 1]} />
+      <SlideArea slide={minPresentation.slideList[0]}/>
+      <Actions slides={minPresentation.slideList} selectedSlides={minPresentation.selectedSlides}/>
+      <Tools />
+      <Properties slide={minPresentation.slideList[0]}/>
     </>
   )
-
 }
 
 export {
