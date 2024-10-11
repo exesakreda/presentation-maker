@@ -1,4 +1,4 @@
-
+import { SlideList } from "../views/SlideList"
 
 /**
  * @param {Editor} editor
@@ -13,6 +13,15 @@ function setTitle(editor, newTitle) {
     }
 }
 
+function addSlide(editor, newSlide) {
+    return {
+        ...editor,
+        slideList: [
+            SlideList, 
+            newSlide
+        ]
+    }
+}
 
 /**
  * @param {Editor} editor
@@ -29,4 +38,4 @@ function setPosition(editor, { x, y }) {
     }
 }
 
-export { setTitle, setPosition }
+export { setTitle, setPosition, addSlide }

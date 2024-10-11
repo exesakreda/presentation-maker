@@ -1,21 +1,23 @@
 import styles from './SlideList.module.css'
-import { Slide } from "../../../types"
-import { SlidePreview } from "./SlidePreview"
+import { Presentation, Slide } from "../../../types"
+import { SlideComponent } from './SlideComponent'
 
 type SlideListProps = {
-    slides: Slide[],
-    selectedSlides: string[]
+    presentation: Presentation
 }
 
 function SlideList(props: SlideListProps) {
-    const slides: Slide[] = props.slides
-    const selectedSlides: string[] = props.selectedSlides
+    const slides: Slide[] = props.presentation.slideList
+    const selectedSlides: string[] = props.presentation.selectedSlides
 
     const slideListItems = slides.map(slide => {
+        var slide = props.presentation.slideList[props.presentation.slideList.indexOf(slide)]
         return(
-            <div key={slide.id} className={`${styles.slide} ${selectedSlides.includes(slide.id) ? styles.selectedSlide : ''}`}>
+            <div key={slide.id} className={`${styles.slideContainer} ${selectedSlides.includes(slide.id) ? styles.selectedSlide : ''}`}>
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
-                <SlidePreview />
+                <div className={styles.slidePreview}>
+                    <SlideComponent slide={slide} scale={0.15}/>
+                </div>
             </div>
         )
     })

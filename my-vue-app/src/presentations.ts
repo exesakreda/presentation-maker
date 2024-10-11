@@ -77,7 +77,15 @@ const maxPresentation: Presentation = {
         {
             id: '5',
             background: { type: 'color', value: '#F7F7F7' },
-            objects: [],
+            objects: [{
+                id: 'obj4',
+                position: { x: 20, y: 20 },
+                size: { h: 150, w: 300 },
+                value: 'Текст',
+                fontFamily: 'Calibri',
+                textSize: 12,
+                type: 'text',
+            }],
             selectedObjects: [],
         },
         {

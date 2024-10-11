@@ -1,16 +1,11 @@
 .slideArea {
     width: 1128px;
     height: 635px;
-
-    
-    transform-origin: top left;
     position: fixed;
-
+    transform-origin: top left;
     z-index: -1;
-
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
-
     background-color: #fff;
+    transform: translate(-50%, -50%);
 }
