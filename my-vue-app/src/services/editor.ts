@@ -1,17 +1,31 @@
-let editor = {
-  title: 'Old Title'
+import { Presentation } from "../../../types"
+
+import { currentPresentation } from "../App"
+
+
+let editor: Presentation 
+
+function initEditor(currentPresentation: Presentation) {
+  editor = {
+    title: currentPresentation.title,
+    slideList: currentPresentation.slideList,
+    selectedSlides: currentPresentation.selectedSlides
+  }
 }
+
 let editorChangeHandler = null
 
-function getEditor() {
-  return editor
+function getEditor(): Presentation {
+  if (editor) {
+    return editor
+  }
 }
 
-function setEditor(newEditor) {
+function setEditor(newEditor: Presentation) {
   editor = newEditor
 }
 
-function addEditorChangeHandler(handler) {
+function addEditorChangeHandler(handler: Presentation) {
   editorChangeHandler = handler
 }
 
@@ -30,4 +44,4 @@ function dispatch(modifyFn, payload) {
 
 
 
-export { getEditor, setEditor, dispatch, addEditorChangeHandler }
+export { getEditor, setEditor, dispatch, addEditorChangeHandler, initEditor }

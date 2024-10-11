@@ -1,31 +1,21 @@
-import { Presentation } from "../../../types"
+import { Presentation, Slide } from "../../../types"
 import styles from './SlideArea.module.css'
 
-import { TextArea, ImageArea } from "../../../types"
+import { SlideComponent } from "./SlideComponent"
 
 type SlideAreaProps = {
-    presentation: Presentation
+    presentation: Presentation,
 }
 
 function SlideArea(props: SlideAreaProps) {
-    const slide = props.presentation.slideList[Number(props.presentation.selectedSlides[0]) - 1]
-    const slideObjects = slide.objects.map(obj => 
-        <>
-            <p><strong>object id: </strong>{obj.id}</p>
-            <p><strong>x: </strong>{obj.position.x}; <strong>y: </strong>{obj.position.y}</p>
-            <p><strong>h: </strong>{obj.size.h} <strong>w: </strong>{obj.size.w}</p>
-            <p><strong>type: </strong>{obj.type}</p>
-            {obj.type === 'text' && <p><strong>value: </strong>{(obj as TextArea).value}</p>}
-            {obj.type === 'image' && <p><strong>src: </strong>{(obj as ImageArea).src}</p>}
-            <br></br>
-        </>
-    )
-
+    const currentSlide: Slide | undefined = props.presentation.slideList.find(slide => slide.id === props.presentation.selectedSlides[0])
     return (
         <div className={styles.slideArea}>
-            <div className={styles.slidearea__content}>
-                {slideObjects}
-            </div>
+            {currentSlide ? ( 
+                <SlideComponent slide={currentSlide} scale={1}/>
+            ) : (
+                <p>Слайд не найден</p>
+            )}
         </div>
     )
 }

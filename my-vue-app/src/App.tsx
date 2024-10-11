@@ -7,30 +7,25 @@ import { Properties } from './views/Properties.tsx'
 
 import { minPresentation } from './presentations.ts'
 import { maxPresentation } from './presentations.ts'
+import { initEditor, getEditor } from './services/editor.ts'
 
-import { dispatch } from './services/editor.ts'
-import { setTitle } from './services/editorFunctions.ts'
+const isMax = true
+const currentPresentation = isMax ? maxPresentation : minPresentation
 
-function App(props: { editor }) {
-  function onTextClick() {
-    dispatch(setTitle, "New Title")
-  }
+initEditor(currentPresentation)
 
-  const isMax = true
-
-  const currentPresentation = isMax ? maxPresentation : minPresentation
-
+function App() {
   return (
     <>
-      <h1 onClick={onTextClick}>{props.editor.title}</h1>
-      {/* <Actions presentation={currentPresentation} />
+      <Actions presentation={currentPresentation} editor={getEditor()}/>
       <SlideArea presentation={currentPresentation} />
       <Tools />
-      <Properties presentation={currentPresentation} /> */}
+      <Properties presentation={currentPresentation} />
     </>
   )
 }
 
 export {
-  App
+  App,
+  currentPresentation
 }

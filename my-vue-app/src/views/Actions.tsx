@@ -4,13 +4,31 @@ import { Presentation } from "../../../types"
 
 import styles from './Actions.module.css'
 
+import { dispatch, getEditor } from '../services/editor.ts'
+import { setTitle, addSlide } from '../services/editorFunctions.ts'
+
 type ActionsProps = {
-    presentation: Presentation
+    presentation: Presentation,
+    editor: Presentation
 }
 
 function Actions(props: ActionsProps) {
-    const slides = props.presentation.slideList
-    const selectedSlides = props.presentation.selectedSlides
+    function onTextClick() {
+        dispatch(setTitle, "Title changed by editor.js")
+    }
+     
+    function onButtonClick() {
+        dispatch(
+            addSlide,
+            {
+                id: '11',
+                background: { type: 'color', value: '#F7F7F7' },
+                objects: [],
+                selectedObjects: [],
+            },
+        )
+
+    }
 
     return(
         <div className={styles.actionbar}>
@@ -18,20 +36,29 @@ function Actions(props: ActionsProps) {
                 <img src="/src/assets/menu.svg" alt="menu"/>
             </div>
 
-            <div className={styles.actionbar__title}>
-                <div className={styles.title}>{props.presentation.title}</div>
+            <div className={styles.actionbar__title} onClick={onTextClick}>
+                {/* <textarea className={styles.title} defaultValue={props.presentation.title} maxLength={45}/> */}
+                <div className={styles.title}>{props.editor.title}</div>
             </div>
             
             <div className={styles.divider} /> 
 
-            <div className={styles.actionbar__newslide}>
-                <div className={styles.newslide__text}>Новый слайд</div>
+            <div className={`${styles.actionbar__newslide} ${styles.actionbar__button}`} onClick={onButtonClick}>  
+            {/* при выполнении onButtonClick слайд добавляется в editor.slidelist, а отрисовывается presentation.slidelist   */}
+                {/* сделать кнопкой */}
+                <div className={`${styles.button__text} ${styles.newslidebutton__text}`}>Новый слайд</div>
                 <img src="/src/assets/plus.svg" alt="" />
             </div>
             
             <div className={styles.divider} /> 
 
-            <SlideList slides={slides} selectedSlides={selectedSlides}/>
+            <SlideList presentation={props.presentation} editor={getEditor()}/>
+        
+            <div className={`${styles.actionbar__deleteslide} ${styles.actionbar__button}`}>
+                <div className={`${styles.button__text} ${styles.deleteslidebutton__text}`}>Удалить выбранные слайды</div>
+                <img src="/src/assets/minus.svg" alt="" />
+            </div>
+
         </div>
     )
 }
