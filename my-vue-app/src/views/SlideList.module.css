@@ -4,8 +4,8 @@
     height: calc(100% - 218px);
     
     display: flex;
-    /* display: flex;
-    flex-direction: column; */
+    flex-direction: column;
+    
 
     overflow-y: auto;
     overflow-x: hidden;
@@ -26,14 +26,13 @@
 
 
 .slideContainer {
-    height: 110px;
+    max-height: 112px;
+    padding-bottom: 5px;
     border-radius: 5px;
 }
 
 .selectedSlide {
     background-color: #105CAD;
-    margin-top: 4px;
-    margin-bottom: 4px;
 }
 
 .slide__id {
@@ -58,6 +57,5 @@
     margin-top: -12px;
 
     margin-right: 5px;
-
     overflow: hidden;
 }

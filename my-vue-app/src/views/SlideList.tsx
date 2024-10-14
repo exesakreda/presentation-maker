@@ -1,20 +1,33 @@
 import styles from './SlideList.module.css'
-import { Presentation, Slide } from "../../../types"
+import { Slide } from "../../../types"
 import { SlideComponent } from './SlideComponent'
+import { dispatch } from '../services/editor'
+import { setSelection } from '../services/editorFunctions'
+import { EditorType } from '../services/EditorType'
 
 type SlideListProps = {
-    presentation: Presentation,
-    editor: Presentation,
+    editor: EditorType,
 }
 
-function SlideList(props: SlideListProps) {
-    const slides: Slide[] = props.presentation.slideList
-    const selectedSlides: string[] = props.presentation.selectedSlides
+function SlideList({ editor }: SlideListProps) {
+    function onSlideClick(slideId: String) {
+        dispatch(setSelection, {
+            selectedSlideId: slideId
+        })
+    }
+
+    const slides: Slide[] = editor.presentation.slideList
 
     const slideListItems = slides.map(slide => {
-        var slide = props.presentation.slideList[props.presentation.slideList.indexOf(slide)]
         return(
-            <div key={slide.id} className={`${styles.slideContainer} ${selectedSlides.includes(slide.id) ? styles.selectedSlide : ''}`}>
+            <div 
+                key={slide.id} 
+                onClick={() => onSlideClick(slide.id)} 
+                className={`${styles.slideContainer} ${editor.selection?.selectedSlideId === slide.id
+                    ? styles.selectedSlide 
+                    : ''
+                }`}
+            >
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
                 <div className={styles.slidePreview}>
                     <SlideComponent slide={slide} scale={0.15}/>

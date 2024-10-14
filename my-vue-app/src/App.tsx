@@ -5,27 +5,24 @@ import { SlideArea } from './views/SlideArea.tsx'
 import { Tools } from './views/Tools.tsx'
 import { Properties } from './views/Properties.tsx'
 
-import { minPresentation } from './presentations.ts'
-import { maxPresentation } from './presentations.ts'
-import { initEditor, getEditor } from './services/editor.ts'
+import { getEditor } from './services/editor.ts'
+import { EditorType } from './services/EditorType.ts'
 
-const isMax = true
-const currentPresentation = isMax ? maxPresentation : minPresentation
+type AppProps = {
+  editor: EditorType
+}
 
-initEditor(currentPresentation)
-
-function App() {
+function App({ editor }: AppProps) {
   return (
     <>
-      <Actions presentation={currentPresentation} editor={getEditor()}/>
-      <SlideArea presentation={currentPresentation} />
+      <Actions editor={editor} />
+      <SlideArea editor={editor} />
       <Tools />
-      <Properties presentation={currentPresentation} />
+      <Properties editor={editor} />
     </>
   )
 }
 
-export {
-  App,
-  currentPresentation
+export { 
+  App
 }

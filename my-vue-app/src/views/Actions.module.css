@@ -66,6 +66,11 @@
 
     display: flex;
     align-items: center;
+    
+    cursor: pointer;
+}
+.actionbar__button:hover {
+    background-color: #595959;
 }
 
 .button__text {

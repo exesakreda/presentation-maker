@@ -1,20 +1,21 @@
-import { Presentation, Slide } from "../../../types"
+import { Slide } from "../../../types"
+import { EditorType } from "../services/EditorType"
 import styles from './SlideArea.module.css'
 
 import { SlideComponent } from "./SlideComponent"
 
 type SlideAreaProps = {
-    presentation: Presentation,
+    editor: EditorType,
 }
 
-function SlideArea(props: SlideAreaProps) {
-    const currentSlide: Slide | undefined = props.presentation.slideList.find(slide => slide.id === props.presentation.selectedSlides[0])
+function SlideArea({ editor }: SlideAreaProps) {
+    const currentSlide: Slide | undefined = editor.presentation.slideList.find(slide => slide.id === editor.selection?.selectedSlideId)
     return (
         <div className={styles.slideArea}>
             {currentSlide ? ( 
                 <SlideComponent slide={currentSlide} scale={1}/>
             ) : (
-                <p>Слайд не найден</p>
+                <></>
             )}
         </div>
     )

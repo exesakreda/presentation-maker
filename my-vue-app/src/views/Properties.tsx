@@ -1,17 +1,20 @@
 import styles from './Properties.module.css'
-import { Presentation } from "../../../types"
+import { EditorType } from '../services/EditorType'
+import { Slide } from '../../../types'
 
 type PropertiesProps = {
-    presentation: Presentation
+    editor: EditorType
 }
 
-function Properties(props: PropertiesProps) {
-    const slide = props.presentation.slideList[Number(props.presentation.selectedSlides[0]) - 1]
+function Properties({ editor }: PropertiesProps) {
+
+    const slideId = editor.selection?.selectedSlideId
+    const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
 
     return (
         <div className={styles.properties}>
             <div className={styles.slideid}>
-                <p>Слайд {slide.id}</p>
+                <p>Слайд {slideIndex + 1} (id: {slideId})</p>
             </div>
             
             <div className={styles.divider} /> 

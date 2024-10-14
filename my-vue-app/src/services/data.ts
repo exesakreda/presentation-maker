@@ -1,17 +1,7 @@
-import { Presentation } from "../../types"
+import { Presentation } from "../../../types"
+import { EditorType } from "./EditorType"
 
-const minPresentation: Presentation = {
-    title: 'Презентация с минимальными данными',
-    slideList: [{
-        id: '1',
-        background: { type: 'color', value: '#F7F7F7' },
-        objects: [],
-        selectedObjects: []
-    }],
-    selectedSlides: ['1'],
-}
-
-const maxPresentation: Presentation = {
+const presentation: Presentation = {
     title: 'Презентация с максимальными данными',
     slideList: [
         {
@@ -122,7 +112,13 @@ const maxPresentation: Presentation = {
     selectedSlides: ['1'],
 }
 
+const editor: EditorType = {
+    presentation,
+    selection: {
+        selectedSlideId: presentation.slideList[0].id
+    }
+}
+
 export {
-    minPresentation,
-    maxPresentation
+    editor
 }

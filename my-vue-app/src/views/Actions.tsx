@@ -1,33 +1,27 @@
 import { SlideList } from "./SlideList"
 
-import { Presentation } from "../../../types"
-
 import styles from './Actions.module.css'
 
-import { dispatch, getEditor } from '../services/editor.ts'
-import { setTitle, addSlide } from '../services/editorFunctions.ts'
+import { dispatch } from '../services/editor.ts'
+import { setTitle, addSlide, removeSlide } from '../services/editorFunctions.ts'
+import { EditorType } from "../services/EditorType.ts"
+import React from "react"
 
 type ActionsProps = {
-    presentation: Presentation,
-    editor: Presentation
+    editor: EditorType,
 }
 
-function Actions(props: ActionsProps) {
-    function onTextClick() {
-        dispatch(setTitle, "Title changed by editor.js")
-    }
-     
+function Actions({ editor }: ActionsProps) {     
     function onButtonClick() {
-        dispatch(
-            addSlide,
-            {
-                id: '11',
-                background: { type: 'color', value: '#F7F7F7' },
-                objects: [],
-                selectedObjects: [],
-            },
-        )
+        dispatch(addSlide)
+    }
 
+    const onTitleChange: React.ChangeEventHandler = (event) => {
+        dispatch(setTitle, (event.target as HTMLInputElement).value)
+    }
+
+    function onRemoveSlide() {
+        dispatch(removeSlide)
     }
 
     return(
@@ -36,26 +30,34 @@ function Actions(props: ActionsProps) {
                 <img src="/src/assets/menu.svg" alt="menu"/>
             </div>
 
-            <div className={styles.actionbar__title} onClick={onTextClick}>
+            <div className={styles.actionbar__title}>
                 {/* <textarea className={styles.title} defaultValue={props.presentation.title} maxLength={45}/> */}
-                <div className={styles.title}>{props.editor.title}</div>
+                <input 
+                    className={styles.title} 
+                    type="text" 
+                    defaultValue={editor.presentation.title} 
+                    onBlur={onTitleChange} 
+                />
             </div>
             
             <div className={styles.divider} /> 
 
-            <div className={`${styles.actionbar__newslide} ${styles.actionbar__button}`} onClick={onButtonClick}>  
+            <button 
+                className={`${styles.actionbar__newslide} ${styles.actionbar__button}`} 
+                onClick={onButtonClick}
+            >  
             {/* при выполнении onButtonClick слайд добавляется в editor.slidelist, а отрисовывается presentation.slidelist   */}
                 {/* сделать кнопкой */}
                 <div className={`${styles.button__text} ${styles.newslidebutton__text}`}>Новый слайд</div>
                 <img src="/src/assets/plus.svg" alt="" />
-            </div>
+            </button>
             
             <div className={styles.divider} /> 
 
-            <SlideList presentation={props.presentation} editor={getEditor()}/>
+            <SlideList editor={editor}/>
         
             <div className={`${styles.actionbar__deleteslide} ${styles.actionbar__button}`}>
-                <div className={`${styles.button__text} ${styles.deleteslidebutton__text}`}>Удалить выбранные слайды</div>
+                <div className={`${styles.button__text} ${styles.deleteslidebutton__text}`} onClick={onRemoveSlide}>Удалить выбранные слайды</div>
                 <img src="/src/assets/minus.svg" alt="" />
             </div>
 

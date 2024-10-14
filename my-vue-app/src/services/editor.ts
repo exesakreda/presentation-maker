@@ -1,47 +1,32 @@
-import { Presentation } from "../../../types"
+import { editor } from "./data"
+import { EditorType } from "./EditorType"
 
-import { currentPresentation } from "../App"
+let _editor = editor
+let _handler = null
 
-
-let editor: Presentation 
-
-function initEditor(currentPresentation: Presentation) {
-  editor = {
-    title: currentPresentation.title,
-    slideList: currentPresentation.slideList,
-    selectedSlides: currentPresentation.selectedSlides
-  }
+function getEditor() {
+  return _editor
 }
 
-let editorChangeHandler = null
-
-function getEditor(): Presentation {
-  if (editor) {
-    return editor
-  }
+function setEditor(newEditor: EditorType) {
+  _editor = newEditor
 }
 
-function setEditor(newEditor: Presentation) {
-  editor = newEditor
-}
-
-function addEditorChangeHandler(handler: Presentation) {
-  editorChangeHandler = handler
-}
-
-/**
- * @param {Function} modifyFn
- * @param {Object} payload
- */
-function dispatch(modifyFn, payload) {
-  const newEditor = modifyFn(editor, payload)
+function dispatch(modifyFn: Function, payload?: Object): void {
+  const newEditor = modifyFn(_editor, payload)
   setEditor(newEditor)
 
-  if (editorChangeHandler) {
-    editorChangeHandler()
+  if (_handler) {
+    _handler()
   }
 }
 
+function addEditorChangeHandler(handler: Function): void { 
+  _handler = handler
+}
 
-
-export { getEditor, setEditor, dispatch, addEditorChangeHandler, initEditor }
+export { 
+  getEditor, 
+  dispatch, 
+  addEditorChangeHandler 
+}
