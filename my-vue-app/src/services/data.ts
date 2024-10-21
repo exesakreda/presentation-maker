@@ -115,7 +115,7 @@ const presentation: Presentation = {
 const editor: EditorType = {
     presentation,
     selection: {
-        selectedSlideId: presentation.slideList[0].id
+        selectedSlides: [ presentation.slideList[0].id ]
     }
 }
 

@@ -38,7 +38,7 @@ function Title({ editor }: TitleProps) {
         if ((event.target as HTMLInputElement).value) {
             dispatch(setTitle, (event.target as HTMLInputElement).value)
         } else {
-            dispatch(setTitle, 'Новая презентация')
+            dispatch(setTitle, 'Презентация без названия')
         }
     };
 

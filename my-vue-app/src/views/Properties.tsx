@@ -1,6 +1,5 @@
 import styles from './Properties.module.css'
 import { EditorType } from '../services/EditorType'
-import { Slide } from '../../../types'
 
 type PropertiesProps = {
     editor: EditorType
@@ -8,7 +7,7 @@ type PropertiesProps = {
 
 function Properties({ editor }: PropertiesProps) {
 
-    const slideId = editor.selection?.selectedSlideId
+    const slideId = editor.selection?.selectedSlides[editor.selection?.selectedSlides.length - 1]
     const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
 
     return (
