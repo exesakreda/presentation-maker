@@ -1,12 +1,13 @@
 import '../../types.ts'
 
-import { Actions } from './views/Actions.tsx'
+import { SlideList } from './views/SlideList.tsx'
 import { SlideArea } from './views/SlideArea.tsx'
 import { Tools } from './views/Tools.tsx'
 import { Properties } from './views/Properties.tsx'
+import { Title } from './views/Title.tsx'
 
-import { getEditor } from './services/editor.ts'
 import { EditorType } from './services/EditorType.ts'
+
 
 type AppProps = {
   editor: EditorType
@@ -15,7 +16,8 @@ type AppProps = {
 function App({ editor }: AppProps) {
   return (
     <>
-      <Actions editor={editor} />
+      <Title editor={editor} />
+      <SlideList editor={editor} />
       <SlideArea editor={editor} />
       <Tools />
       <Properties editor={editor} />
@@ -23,6 +25,6 @@ function App({ editor }: AppProps) {
   )
 }
 
-export { 
+export {
   App
 }

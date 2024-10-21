@@ -1,8 +1,8 @@
 import { Slide } from "../../../types"
-import { SlideList } from "../views/SlideList"
 import { EditorType, SelectionType } from "./EditorType"
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
+    console.log(newTitle)
     return {
         ...editor,
         presentation: {
@@ -23,8 +23,8 @@ function addSlide(editor: EditorType): EditorType {
     const newSlide: Slide = {
         id: editor.presentation.slideList.length > 0
             ? String(Number(editor.presentation.slideList[editor.presentation.slideList.length - 1].id) + 1)
-            : '1', 
-        background: { type: 'color', value: '#FFFFFF'},
+            : '1',
+        background: { type: 'color', value: '#FFFFFF' },
         objects: [],
         selectedObjects: []
     }
@@ -45,41 +45,41 @@ function removeSlide(editor: EditorType): EditorType {
         return editor
     }
 
-    const removeSlideId = editor.selection.selectedSlideId
-    const removeSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id == removeSlideId)
+    if (editor.presentation.slideList.length > 1) {
+        const removeSlideId = editor.selection.selectedSlideId
+        const removeSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id == removeSlideId)
 
-    const newSlides = editor.presentation.slideList.filter(slide => slide.id != removeSlideId)
+        const newSlides = editor.presentation.slideList.filter(slide => slide.id != removeSlideId)
 
-    let newSelectedSlideId = null 
-    if (newSlides.length > 0) {
-        const index = Math.min(removeSlideIndex, newSlides.length - 1)
-        newSelectedSlideId = newSlides[index].id
-    }
+        let newSelectedSlideId = ''
+        if (newSlides.length > 0) {
+            const index = Math.min(removeSlideIndex, newSlides.length - 1)
+            newSelectedSlideId = newSlides[index].id
+        }
 
-    return {
-        presentation: {
-            ...editor.presentation,
-            slideList: newSlides
-        },
-        selection: {
-            selectedSlideId: newSelectedSlideId
+        return {
+            presentation: {
+                ...editor.presentation,
+                slideList: newSlides
+            },
+            selection: {
+                selectedSlideId: newSelectedSlideId
+            }
         }
     }
+
+    return editor
 }
 
-/**
- * @param {Editor} editor
- * @param {{
- *   x: number,
- *   y: number,
- * }} payload
- * @return {Editor}
- */
-function setPosition(editor, { x, y }) {
+function setPosition(editor: EditorType, { x, y }: { x: number, y: number }) {
     return {
         ...editor,
         position: { x, y }
     }
 }
 
-export { setTitle, setPosition, addSlide, setSelection, removeSlide }
+function selectTool(editor: EditorType) {
+    return editor
+}
+
+export { setTitle, setPosition, addSlide, setSelection, removeSlide, selectTool }

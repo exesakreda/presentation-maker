@@ -3,7 +3,6 @@
     height: 635px;
     position: fixed;
     transform-origin: top left;
-    z-index: -1;
     left: 50%;
     top: 50%;
     background-color: #fff;

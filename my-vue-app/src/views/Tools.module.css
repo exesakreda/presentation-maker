@@ -18,6 +18,8 @@
     justify-content: center;
 
     gap: 16px;
+
+    user-select: none;
 }
 
 .tools__item {
@@ -33,11 +35,16 @@
     transition: .1s ease-in;
 }
 .tools__item:hover {
-    background-color: #F65009;
+    background-color: #004FFF;
+    /* background-color: #F65009; */
     transition: .1s ease-in;
 }
 
 .item__image {
     width: 14px;
     height: 14px;
+}
+
+.selectedTool {
+    background-color: #004FFF;
 }

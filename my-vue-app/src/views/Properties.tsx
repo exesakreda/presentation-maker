@@ -36,6 +36,10 @@ function Properties({ editor }: PropertiesProps) {
                     <img src="src/assets/arrow-down.svg" alt="" className={styles.colorField__arrow}/>
                 </div>
             </div>
+
+            <div className={styles.export}>
+                <div className={styles.export__text}>Export to PDF</div>
+            </div>
         </div>
     )
 }

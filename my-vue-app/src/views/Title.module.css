@@ -1,0 +1,46 @@
+.title__container {
+    background-color: #2C2C2C;
+    border-radius: 10px;
+    min-width: 215px;
+
+    box-sizing: border-box;
+    padding: 12px;
+    min-width: 42px;
+    height: 48px;
+    position: fixed;
+    transform-origin: top left;
+    left: 50%;
+    top: 10px;
+    transform: translateX(-50%);
+}
+
+
+.title {
+    max-width: 100%;
+    font: 800 16px "Inter";
+    background-color: transparent;
+    color: #F7F5FB; 
+    /* E9F1F7 */
+    border: none;
+    border-radius: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    outline: none;
+}
+.title:focus {
+    background-color: #95959542;
+}
+
+.title::-webkit-scrollbar {
+    width: 3px;
+}
+.title::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #2c2c2c; 
+}
+
+.title::-webkit-scrollbar-thumb {
+    background-color: #595959; 
+    border-radius: 10px;
+}

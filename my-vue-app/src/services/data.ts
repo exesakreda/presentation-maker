@@ -2,7 +2,7 @@ import { Presentation } from "../../../types"
 import { EditorType } from "./EditorType"
 
 const presentation: Presentation = {
-    title: 'Презентация с максимальными данными',
+    title: 'Новая презентация о чем-то очень важном',
     slideList: [
         {
             id: '1',
