@@ -1,6 +1,5 @@
 import styles from './Properties.module.css'
 import { EditorType } from '../services/EditorType'
-import { Slide } from '../../../types'
 
 type PropertiesProps = {
     editor: EditorType
@@ -8,7 +7,7 @@ type PropertiesProps = {
 
 function Properties({ editor }: PropertiesProps) {
 
-    const slideId = editor.selection?.selectedSlideId
+    const slideId = editor.selection?.selectedSlides[editor.selection?.selectedSlides.length - 1]
     const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
 
     return (
@@ -16,8 +15,8 @@ function Properties({ editor }: PropertiesProps) {
             <div className={styles.slideid}>
                 <p>Слайд {slideIndex + 1} (id: {slideId})</p>
             </div>
-            
-            <div className={styles.divider} /> 
+
+            <div className={styles.divider} />
 
             <div className={styles.backgroudSettings}>
                 <div className={styles.backgroudSettings__title}>Фон</div>
@@ -33,8 +32,14 @@ function Properties({ editor }: PropertiesProps) {
                 <div className={styles.backgroudSettings__colorField}>
                     <div className={styles.currentColor} />
                     <div className={styles.currentColorText}>FFFFFF</div>
-                    <img src="src/assets/arrow-down.svg" alt="" className={styles.colorField__arrow}/>
+                    <img src="src/assets/arrow-down.svg" alt="" className={styles.colorField__arrow} />
                 </div>
+
+
+                <div className={styles.colorField__colorPicker}>
+                
+                </div>
+
             </div>
 
             <div className={styles.export}>
@@ -43,5 +48,6 @@ function Properties({ editor }: PropertiesProps) {
         </div>
     )
 }
+
 
 export { Properties } 

@@ -46,14 +46,14 @@ function removeSlide(editor: EditorType): EditorType {
     }
 
     if (editor.presentation.slideList.length > 1) {
-        const removeSlideId = editor.selection.selectedSlideId
-        const removeSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id == removeSlideId)
+        const removeSlidesId = editor.selection.selectedSlides
+        // const removeSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id == removeSlideId)
 
-        const newSlides = editor.presentation.slideList.filter(slide => slide.id != removeSlideId)
+        const newSlides = editor.presentation.slideList.filter(slide => removeSlidesId.indexOf(slide.id) == -1)
 
         let newSelectedSlideId = ''
         if (newSlides.length > 0) {
-            const index = Math.min(removeSlideIndex, newSlides.length - 1)
+            const index = Math.min(Number(removeSlidesId[0]), newSlides.length - 1)
             newSelectedSlideId = newSlides[index].id
         }
 
@@ -63,7 +63,7 @@ function removeSlide(editor: EditorType): EditorType {
                 slideList: newSlides
             },
             selection: {
-                selectedSlideId: newSelectedSlideId
+                selectedSlides: [newSelectedSlideId]
             }
         }
     }

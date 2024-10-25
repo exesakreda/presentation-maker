@@ -9,7 +9,7 @@ type SlideAreaProps = {
 }
 
 function SlideArea({ editor }: SlideAreaProps) {
-    const currentSlide: Slide | undefined = editor.presentation.slideList.find(slide => slide.id === editor.selection?.selectedSlideId)
+    const currentSlide: Slide | undefined = editor.presentation.slideList.find(slide => slide.id === editor.selection?.selectedSlides[editor.selection?.selectedSlides.length - 1])
     return (
         <div className={styles.slideArea}>
             {currentSlide ? ( 

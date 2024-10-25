@@ -79,6 +79,7 @@
 .newslidebutton__text {
     color: #FFFFFF;
 
+    font-family: Inter;
     font-weight: 400;
     font-size: 10px;
 
@@ -112,6 +113,7 @@
 .deleteslidebutton__text {
     color: #FFFFFF;
 
+    font-family: Inter;
     font-weight: 400;
     font-size: 10px;
     margin-left: 22px;
