@@ -8,7 +8,6 @@ import { Title } from './views/Title.tsx'
 
 import { EditorType } from './services/EditorType.ts'
 
-
 type AppProps = {
   editor: EditorType
 }

@@ -12,6 +12,10 @@
     left: 50%;
     top: 10px;
     transform: translateX(-50%);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
@@ -25,9 +29,12 @@
     border-radius: 5px;
     padding-top: 2px;
     padding-bottom: 2px;
-    padding-left: 4px;
     outline: none;
     transition: .1s;
+
+    padding-left: 4px;
+    padding-right: 4px;
+    text-align: center;
 }
 .title:focus {
     background-color: #95959542;
