@@ -2,7 +2,7 @@ import { editor } from "./data"
 import { EditorType } from "./EditorType"
 
 let _editor = editor
-let _handler = null
+let _handler: Function = () => {}
 
 function getEditor() {
   return _editor

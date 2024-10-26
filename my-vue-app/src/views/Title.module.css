@@ -27,9 +27,14 @@
     padding-bottom: 2px;
     padding-left: 4px;
     outline: none;
+    transition: .1s;
 }
 .title:focus {
     background-color: #95959542;
+}
+.title:hover {
+    background-color: #95959542;
+    transition: .1s;
 }
 
 .title::-webkit-scrollbar {

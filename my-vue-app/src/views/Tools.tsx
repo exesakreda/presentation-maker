@@ -11,7 +11,7 @@ function Tools() {
       console.log(`Выбран инструмент: ${currentTool}`)
       dispatch(selectTool)
     }
-    
+
     return (
         <div className={styles.tools}>
             <div className={`${styles.tools__item} ${currentTool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('cursor')}>

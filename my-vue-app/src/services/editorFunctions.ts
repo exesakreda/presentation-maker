@@ -1,4 +1,4 @@
-import { Slide } from "../../../types"
+import { Background, Slide } from "../../../types"
 import { EditorType, SelectionType } from "./EditorType"
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
@@ -82,4 +82,15 @@ function selectTool(editor: EditorType) {
     return editor
 }
 
-export { setTitle, setPosition, addSlide, setSelection, removeSlide, selectTool }
+function changeBackground(editor: EditorType, newSlideList: Slide[]) {
+    
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: newSlideList
+        }
+    }
+}
+
+export { setTitle, setPosition, addSlide, setSelection, removeSlide, selectTool, changeBackground }

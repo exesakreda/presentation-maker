@@ -1,12 +1,13 @@
-import { Slide } from "../../../types.ts"
+import type { Slide as SlideType } from "../../../types.ts"
 
-import { SlideComponent } from "./SlideComponent.tsx"
+import { Slide } from "./Slide.tsx"
 
 import styles from './SlideList.module.css'
 
 import { dispatch } from '../services/editor.ts'
 import { addSlide, removeSlide, setSelection } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
+import { MouseEvent } from "react"
 
 type ActionsProps = {
     editor: EditorType,
@@ -21,9 +22,9 @@ function SlideList({ editor }: ActionsProps) {
         dispatch(removeSlide)
     }
 
-    function onSlideClick(slideId: string) {
+    function onSlideClick(e: MouseEvent, slideId: string) {
         if (editor.selection) {
-            if (event.ctrlKey) {
+            if (e.ctrlKey) {
                 if (editor.selection.selectedSlides.includes(slideId)) {
                     dispatch(setSelection, {
                         selectedSlides: editor.selection.selectedSlides.filter(id => id !== slideId)
@@ -42,13 +43,13 @@ function SlideList({ editor }: ActionsProps) {
         }
     }
 
-    const slides: Slide[] = editor.presentation.slideList
+    const slides: SlideType[] = editor.presentation.slideList
 
     const slideListItems = slides.map(slide => {
         return (
             <div
                 key={slide.id}
-                onClick={() => onSlideClick(slide.id)}
+                onClick={(event) => onSlideClick(event, slide.id)}
                 className={`${styles.slideContainer} ${editor.selection?.selectedSlides.includes(slide.id)
                     ? styles.selectedSlide
                     : ''
@@ -56,7 +57,7 @@ function SlideList({ editor }: ActionsProps) {
             >
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
                 <div className={styles.slidePreview}>
-                    <SlideComponent slide={slide} scale={0.15} />
+                    <Slide slide={slide} scale={0.150709219858156} />
                 </div>
             </div>
         )

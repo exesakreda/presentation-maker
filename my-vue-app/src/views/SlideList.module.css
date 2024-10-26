@@ -167,7 +167,7 @@
 }
 
 .slidePreview {
-    height: 98px;
+    height: 95.625px;
     width: 170px;
 
     background-color: #fff;
@@ -179,4 +179,9 @@
 
     margin-right: 5px;
     overflow: hidden;
+}
+
+.slide {
+    height: 100%;
+    width: 100%;
 }

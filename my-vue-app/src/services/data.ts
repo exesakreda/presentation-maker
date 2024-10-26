@@ -31,7 +31,7 @@ const presentation: Presentation = {
         },
         {
             id: '2',
-            background: { type: 'image', src: '../../images/backgrounds/mountains.png' },
+            background: { type: 'color', value:'#fff' },
             objects: [
                 {
                     id: 'obj3',

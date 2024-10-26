@@ -1,5 +1,8 @@
 import styles from './Properties.module.css'
 import { EditorType } from '../services/EditorType'
+import { dispatch } from '../services/editor'
+import { changeBackground } from '../services/editorFunctions'
+import { Background } from '../../../types'
 
 type PropertiesProps = {
     editor: EditorType
@@ -9,6 +12,23 @@ function Properties({ editor }: PropertiesProps) {
 
     const slideId = editor.selection?.selectedSlides[editor.selection?.selectedSlides.length - 1]
     const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
+
+    const onColorChange = (event) => {
+        const newBackground: Background = { type: 'color', value: String(event.target.value)}
+        
+        const newSlideList = editor.presentation.slideList.map(slide => {
+            if (slide.id == slideId) {
+                return {
+                    ...slide,
+                    background: newBackground
+                }
+            }
+            console.log(slide.background)
+            return slide
+        })
+    
+        dispatch(changeBackground, newSlideList)
+    }
 
     return (
         <div className={styles.properties}>
@@ -30,15 +50,15 @@ function Properties({ editor }: PropertiesProps) {
                 </div>
 
                 <div className={styles.backgroudSettings__colorField}>
-                    <div className={styles.currentColor} />
+                    <input type='color' className={styles.currentColor} onBlur={onColorChange}/>
                     <div className={styles.currentColorText}>FFFFFF</div>
                     <img src="src/assets/arrow-down.svg" alt="" className={styles.colorField__arrow} />
                 </div>
 
 
-                <div className={styles.colorField__colorPicker}>
+                {/* <div className={styles.colorField__colorPicker}>
                 
-                </div>
+                </div> */}
 
             </div>
 

@@ -1,5 +1,7 @@
 .slide {
     display: block;
 
+    width: 1128px;
+    height: 634.5px;
     transform-origin: top left;
 }

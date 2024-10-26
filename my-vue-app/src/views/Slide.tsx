@@ -1,5 +1,5 @@
 import type { Slide } from "../../../types"
-import styles from './SlideComponent.module.css'
+import styles from './Slide.module.css'
 
 import { TextArea, ImageArea } from "../../../types"
 
@@ -8,10 +8,12 @@ type SlideProps = {
     scale: number,
 }
 
-//переименовать в Slide
-function SlideComponent({slide, scale}: SlideProps) {
+
+function Slide({slide, scale}: SlideProps) {
     const slideObjects = slide.objects.map(obj =>
-        <>
+        <div
+            key={obj.id}
+        >
             <p><strong>object id: </strong>{obj.id}</p>
             <p><strong>x: </strong>{obj.position.x}; <strong>y: </strong>{obj.position.y}</p>
             <p><strong>h: </strong>{obj.size.h} <strong>w: </strong>{obj.size.w}</p>
@@ -19,14 +21,16 @@ function SlideComponent({slide, scale}: SlideProps) {
             {obj.type === 'text' && <p><strong>value: </strong>{(obj as TextArea).value}</p>}
             {obj.type === 'image' && <p><strong>src: </strong>{(obj as ImageArea).src}</p>}
             <br/>
-        </>
+        </div>
     )
 
+    const backgroundValue = slide.background.type == 'color' ? String(slide.background.value) : ''
+
     return (
-        <div className={styles.slide} style={{ transform: `scale(${scale})`}}>
+        <div className={styles.slide} style={{ transform: `scale(${scale})`, backgroundColor: backgroundValue}}>
             {slideObjects}
         </div>
     )
 }
 
-export { SlideComponent }
+export { Slide }
