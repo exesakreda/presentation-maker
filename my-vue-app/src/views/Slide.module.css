@@ -1,7 +1,26 @@
-.slide {
-    display: block;
+/* slide.module.css */
 
+.slide {
+    position: relative;
     width: 1128px;
     height: 634.5px;
     transform-origin: top left;
+}
+
+.textArea {
+    position: absolute; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font: 800 16px "Inter";
+    border: 1px solid transparent;
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    outline: none;
+
+    background-color: transparent;
+}
+.textArea:focus {
+    border: 1px solid #595959; 
 }

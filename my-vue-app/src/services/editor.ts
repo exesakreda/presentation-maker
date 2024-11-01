@@ -12,8 +12,8 @@ function setEditor(newEditor: EditorType) {
   _editor = newEditor
 }
 
-function dispatch(modifyFn: Function, payload?: Object): void {
-  const newEditor = modifyFn(_editor, payload)
+function dispatch(modifyFn: Function, payload?: Object, param1?: any, param2?:any): void {
+  const newEditor = modifyFn(_editor, payload, param1, param2)
   setEditor(newEditor)
 
   if (_handler) {

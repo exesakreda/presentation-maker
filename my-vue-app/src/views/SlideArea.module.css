@@ -1,7 +1,7 @@
 .slideArea {
     width: 1128px;
-    height: 650px;
-    position: fixed;
+    height: 634.5px;
+    position: absolute;
     transform-origin: top left;
     left: 50%;
     top: 50%;

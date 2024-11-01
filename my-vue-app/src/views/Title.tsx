@@ -14,7 +14,8 @@ import { useRef, useEffect } from 'react';
 function Title({ editor }: TitleProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
-        resizeInput(inputRef.current!);
+        resizeInput(inputRef.current!)
+        document.title = editor.presentation.title
     }, []);
 
 
@@ -35,11 +36,7 @@ function Title({ editor }: TitleProps) {
                 defaultValue={editor.presentation.title}
                 placeholder="Введите название презентации"
                 onBlur={onTitleChange}
-                onInput={() => {
-                    if (inputRef.current) {
-                        resizeInput(inputRef.current)
-                    }
-                }}
+                onInput={(event) => resizeInput(event.target as HTMLInputElement)}
                 maxLength={100}
             />
         </div>

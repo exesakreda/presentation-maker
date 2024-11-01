@@ -53,7 +53,7 @@ type ImageArea = CommonObject & {
     type: 'image',
 }
 
-
+type Tool = 'cursor' | 'text' | 'image' | 'shape'
 
 export type {
     Presentation,
@@ -67,4 +67,5 @@ export type {
     Size,
     TextArea,
     ImageArea,
+    Tool
 }

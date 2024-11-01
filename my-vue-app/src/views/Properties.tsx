@@ -21,7 +21,7 @@ function Properties({ editor }: PropertiesProps) {
     const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
     const backgroundValue = editor.presentation.slideList[slideIndex].background.type === 'color' ? editor.presentation.slideList[slideIndex].background.value.slice(1) : '';
 
-    const onColorChange = (event) => {
+    const onColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newBackground: Background = { type: 'color', value: String(event.target.value) }
         const newSlideList = editor.presentation.slideList.map(slide => {
             if (slide.id == slideId) {
@@ -36,7 +36,7 @@ function Properties({ editor }: PropertiesProps) {
         dispatch(changeBackground, newSlideList)
     }
 
-    const onColorTextChange = (event) => {
+    const onColorTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let newBackground: Background
 
         const newValue:string = '#' + event.target.value
@@ -96,11 +96,9 @@ function Properties({ editor }: PropertiesProps) {
                         defaultValue={backgroundValue.toUpperCase()} 
                         placeholder='FFFFFF' 
                         onBlur={onColorTextChange}
-                        onInput={(event) => {
+                        onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
                             event.target.value = event.target.value.toUpperCase()
-                            if (inputRef.current) {
-                                resizeInput(inputRef.current)
-                            }
+                            resizeInput(event.target as HTMLInputElement)
                         }}
                         maxLength={6}
                     />
