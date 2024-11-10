@@ -108,18 +108,18 @@
 
     background-color: #fff;
     margin-left: 8px;
-    border-radius: 1px;
+    border-radius: 2px;
 }
 
 .currentColor {
     width: 100px;
     height: 100px;
-    background-color: transparent;
+    background-color: #595959;
     cursor: pointer;
     display: inline-block;
     transform: translate(-50%, -50%);
 }
-
+    
 .currentColor::-webkit-color-swatch {
     width: 100px;
 }

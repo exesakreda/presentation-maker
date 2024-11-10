@@ -5,22 +5,87 @@
     width: 1128px;
     height: 634.5px;
     transform-origin: top left;
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.blankArea {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
 }
 
 .textArea {
-    position: absolute; 
-    display: flex; 
+    position: absolute;
+    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     font: 800 16px "Inter";
     border: 1px solid transparent;
-    padding: 5px 10px; 
-    border-radius: 5px; 
+    padding: 2px 4px;
+    border-radius: 5px;
     outline: none;
 
     background-color: transparent;
+
+    transform: translate(-50%, -50%);
 }
+
 .textArea:focus {
-    border: 1px solid #595959; 
+    background: rgba(255, 255, 255, 0.35);
+    /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
+    backdrop-filter: blur(10.5px);
+    -webkit-backdrop-filter: blur(10.5px);
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.imageArea {
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    /* border: 1px solid #595959;
+
+    background-color: #ffffff;
+    border-radius: 5px; */
+
+    transform: translate(-50%, -50%);
+}
+
+.imageArea__text {
+    font: 600 12px "Inter";
+
+    color: #2c2c2c;
+}
+
+.imageArea__button {
+
+    font: 500 10px "Inter";
+    border: none;
+    border-radius: 3px;
+    margin-top: 8px;
+    padding: 2px 4px;
+    border: 1px solid #595959;
+    background-color: #fff;
+    color: #2c2c2c;
+    transition: .1s;
+
+    cursor: pointer;
+}
+
+.imageArea__button:hover {
+    background-color: #595959;
+    color: #fff;
+    transition: .1s;
+}
+
+.selectedObject {
+    border: 2px solid #0099ff;
 }

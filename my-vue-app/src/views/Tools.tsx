@@ -25,9 +25,9 @@ function Tools() {
                 <img src="/src/assets/text.svg" alt="" className={styles.item__image} />
             </div>
 
-            {/* <div className={`${styles.tools__item} ${tool === 'image' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('image')}>
+            <div className={`${styles.tools__item} ${tool === 'image' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('image')}>
                 <img src="/src/assets/image.svg" alt="" className={styles.item__image} />
-            </div> */}
+            </div>
 
             {/* <div className={`${styles.tools__item} ${currentTool === 'shape' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('shape')}>
                 <img src="/src/assets/shape.svg" alt="" className={styles.item__image} />

@@ -1,8 +1,10 @@
-import { Slide, SlideObject } from "../../../types"
+import { Slide } from "../../../types"
 import { EditorType, SelectionType } from "./EditorType"
+import { Tool, SlideObject } from "../../../types"
+import { getTextWidth, getTextHeight } from "./getTextDimensions"
+import { MouseEvent } from "react"
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
-    console.log(newTitle)
     return {
         ...editor,
         presentation: {
@@ -108,6 +110,93 @@ function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
     }
 }
 
+function createObject(editor: EditorType, e: MouseEvent, currentTool: Tool) {
+    const slideArea = document.getElementById('slideArea')
+
+    const rect = slideArea?.getBoundingClientRect()
+    const shiftX = e.clientX - (rect?.left || 0)
+    const shiftY = e.clientY - (rect?.top || 0)
+
+    const slideId = editor.selection?.selectedSlides[editor.selection.selectedSlides.length - 1]
+    const currentSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id === slideId)
+
+    const currentSlide = editor.presentation.slideList[currentSlideIndex]
+
+    let newObject: SlideObject | null = null
+    const id = 'obj' + Math.random().toString(36).substring(2, 9)
+
+    switch (currentTool) {
+        case 'text':
+            const textSize = 16
+            const fontFamily = 'Inter'
+            const font = `${textSize}px ${fontFamily}`
+            const value = 'Текст'
+            const textWidth = getTextWidth(value, font)
+            const textHeight = getTextHeight(value, font)
+            newObject = {
+                id: id,
+                position: { x: shiftX, y: shiftY },
+                size: { h: textHeight, w: textWidth },
+                value: value,
+                fontFamily: fontFamily,
+                textSize: textSize,
+                type: 'text'
+            }
+            break
+
+        case 'image':
+            const src = "defaultimage.png"
+            newObject = {
+                id: id,
+                position: { x: shiftX, y: shiftY },
+                size: { h: 0, w: 0 },
+                src: src,
+                type: 'image',
+            }
+            break
+
+        case 'cursor':
+
+        default:
+            return
+    }
+
+    const updatedSlideObjects: SlideObject[] = [...currentSlide.objects, newObject]
+    const updatedSlide = { ...currentSlide, objects: updatedSlideObjects }
+
+    const updatedSlideList: Slide[] = [...editor.presentation.slideList]
+    updatedSlideList[currentSlideIndex] = updatedSlide
+
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: updatedSlideList
+        }
+    }
+}
+
+function deleteObject(editor: EditorType, slideId: string, objectsToDelete: string[]) {
+    const updatedSlideList = editor.presentation.slideList.map(slide => {
+        if (slide.id === slideId) {
+            return {
+                ...slide,
+                objects: slide.objects.filter(obj => !objectsToDelete.includes(obj.id)),
+                selectedObjects: []
+            }
+        }
+        return slide
+    })
+    console.log('deleted obj')
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: updatedSlideList
+        }
+    }
+}
+
 function setTextAreaValue(editor: EditorType, newValue: string, objId: string, slideId: string) {
     const updateSlideList = editor.presentation.slideList.map(slide => {
         if (slide.id === slideId) {
@@ -137,4 +226,36 @@ function setTextAreaValue(editor: EditorType, newValue: string, objId: string, s
     }
 }
 
-export { setTitle, setPosition, addSlide, setSelection, removeSlide, selectTool, changeBackground, updateSlideList, setTextAreaValue }
+function setObjectSelection(editor: EditorType, slideId: string, objects: string[]) {
+    const updatedSlideList = editor.presentation.slideList.map(slide => {
+        if (slide.id === slideId) {
+            return {
+                ...slide,
+                selectedObjects: objects
+            }
+        }
+        return slide
+    })
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: updatedSlideList
+        }
+    }
+}
+
+export {
+    setTitle,
+    setPosition,
+    addSlide,
+    setSelection,
+    removeSlide,
+    selectTool,
+    changeBackground,
+    updateSlideList,
+    setTextAreaValue,
+    setObjectSelection,
+    createObject,
+    deleteObject
+}

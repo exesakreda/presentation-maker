@@ -5,7 +5,7 @@ import { changeBackground } from '../services/editorFunctions'
 import { Background } from '../../../types'
 
 import { resizeInput } from '../services/resizeInput'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 type PropertiesProps = {
     editor: EditorType
@@ -86,7 +86,7 @@ function Properties({ editor }: PropertiesProps) {
 
                 <div className={styles.backgroudSettings__colorField}>
                     <div className={styles.color__container}>
-                        <input type='color' className={styles.currentColor} onBlur={onColorChange} />
+                        <input type='color' className={styles.currentColor} onBlur={onColorChange} defaultValue={`#${backgroundValue}`}/>
                     </div>
 
                     <input 
