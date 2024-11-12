@@ -197,6 +197,24 @@ function deleteObject(editor: EditorType, slideId: string, objectsToDelete: stri
     }
 }
 
+function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideObject[]) {
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: editor.presentation.slideList.map(slide => {
+                if (slide.id === slideId) {
+                    return {
+                        ...slide,
+                        objects: objects
+                    }
+                }
+                return slide
+            })
+        }
+    }
+}
+
 function setTextAreaValue(editor: EditorType, newValue: string, objId: string, slideId: string) {
     const updateSlideList = editor.presentation.slideList.map(slide => {
         if (slide.id === slideId) {
@@ -257,5 +275,6 @@ export {
     setTextAreaValue,
     setObjectSelection,
     createObject,
-    deleteObject
+    deleteObject,
+    updateSlideObjects
 }
