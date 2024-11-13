@@ -10,14 +10,15 @@ function useDragAndDrop(ref: RefObject<HTMLElement>, setPos: (pos: { x: number, 
             const startPos = { x: e.pageX, y: e.pageY }
             const initialPos = { x: element.offsetLeft, y: element.offsetTop }
 
+            let newPos = { x: initialPos.x, y: initialPos.y }
             const onMouseMove = (e: MouseEvent) => {
-                const delta = { 
-                    x: e.pageX - startPos.x, 
-                    y: e.pageY - startPos.y, 
+                const delta = {
+                    x: e.pageX - startPos.x,
+                    y: e.pageY - startPos.y,
                 }
-                const newPos = {
+                newPos = {
                     x: initialPos.x + delta.x,
-                    y: initialPos.y + delta.y    
+                    y: initialPos.y + delta.y
                 }
                 setPos(newPos)
             }

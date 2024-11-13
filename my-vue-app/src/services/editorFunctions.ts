@@ -263,6 +263,34 @@ function setObjectSelection(editor: EditorType, slideId: string, objects: string
     }
 }
 
+function setObjectPos(editor: EditorType, slideId: string, objectId: string, newPos: { x: number, y: number }) {
+    const updatedSlideList = editor.presentation.slideList.map(slide => {
+        if (slide.id == slideId) {
+            const newSlideObjects = slide.objects.map(obj => {
+                if (obj.id == objectId) {
+                    obj.position = newPos
+                    return obj
+                }
+                return obj
+            })
+            return { 
+                ...slide, 
+                objects: newSlideObjects
+            }
+        }
+        return slide
+    })
+    
+
+    return {
+        ...editor,
+        presentation: {
+            ...editor.presentation,
+            slideList: updatedSlideList
+        }
+    }
+}
+
 export {
     setTitle,
     setPosition,
@@ -276,5 +304,6 @@ export {
     setObjectSelection,
     createObject,
     deleteObject,
-    updateSlideObjects
+    updateSlideObjects,
+    setObjectPos
 }

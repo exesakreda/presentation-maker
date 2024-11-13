@@ -4,8 +4,7 @@ import type { Slide } from "../../../types"
 import styles from './Slide.module.css'
 import { resizeInput } from "../services/resizeInput"
 import { dispatch } from "../services/editor"
-import { setTextAreaValue, setObjectSelection, deleteObject } from "../services/editorFunctions"
-
+import { setTextAreaValue, deleteObject } from "../services/editorFunctions"
 type SlideProps = {
     slide: Slide,
     scale: number,
@@ -13,15 +12,11 @@ type SlideProps = {
 
 function Slide({ slide, scale }: SlideProps) {
     useEffect(() => {
-        document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement));
+        document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))
     }, [slide]);
 
-    const onTextAreaChange: React.ChangeEventHandler = (event) => {
-        dispatch(setTextAreaValue, (event.target as HTMLInputElement).value, (event.target as HTMLInputElement).id, slide.id)
-    }
-
-    function onBlankAreaClick() {
-        dispatch(setObjectSelection, slide.id, [])
+    const onTextAreaChange: React.ChangeEventHandler = (e) => {
+        dispatch(setTextAreaValue, (e.target as HTMLInputElement).value, (e.target as HTMLInputElement).id, slide.id)
     }
 
     document.addEventListener('keydown', (event) => {
@@ -35,11 +30,13 @@ function Slide({ slide, scale }: SlideProps) {
     const slideObjects = slide.objects.map(obj => {
         const inputRef = useRef<HTMLInputElement>(null)
         const imageRef = useRef<HTMLImageElement>(null)
-
+        
+        let ref
+        obj.type == 'text' ? ref = inputRef : ref = imageRef
+        
         const [pos, setPos] = useState(obj.position)
 
-
-        useDragAndDrop(obj.type == 'text' ? inputRef : imageRef, setPos)
+        useDragAndDrop(ref, setPos)
 
         switch (obj.type) {
             case 'text':
@@ -94,7 +91,6 @@ function Slide({ slide, scale }: SlideProps) {
             <div
                 id="blankArea"
                 className={styles.blankArea}
-                onClick={onBlankAreaClick}
                 style={{ backgroundColor: backgroundValue }}
             >
             </div>
