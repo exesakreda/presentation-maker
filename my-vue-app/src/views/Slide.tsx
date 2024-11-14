@@ -16,12 +16,19 @@ function Slide({ slide, scale }: SlideProps) {
     }, [slide]);
 
     const onTextAreaChange: React.ChangeEventHandler = (e) => {
-        dispatch(setTextAreaValue, (e.target as HTMLInputElement).value, (e.target as HTMLInputElement).id, slide.id)
+        dispatch(setTextAreaValue, {
+            newValue: (e.target as HTMLInputElement).value,
+            objId: (e.target as HTMLInputElement).id,
+            slideId: slide.id
+        })
     }
 
     document.addEventListener('keydown', (event) => {
         if (event.key == 'Delete' && slide.selectedObjects.length > 0) {
-            dispatch(deleteObject, slide.id, slide.selectedObjects)
+            dispatch(deleteObject, {
+                slideId: slide.id,
+                objectsToDelete: slide.selectedObjects
+            })
 
             slide.selectedObjects = []
         }
@@ -30,10 +37,10 @@ function Slide({ slide, scale }: SlideProps) {
     const slideObjects = slide.objects.map(obj => {
         const inputRef = useRef<HTMLInputElement>(null)
         const imageRef = useRef<HTMLImageElement>(null)
-        
+
         let ref
         obj.type == 'text' ? ref = inputRef : ref = imageRef
-        
+
         const [pos, setPos] = useState(obj.position)
 
         useDragAndDrop(ref, setPos)
@@ -42,7 +49,7 @@ function Slide({ slide, scale }: SlideProps) {
             case 'text':
                 return (
                     <input
-                        key={obj.id} 
+                        key={obj.id}
                         ref={inputRef}
                         id={obj.id}
                         type="text"

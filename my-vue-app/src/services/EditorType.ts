@@ -1,15 +1,7 @@
 import { Presentation } from "../../../types";
 
-type SelectionType = {
-    selectedSlides: string[],
-}
-
-type EditorType = {
-    presentation: Presentation,
-    selection: SelectionType | null,
-}
+type EditorType = Presentation
 
 export type {
     EditorType,
-    SelectionType,
 }

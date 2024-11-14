@@ -7,16 +7,21 @@ import { Properties } from './views/Properties.tsx'
 import { Title } from './views/Title.tsx'
 
 import { EditorType } from './services/EditorType.ts'
+import { useState } from 'react'
 
 type AppProps = {
   editor: EditorType
 }
 
+
+// let selectedSlides, setSelectedSlides
 function App({ editor }: AppProps) {
+  const [selectedSlides, setSelectedSlides] = useState([editor.slideList[0].id])
+
   return (
     <>
       <Title editor={editor} />
-      <SlideList editor={editor} />
+      <SlideList editor={editor} selectedSlides={selectedSlides} onSlideSelect={setSelectedSlides} />
       <SlideArea editor={editor} />
       <Tools />
       <Properties editor={editor} />
@@ -25,5 +30,6 @@ function App({ editor }: AppProps) {
 }
 
 export {
-  App
+  App,
+  selectedSlides, setSelectedSlides
 }

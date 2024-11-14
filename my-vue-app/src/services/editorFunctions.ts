@@ -1,30 +1,30 @@
 import { Slide } from "../../../types"
-import { EditorType, SelectionType } from "./EditorType"
+import { EditorType } from "./EditorType"
 import { Tool, SlideObject } from "../../../types"
 import { getTextWidth, getTextHeight } from "./getTextDimensions"
 import { MouseEvent } from "react"
+import { selectedSlides, setSelectedSlides } from "../App"
+
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            title: newTitle
-        }
+        title: newTitle
+
     }
 }
 
-function setSelection(editor: EditorType, newSelection: SelectionType): EditorType {
-    return {
-        ...editor,
-        selection: newSelection
-    }
-}
+// function setSelection(editor: EditorType, newSelection: SelectionType): EditorType {
+//     return {
+//         ...editor,
+//         selection: newSelection
+//     }
+// }
 
 function addSlide(editor: EditorType): EditorType {
     const newSlide: Slide = {
-        id: editor.presentation.slideList.length > 0
-            ? String(Number(editor.presentation.slideList[editor.presentation.slideList.length - 1].id) + 1)
+        id: editor.slideList.length > 0
+            ? String(Number(editor.slideList[editor.slideList.length - 1].id) + 1)
             : '1',
         background: { type: 'color', value: '#FFFFFF' },
         objects: [],
@@ -32,51 +32,25 @@ function addSlide(editor: EditorType): EditorType {
     }
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: [
-                ...editor.presentation.slideList,
-                newSlide
-            ]
-        }
+        slideList: [
+            ...editor.slideList,
+            newSlide
+        ]
+
     }
 }
 
-function removeSlide(editor: EditorType): EditorType {
-    if (!editor.selection) {
+function removeSlide(editor: EditorType, { selectedSlides }: { selectedSlides: string[] }): EditorType {
+    if (editor.slideList.length <= 1) {
         return editor
     }
 
-    if (editor.presentation.slideList.length <= 1) {
-        return editor
+    const newSlides = editor.slideList.filter(slide => !selectedSlides.includes(slide.id));
+    return {
+        ...editor,
+        slideList: newSlides
     }
 
-    if (editor.presentation.slideList.length > 0) {
-        const removeSlidesId = editor.selection.selectedSlides
-        const removeSlidesIndex = removeSlidesId.map(id => {
-            return editor.presentation.slideList.findIndex(slide => slide.id == id)
-        }).filter(index => index !== -1)
-
-        const newSlides = editor.presentation.slideList.filter(slide => !removeSlidesId.includes(slide.id));
-
-        let newSelectedSlideId = ''
-        if (newSlides.length > 0) {
-            const minIndex = Math.min(...removeSlidesIndex);
-            newSelectedSlideId = newSlides[minIndex < newSlides.length ? minIndex : 0].id;
-        }
-
-        return {
-            presentation: {
-                ...editor.presentation,
-                slideList: newSlides
-            },
-            selection: {
-                selectedSlides: newSelectedSlideId ? [newSelectedSlideId] : []
-            }
-        }
-    }
-
-    return editor
 }
 
 function setPosition(editor: EditorType, { x, y }: { x: number, y: number }) {
@@ -93,22 +67,17 @@ function selectTool(editor: EditorType) {
 function changeBackground(editor: EditorType, newSlideList: Slide[]) {
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: newSlideList
-        }
+        slideList: newSlideList
     }
 }
 
 function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: newSlideList
-        }
+        slideList: newSlideList
     }
 }
+
 
 function createObject(editor: EditorType, e: MouseEvent, currentTool: Tool) {
     const slideArea = document.getElementById('slideArea')
@@ -117,10 +86,10 @@ function createObject(editor: EditorType, e: MouseEvent, currentTool: Tool) {
     const shiftX = e.clientX - (rect?.left || 0)
     const shiftY = e.clientY - (rect?.top || 0)
 
-    const slideId = editor.selection?.selectedSlides[editor.selection.selectedSlides.length - 1]
-    const currentSlideIndex = editor.presentation.slideList.findIndex(slide => slide.id === slideId)
+    const slideId = selectedSlides[selectedSlides.length - 1]
+    const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
 
-    const currentSlide = editor.presentation.slideList[currentSlideIndex]
+    const currentSlide = editor.slideList[currentSlideIndex]
 
     let newObject: SlideObject | null = null
     const id = 'obj' + Math.random().toString(36).substring(2, 9)
@@ -164,20 +133,18 @@ function createObject(editor: EditorType, e: MouseEvent, currentTool: Tool) {
     const updatedSlideObjects: SlideObject[] = [...currentSlide.objects, newObject]
     const updatedSlide = { ...currentSlide, objects: updatedSlideObjects }
 
-    const updatedSlideList: Slide[] = [...editor.presentation.slideList]
+    const updatedSlideList: Slide[] = [...editor.slideList]
     updatedSlideList[currentSlideIndex] = updatedSlide
 
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: updatedSlideList
-        }
+        slideList: updatedSlideList
     }
 }
 
-function deleteObject(editor: EditorType, slideId: string, objectsToDelete: string[]) {
-    const updatedSlideList = editor.presentation.slideList.map(slide => {
+
+function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideId: string, objectsToDelete: string[] }) {
+    const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id === slideId) {
             return {
                 ...slide,
@@ -190,19 +157,15 @@ function deleteObject(editor: EditorType, slideId: string, objectsToDelete: stri
     console.log('deleted obj')
     return {
         ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: updatedSlideList
-        }
+        slideList: updatedSlideList
     }
 }
 
 function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideObject[]) {
     return {
-        ...editor,
-        presentation: {
-            ...editor.presentation,
-            slideList: editor.presentation.slideList.map(slide => {
+        editor: {
+            ...editor,
+            slideList: editor.slideList.map(slide => {
                 if (slide.id === slideId) {
                     return {
                         ...slide,
@@ -215,8 +178,8 @@ function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideO
     }
 }
 
-function setTextAreaValue(editor: EditorType, newValue: string, objId: string, slideId: string) {
-    const updateSlideList = editor.presentation.slideList.map(slide => {
+function setTextAreaValue(editor: EditorType, { newValue, objId, slideId }: { newValue: string, slideId: string, objId: string }) {
+    const updateSlideList = editor.slideList.map(slide => {
         if (slide.id === slideId) {
             const updateSlideObjects = slide.objects.map(object => {
                 if (object.id === objId) {
@@ -236,16 +199,15 @@ function setTextAreaValue(editor: EditorType, newValue: string, objId: string, s
     })
 
     return {
-        ...editor,
-        presentation: {
-            ...editor.presentation,
+        editor: {
+            ...editor,
             slideList: updateSlideList
         }
     }
 }
 
 function setObjectSelection(editor: EditorType, slideId: string, objects: string[]) {
-    const updatedSlideList = editor.presentation.slideList.map(slide => {
+    const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id === slideId) {
             return {
                 ...slide,
@@ -255,16 +217,15 @@ function setObjectSelection(editor: EditorType, slideId: string, objects: string
         return slide
     })
     return {
-        ...editor,
-        presentation: {
-            ...editor.presentation,
+        editor: {
+            ...editor,
             slideList: updatedSlideList
         }
     }
 }
 
 function setObjectPos(editor: EditorType, slideId: string, objectId: string, newPos: { x: number, y: number }) {
-    const updatedSlideList = editor.presentation.slideList.map(slide => {
+    const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id == slideId) {
             const newSlideObjects = slide.objects.map(obj => {
                 if (obj.id == objectId) {
@@ -273,19 +234,18 @@ function setObjectPos(editor: EditorType, slideId: string, objectId: string, new
                 }
                 return obj
             })
-            return { 
-                ...slide, 
+            return {
+                ...slide,
                 objects: newSlideObjects
             }
         }
         return slide
     })
-    
+
 
     return {
-        ...editor,
-        presentation: {
-            ...editor.presentation,
+        editor: {
+            ...editor,
             slideList: updatedSlideList
         }
     }
@@ -295,7 +255,6 @@ export {
     setTitle,
     setPosition,
     addSlide,
-    setSelection,
     removeSlide,
     selectTool,
     changeBackground,

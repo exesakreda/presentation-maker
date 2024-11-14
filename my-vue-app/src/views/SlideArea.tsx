@@ -19,7 +19,11 @@ function SlideArea({ editor }: SlideAreaProps) {
         <div
             className={styles.slideArea}
             id='slideArea'
-            style={{ cursor: tool === 'cursor' ? 'default' : 'text' }}
+            style={
+                { 
+                    cursor: tool === 'cursor' ? 'default' : 'text' 
+                
+                }}
             onClick={(event) => {
                 if (tool !== 'cursor') {
                     dispatch(createObject, event, tool)

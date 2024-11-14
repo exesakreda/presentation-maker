@@ -10,16 +10,10 @@ const presentation: Presentation = {
             objects: [],
             selectedObjects: [],
         },
-    ],
-    selectedSlides: ['1'],
+    ]
 }
 
-const editor: EditorType = {
-    presentation,
-    selection: {
-        selectedSlides: [ presentation.slideList[0].id ]
-    }
-}
+const editor: EditorType = presentation
 
 export {
     editor

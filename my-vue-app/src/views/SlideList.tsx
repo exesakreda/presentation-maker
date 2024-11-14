@@ -5,52 +5,51 @@ import { Slide } from "./Slide.tsx"
 import styles from './SlideList.module.css'
 
 import { dispatch } from '../services/editor.ts'
-import { addSlide, removeSlide, setSelection } from '../services/editorFunctions.ts'
+import { addSlide, removeSlide } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
 import { MouseEvent } from "react"
 
 type ActionsProps = {
     editor: EditorType,
+    selectedSlides: string[],
+    onSlideSelect: (slidesId: string[]) => void
 }
 
-function SlideList({ editor }: ActionsProps) {
+function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
+
     function onButtonClick() {
         dispatch(addSlide)
     }
 
     function onRemoveSlide() {
         dispatch(removeSlide)
+        // onSlideSelect()
     }
 
     function onSlideClick(e: MouseEvent, slideId: string) {
-        if (editor.selection) {
+        if (selectedSlides) {
             if (e.ctrlKey) {
-                if (editor.selection.selectedSlides.includes(slideId)) {
-                    dispatch(setSelection, {
-                        selectedSlides: editor.selection.selectedSlides.filter(id => id !== slideId)
-                    })
+                if (selectedSlides.includes(slideId)) {
+                    onSlideSelect(selectedSlides.filter(id => id !== slideId))
                 } else {
-                    dispatch(setSelection, {
-                        selectedSlides: [...editor.selection?.selectedSlides, slideId]
-                    })
+                    onSlideSelect([...selectedSlides, slideId])
+
                 }
             } else {
-                dispatch(setSelection, {
-                    selectedSlides: [slideId]
-                })
+                onSlideSelect([slideId])
             }
             
         }
     }
 
-    const slides: SlideType[] = editor.presentation.slideList
+    const slides: SlideType[] = editor.slideList
 
     const slideListItems = slides.map(slide => {
         return (
             <div
                 key={slide.id}
                 onClick={(event) => onSlideClick(event, slide.id)}
-                className={`${styles.slideContainer} ${editor.selection?.selectedSlides.includes(slide.id)
+                className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
                     ? styles.selectedSlide
                     : ''
                     }`}
