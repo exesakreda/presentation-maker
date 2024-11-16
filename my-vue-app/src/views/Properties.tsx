@@ -8,23 +8,26 @@ import { resizeInput } from '../services/resizeInput'
 import { useEffect, useRef } from 'react'
 
 type PropertiesProps = {
-    editor: EditorType
+    editor: EditorType,
+    currentSlideId: string
 }
 
-function Properties({ editor }: PropertiesProps) {
+function Properties({ editor, currentSlideId }: PropertiesProps) {
     function isValidColor(value: string) {
         const pattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
         return pattern.test(value)
     }
 
-    const slideId = editor.selection?.selectedSlides[editor.selection?.selectedSlides.length - 1]
-    const slideIndex = editor.presentation.slideList.findIndex((slide) => slide.id === slideId)
-    const backgroundValue = editor.presentation.slideList[slideIndex].background.type === 'color' ? editor.presentation.slideList[slideIndex].background.value.slice(1) : '';
-
+    const slideIndex = editor.slideList.findIndex(slide => slide.id === currentSlideId)
+    const slide = editor.slideList[slideIndex]
+    const backgroundValue = slide?.background.type === 'color' && slide.background.value 
+        ? slide.background.value.slice(1)
+        : ''
+    
     const onColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newBackground: Background = { type: 'color', value: String(event.target.value) }
-        const newSlideList = editor.presentation.slideList.map(slide => {
-            if (slide.id == slideId) {
+        const newSlideList = editor.slideList.map(slide => {
+            if (slide.id == currentSlideId) {
                 return {
                     ...slide,
                     background: newBackground
@@ -47,8 +50,8 @@ function Properties({ editor }: PropertiesProps) {
             newBackground = { type: 'color', value: '#FFFFFF' }
         }
 
-        const newSlideList = editor.presentation.slideList.map(slide => {
-            if (slide.id == slideId) {
+        const newSlideList = editor.slideList.map(slide => {
+            if (slide.id == currentSlideId) {
                 return {
                     ...slide,
                     background: newBackground
@@ -68,7 +71,7 @@ function Properties({ editor }: PropertiesProps) {
     return (
         <div className={styles.properties}>
             <div className={styles.slideid}>
-                <p>Слайд {slideIndex + 1} (id: {slideId})</p>
+                <p>Слайд {slideIndex + 1} (id: {currentSlideId})</p>
             </div>
 
             <div className={styles.divider} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, MouseEvent } from "react"
 import { useDragAndDrop } from "../services/useDragAndDrop"
 import type { Slide } from "../../../types"
 import styles from './Slide.module.css'
@@ -13,7 +13,28 @@ type SlideProps = {
 function Slide({ slide, scale }: SlideProps) {
     useEffect(() => {
         document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))
-    }, [slide]);
+        document.addEventListener('keydown', (event) => {
+            if (event.key == 'Delete' && selectedObjects.length > 0) {
+                const objectsToDelete = [...selectedObjects]
+                dispatch(deleteObject, {
+                    slideId: slide.id,
+                    objectsToDelete: objectsToDelete
+                })
+                setSelectedObjects([])
+                console.log(selectedObjects)
+            }
+        })
+    }, [slide])
+
+    const [selectedObjects, setSelectedObjects] = useState<string[]>([])
+
+    const handleObjectSelect = (e: MouseEvent) => {
+        if (e.ctrlKey) {
+            setSelectedObjects([...selectedObjects, e.currentTarget.id])
+        } else {
+            setSelectedObjects([e.currentTarget.id])
+        }
+    }
 
     const onTextAreaChange: React.ChangeEventHandler = (e) => {
         dispatch(setTextAreaValue, {
@@ -22,17 +43,6 @@ function Slide({ slide, scale }: SlideProps) {
             slideId: slide.id
         })
     }
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key == 'Delete' && slide.selectedObjects.length > 0) {
-            dispatch(deleteObject, {
-                slideId: slide.id,
-                objectsToDelete: slide.selectedObjects
-            })
-
-            slide.selectedObjects = []
-        }
-    })
 
     const slideObjects = slide.objects.map(obj => {
         const inputRef = useRef<HTMLInputElement>(null)
@@ -53,7 +63,7 @@ function Slide({ slide, scale }: SlideProps) {
                         ref={inputRef}
                         id={obj.id}
                         type="text"
-                        className={`${styles.textArea} ${slide.selectedObjects.includes(obj.id) ? styles.selectedObject : ''}`}
+                        className={`${styles.textArea} ${selectedObjects.includes(obj.id) ? styles.selectedObject : ''}`}
                         style={{
                             left: `${pos.x}px`,
                             top: `${pos.y}px`,
@@ -63,6 +73,7 @@ function Slide({ slide, scale }: SlideProps) {
                         defaultValue={obj.value}
                         onBlur={onTextAreaChange}
                         onInput={(event) => resizeInput(event.target as HTMLInputElement)}
+                        onMouseDown={(event) => handleObjectSelect(event)}
                     >
                     </input>
                 )
@@ -74,13 +85,14 @@ function Slide({ slide, scale }: SlideProps) {
                         ref={imageRef}
                         id={obj.id}
                         src={obj.src}
-                        className={`${styles.imageArea} ${slide.selectedObjects.includes(obj.id) ? styles.selectedObject : ''}`}
+                        className={`${styles.imageArea} ${selectedObjects.includes(obj.id) ? styles.selectedObject : ''}`}
                         style={{
                             left: `${pos.x}px`,
                             top: `${pos.y}px`,
                             width: 'auto',
                             height: 'auto'
                         }}
+                        onMouseDown={(event) => handleObjectSelect(event)}
                     >
                     </img>
                 )
@@ -99,6 +111,7 @@ function Slide({ slide, scale }: SlideProps) {
                 id="blankArea"
                 className={styles.blankArea}
                 style={{ backgroundColor: backgroundValue }}
+                onMouseDown={() => setSelectedObjects([])}
             >
             </div>
         </div>

@@ -22,25 +22,23 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
     }
 
     function onRemoveSlide() {
-        dispatch(removeSlide)
-        // onSlideSelect()
+        dispatch(removeSlide, {selectedSlides: selectedSlides}) 
     }
 
     function onSlideClick(e: MouseEvent, slideId: string) {
-        if (selectedSlides) {
-            if (e.ctrlKey) {
-                if (selectedSlides.includes(slideId)) {
-                    onSlideSelect(selectedSlides.filter(id => id !== slideId))
-                } else {
-                    onSlideSelect([...selectedSlides, slideId])
-
-                }
+        if (e.ctrlKey) {
+            if (selectedSlides.includes(slideId)) {
+                onSlideSelect(selectedSlides.filter(id => id !== slideId))
             } else {
-                onSlideSelect([slideId])
+                onSlideSelect([...selectedSlides, slideId])
+
             }
-            
+        } else {
+            onSlideSelect([slideId])
         }
+
     }
+
 
     const slides: SlideType[] = editor.slideList
 

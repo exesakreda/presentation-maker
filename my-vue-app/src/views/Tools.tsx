@@ -1,31 +1,23 @@
-import { dispatch } from '../services/editor'
 import styles from './Tools.module.css'
-import type { Tool } from '../../../types'
-import { selectTool } from '../services/editorFunctions'
 
-let tool:Tool  = 'cursor'
-
-function getTool() {
-    return tool
+type ToolsProps = {
+    currentTool: 'cursor' | 'text' | 'image',
+    onToolSelect: (tool: 'cursor' | 'text' | 'image') => void
 }
 
-function handleToolSelect(newTool: Tool) {
-    tool = newTool
-    dispatch(selectTool)
-}
+function Tools({ currentTool, onToolSelect }: ToolsProps) {
 
-function Tools() {
     return (
         <div className={styles.tools}>
-            <div className={`${styles.tools__item} ${tool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('cursor')}>
+            <div className={`${styles.tools__item} ${currentTool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => onToolSelect('cursor')}>
                 <img src="/src/assets/cursor.svg" alt="" className={styles.item__image} />
             </div>
 
-            <div className={`${styles.tools__item} ${tool === 'text' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('text')}>
+            <div className={`${styles.tools__item} ${currentTool === 'text' ? styles.selectedTool : ''}`} onClick={() => onToolSelect('text')}>
                 <img src="/src/assets/text.svg" alt="" className={styles.item__image} />
             </div>
 
-            <div className={`${styles.tools__item} ${tool === 'image' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('image')}>
+            <div className={`${styles.tools__item} ${currentTool === 'image' ? styles.selectedTool : ''}`} onClick={() => onToolSelect('image')}>
                 <img src="/src/assets/image.svg" alt="" className={styles.item__image} />
             </div>
 
@@ -36,4 +28,4 @@ function Tools() {
     )
 }
 
-export { Tools, getTool, handleToolSelect }
+export { Tools }

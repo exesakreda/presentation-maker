@@ -14,22 +14,23 @@ type AppProps = {
 }
 
 
-// let selectedSlides, setSelectedSlides
 function App({ editor }: AppProps) {
   const [selectedSlides, setSelectedSlides] = useState([editor.slideList[0].id])
+  const currentSlideId = selectedSlides[selectedSlides.length - 1]
+
+  const [tool, setTool] = useState<'cursor' | 'text' | 'image'>('cursor')
 
   return (
     <>
       <Title editor={editor} />
       <SlideList editor={editor} selectedSlides={selectedSlides} onSlideSelect={setSelectedSlides} />
-      <SlideArea editor={editor} />
-      <Tools />
-      <Properties editor={editor} />
+      <SlideArea editor={editor} currentSlideId={currentSlideId} currentTool={tool} onToolSelect={setTool}/>
+      <Tools currentTool={tool} onToolSelect={setTool} />
+      <Properties editor={editor} currentSlideId={currentSlideId} />
     </>
   )
 }
 
 export {
-  App,
-  selectedSlides, setSelectedSlides
+  App
 }

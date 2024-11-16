@@ -3,7 +3,6 @@ import { EditorType } from "./EditorType"
 import { Tool, SlideObject } from "../../../types"
 import { getTextWidth, getTextHeight } from "./getTextDimensions"
 import { MouseEvent } from "react"
-import { selectedSlides, setSelectedSlides } from "../App"
 
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
@@ -27,8 +26,7 @@ function addSlide(editor: EditorType): EditorType {
             ? String(Number(editor.slideList[editor.slideList.length - 1].id) + 1)
             : '1',
         background: { type: 'color', value: '#FFFFFF' },
-        objects: [],
-        selectedObjects: []
+        objects: []
     }
     return {
         ...editor,
@@ -79,15 +77,14 @@ function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
 }
 
 
-function createObject(editor: EditorType, e: MouseEvent, currentTool: Tool) {
+function createObject(editor: EditorType, { e, slideId, currentTool}: { e: MouseEvent, slideId: string, currentTool: Tool }) {
     const slideArea = document.getElementById('slideArea')
 
     const rect = slideArea?.getBoundingClientRect()
     const shiftX = e.clientX - (rect?.left || 0)
     const shiftY = e.clientY - (rect?.top || 0)
 
-    const slideId = selectedSlides[selectedSlides.length - 1]
-    const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
+   const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
 
     const currentSlide = editor.slideList[currentSlideIndex]
 
@@ -148,13 +145,11 @@ function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideI
         if (slide.id === slideId) {
             return {
                 ...slide,
-                objects: slide.objects.filter(obj => !objectsToDelete.includes(obj.id)),
-                selectedObjects: []
+                objects: slide.objects.filter(obj => !objectsToDelete.includes(obj.id))
             }
         }
         return slide
     })
-    console.log('deleted obj')
     return {
         ...editor,
         slideList: updatedSlideList

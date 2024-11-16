@@ -7,7 +7,6 @@ type Slide = {
     id: string,
     background: Background,
     objects: SlideObject[],
-    selectedObjects: string[]
 }
 
 type SlideObject = TextArea | ImageArea
