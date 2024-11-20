@@ -1,6 +1,9 @@
 import { RefObject, useEffect } from "react"
+import { dispatch } from "./editor"
+import { setObjectPos } from "./editorFunctions"
 
-function useDragAndDrop(ref: RefObject<HTMLElement>, setPos: (pos: { x: number, y: number }) => void) {
+function useDragAndDropToMoveObjects(ref: RefObject<HTMLElement>, setPos: (pos: { x: number, y: number }) => void, dragData: { slideId: string, objId: string }) {
+    if (!dragData) return
     useEffect(() => {
         const element = ref.current
         if (!element) return
@@ -23,7 +26,16 @@ function useDragAndDrop(ref: RefObject<HTMLElement>, setPos: (pos: { x: number, 
                 setPos(newPos)
             }
 
-            const onMouseUp = () => {
+            const onMouseUp = (e: MouseEvent) => {
+                const endPos = { x: e.pageX, y: e.pageY}
+                if (startPos.x !== endPos.x && startPos.y !== endPos.y) {
+                    dispatch(setObjectPos, {
+                        slideId: dragData.slideId,
+                        objectId: dragData.objId,
+                        newPos: newPos
+                    })
+                }
+
                 document.removeEventListener('mousemove', onMouseMove)
                 document.removeEventListener('mouseup', onMouseUp)
             }
@@ -41,4 +53,4 @@ function useDragAndDrop(ref: RefObject<HTMLElement>, setPos: (pos: { x: number, 
     }, [ref, setPos])
 }
 
-export { useDragAndDrop }
+export { useDragAndDropToMoveObjects }

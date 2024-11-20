@@ -1,12 +1,9 @@
-/* slide.module.css */
-
 .slide {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 1240px;
+    aspect-ratio: 16 / 9;
     transform-origin: top left;
     border-radius: 10px;
-
     overflow: hidden;
 }
 

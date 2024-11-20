@@ -1,9 +1,8 @@
 .slideArea {
-    width: calc(100vw - 680px);
+    width: 1240px;
     aspect-ratio: 16 / 9;
     position: absolute;
-    transform-origin: top left;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }

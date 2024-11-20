@@ -1,13 +1,11 @@
 import type { Slide as SlideType } from "../../../types.ts"
-
 import { Slide } from "./Slide.tsx"
-
 import styles from './SlideList.module.css'
-
 import { dispatch } from '../services/editor.ts'
 import { addSlide, removeSlide } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
-import { MouseEvent } from "react"
+import { MouseEvent, useState, useRef } from "react"
+import { useDragAndDropToMoveSlides } from "../services/useDragAndDropToMoveSlides.ts"
 
 type ActionsProps = {
     editor: EditorType,
@@ -22,7 +20,7 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
     }
 
     function onRemoveSlide() {
-        dispatch(removeSlide, {selectedSlides: selectedSlides}) 
+        dispatch(removeSlide, { selectedSlides: selectedSlides })
     }
 
     function onSlideClick(e: MouseEvent, slideId: string) {
@@ -39,12 +37,20 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
 
     }
 
-
     const slides: SlideType[] = editor.slideList
 
     const slideListItems = slides.map(slide => {
+        // const slideIndex = slides.indexOf(slide)
+
+        // const [index, setIndex] = useState(slideIndex)
+        // const ref = useRef<HTMLDivElement>(null)
+        // const rect = document.getElementById(slide.id)?.getBoundingClientRect()
+
+        // useDragAndDropToMoveSlides(ref, index, setIndex)
+
         return (
             <div
+                // ref={ref}
                 key={slide.id}
                 onClick={(event) => onSlideClick(event, slide.id)}
                 className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
@@ -54,7 +60,7 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
             >
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
                 <div className={styles.slidePreview}>
-                    <Slide slide={slide} scale={0.150709219858156} />
+                    <Slide slide={slide} scale={0.1362903225806452} />
                 </div>
             </div>
         )

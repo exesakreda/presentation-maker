@@ -51,13 +51,6 @@ function removeSlide(editor: EditorType, { selectedSlides }: { selectedSlides: s
 
 }
 
-function setPosition(editor: EditorType, { x, y }: { x: number, y: number }) {
-    return {
-        ...editor,
-        position: { x, y }
-    }
-}
-
 function selectTool(editor: EditorType) {
     return editor
 }
@@ -77,14 +70,14 @@ function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
 }
 
 
-function createObject(editor: EditorType, { e, slideId, currentTool}: { e: MouseEvent, slideId: string, currentTool: Tool }) {
+function createObject(editor: EditorType, { e, slideId, currentTool }: { e: MouseEvent, slideId: string, currentTool: Tool }) {
     const slideArea = document.getElementById('slideArea')
 
     const rect = slideArea?.getBoundingClientRect()
     const shiftX = e.clientX - (rect?.left || 0)
     const shiftY = e.clientY - (rect?.top || 0)
 
-   const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
+    const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
 
     const currentSlide = editor.slideList[currentSlideIndex]
 
@@ -115,7 +108,7 @@ function createObject(editor: EditorType, { e, slideId, currentTool}: { e: Mouse
             newObject = {
                 id: id,
                 position: { x: shiftX, y: shiftY },
-                size: { h: 0, w: 0 },
+                size: { h: 200, w: 200 },
                 src: src,
                 type: 'image',
             }
@@ -219,13 +212,15 @@ function setObjectSelection(editor: EditorType, slideId: string, objects: string
     }
 }
 
-function setObjectPos(editor: EditorType, slideId: string, objectId: string, newPos: { x: number, y: number }) {
+function setObjectPos(editor: EditorType, { slideId, objectId, newPos }: { slideId: string, objectId: string, newPos: { x: number, y: number } }) {
     const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id == slideId) {
             const newSlideObjects = slide.objects.map(obj => {
-                if (obj.id == objectId) {
-                    obj.position = newPos
-                    return obj
+                if (obj.id === objectId) {
+                    return {
+                        ...obj,
+                        position: newPos
+                    }
                 }
                 return obj
             })
@@ -239,16 +234,13 @@ function setObjectPos(editor: EditorType, slideId: string, objectId: string, new
 
 
     return {
-        editor: {
-            ...editor,
-            slideList: updatedSlideList
-        }
+        ...editor,
+        slideList: updatedSlideList
     }
 }
 
 export {
     setTitle,
-    setPosition,
     addSlide,
     removeSlide,
     selectTool,

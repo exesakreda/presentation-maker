@@ -3,7 +3,6 @@ import styles from './SlideArea.module.css'
 import { createObject } from "../services/editorFunctions"
 import { Slide } from "./Slide"
 import { dispatch } from "../services/editor"
-
 type SlideAreaProps = {
     editor: EditorType,
     currentSlideId: string,
@@ -19,15 +18,15 @@ function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideA
             className={styles.slideArea}
             id='slideArea'
             style={
-                { 
-                    cursor: currentTool === 'cursor' ? 'default' : 'text', 
+                {
+                    cursor: currentTool === 'cursor' ? 'default' : 'text',
                 }}
             onClick={(event) => {
                 if (currentTool !== 'cursor') {
-                    dispatch(createObject, { 
-                        e: event, 
-                        slideId: currentSlideId, 
-                        currentTool: currentTool 
+                    dispatch(createObject, {
+                        e: event,
+                        slideId: currentSlideId,
+                        currentTool: currentTool
                     })
                     onToolSelect('cursor')
                 }

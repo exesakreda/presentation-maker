@@ -15,7 +15,11 @@ type AppProps = {
 
 
 function App({ editor }: AppProps) {
-  const [selectedSlides, setSelectedSlides] = useState([editor.slideList[0].id])
+  const [selectedSlides, setSelectedSlides] = useState(
+    editor.slideList && editor.slideList.length > 0
+      ? [editor.slideList[0].id]
+      : [] 
+  )
   const currentSlideId = selectedSlides[selectedSlides.length - 1]
 
   const [tool, setTool] = useState<'cursor' | 'text' | 'image'>('cursor')
