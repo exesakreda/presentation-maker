@@ -13,7 +13,6 @@ type AppProps = {
   editor: EditorType
 }
 
-
 function App({ editor }: AppProps) {
   const [selectedSlides, setSelectedSlides] = useState(
     editor.slideList && editor.slideList.length > 0

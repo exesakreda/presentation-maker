@@ -1,6 +1,6 @@
 .slide {
     position: relative;
-    width: 1240px;
+    width: 100%;
     aspect-ratio: 16 / 9;
     transform-origin: top left;
     border-radius: 10px;

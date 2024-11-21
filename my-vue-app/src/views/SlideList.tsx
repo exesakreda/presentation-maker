@@ -4,7 +4,7 @@ import styles from './SlideList.module.css'
 import { dispatch } from '../services/editor.ts'
 import { addSlide, removeSlide } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
-import { MouseEvent, useState, useRef } from "react"
+import { MouseEvent, useState, useRef, useEffect } from "react"
 import { useDragAndDropToMoveSlides } from "../services/useDragAndDropToMoveSlides.ts"
 
 type ActionsProps = {
@@ -34,7 +34,6 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
         } else {
             onSlideSelect([slideId])
         }
-
     }
 
     const slides: SlideType[] = editor.slideList
