@@ -147,13 +147,14 @@
 
 
 .slideContainer {
-    max-height: 112px;
+    max-height: 102px;
     padding-bottom: 5px;
     border-radius: 5px;
 }
 
 .selectedSlide {
     background-color: #105CAD;
+    z-index: 1;
 }
 
 .slide__id {
@@ -167,21 +168,20 @@
 }
 
 .slidePreview {
-    height: 95.625px;
-    width: 170px;
-
+    transform-origin: top left;
+    width: 1240px;
+    aspect-ratio: 16 / 9;
     background-color: #fff;
 
-    border-radius: 5px;
+    border-radius: 30px;
 
     margin-left: 22px;
     margin-top: -12px;
 
     margin-right: 5px;
     overflow: hidden;
-}
-
-.slide {
-    height: 100%;
-    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    
+    pointer-events: none;
 }

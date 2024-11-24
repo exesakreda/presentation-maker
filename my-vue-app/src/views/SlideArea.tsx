@@ -4,6 +4,8 @@ import { createObject } from "../services/editorFunctions"
 import { Slide } from "./Slide"
 import { dispatch } from "../services/editor"
 import { useEffect, useState } from "react"
+import { CSSProperties } from "react"
+
 type SlideAreaProps = {
     editor: EditorType,
     currentSlideId: string,
@@ -13,11 +15,10 @@ type SlideAreaProps = {
 
 function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideAreaProps) {
     const currentSlide = editor.slideList.find(slide => slide.id === currentSlideId)
-
-    const [scale, setScale] = useState(1)
-    const [zoom, setZoom] = useState(1)
-
+    
     const innerWidth = 2560
+    const [scale, setScale] = useState(window.innerWidth / innerWidth)
+    const [zoom, setZoom] = useState(1)
 
     useEffect(() => {
         const handleWindowResize = () => {
@@ -33,32 +34,38 @@ function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideA
                 setScale(newScale)
             }
         }
+
         handleWindowResize()
 
         window.addEventListener('resize', handleWindowResize)
-    }, [])
+
+        return () => {
+            window.removeEventListener('resize', handleWindowResize)
+        }
+    }, [innerWidth, zoom])
 
     return (
         <div
             className={styles.slideArea}
             id='slideArea'
-            style={
-                {
-                    cursor: currentTool === 'cursor' ? 'default' : 'text',
-                    transform: `translate(-50%, -50%) scale(${scale})`
-                }}
+            style={{
+                cursor: currentTool === 'cursor' ? 'default' : 'text',
+                '--scale': scale
+            } as CSSProperties}
             onClick={(event) => {
                 if (currentTool !== 'cursor') {
                     dispatch(createObject, {
                         e: event,
                         slideId: currentSlideId,
-                        currentTool: currentTool
+                        currentTool: currentTool,
+                        scale: scale
                     })
                     onToolSelect('cursor')
                 }
-            }}>
+            }}
+        >
             {currentSlide ? (
-                <Slide slide={currentSlide} scale={1} />
+                <Slide slide={currentSlide} scale={scale} />
             ) : (
                 <></>
             )}

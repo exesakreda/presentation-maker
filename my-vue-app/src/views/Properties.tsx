@@ -69,7 +69,7 @@ function Properties({ editor, currentSlideId }: PropertiesProps) {
     }, []);
 
     return (
-        <div className={styles.properties}>
+        <div className={styles.properties} id="properties">
             <div className={styles.slideid}>
                 <p>Слайд {slideIndex + 1} (id: {currentSlideId})</p>
             </div>

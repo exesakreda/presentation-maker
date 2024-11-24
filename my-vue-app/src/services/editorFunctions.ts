@@ -38,17 +38,33 @@ function addSlide(editor: EditorType): EditorType {
     }
 }
 
-function removeSlide(editor: EditorType, { selectedSlides }: { selectedSlides: string[] }): EditorType {
-    if (editor.slideList.length <= 1) {
-        return editor
-    }
+function removeSlide(editor: EditorType, { selectedSlides, setSelectedSlides }: { selectedSlides: string[], setSelectedSlides: (slidesId: string[]) => void }): EditorType {
+    if (editor.slideList.length > selectedSlides.length) {
+        const newSlides = editor.slideList.filter(slide => !selectedSlides.includes(slide.id))
 
-    const newSlides = editor.slideList.filter(slide => !selectedSlides.includes(slide.id));
-    return {
-        ...editor,
-        slideList: newSlides
-    }
+        let closestSlideId = null
+        if (newSlides.length > 0) {
+            const firstSelectedIndex = editor.slideList.findIndex(slide => selectedSlides.includes(slide.id))
+            if (firstSelectedIndex !== -1) {
+                if (firstSelectedIndex < newSlides.length) {
+                    closestSlideId = newSlides[firstSelectedIndex].id
+                } else {
+                    closestSlideId = newSlides[newSlides.length - 1].id
+                }
+            } else {
+                closestSlideId = newSlides[0].id
+            }
+            setSelectedSlides([closestSlideId])
+        } else {
+            setSelectedSlides([])
+        }
 
+        return {
+            ...editor,
+            slideList: newSlides
+        }
+    }
+    return editor
 }
 
 function selectTool(editor: EditorType) {
@@ -70,12 +86,12 @@ function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
 }
 
 
-function createObject(editor: EditorType, { e, slideId, currentTool }: { e: MouseEvent, slideId: string, currentTool: Tool }) {
+function createObject(editor: EditorType, { e, slideId, currentTool, scale }: { e: MouseEvent, slideId: string, currentTool: Tool, scale: number }) {
     const slideArea = document.getElementById('slideArea')
 
     const rect = slideArea?.getBoundingClientRect()
-    const shiftX = e.clientX - (rect?.left || 0)
-    const shiftY = e.clientY - (rect?.top || 0)
+    const shiftX = (e.clientX - (rect?.left || 0)) / scale
+    const shiftY = (e.clientY - (rect?.top || 0)) / scale
 
     const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
 

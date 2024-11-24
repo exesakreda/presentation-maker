@@ -12,11 +12,11 @@ type TitleProps = {
 import { useRef, useEffect } from 'react';
 
 function Title({ editor }: TitleProps) {
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {
         resizeInput(inputRef.current!)
         document.title = editor.title
-    }, []);
+    }, [])
 
 
     const onTitleChange: React.ChangeEventHandler = (event) => {

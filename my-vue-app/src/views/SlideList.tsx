@@ -4,7 +4,7 @@ import styles from './SlideList.module.css'
 import { dispatch } from '../services/editor.ts'
 import { addSlide, removeSlide } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
-import { MouseEvent, useState, useRef, useEffect } from "react"
+import { MouseEvent, useRef, useState } from "react"
 import { useDragAndDropToMoveSlides } from "../services/useDragAndDropToMoveSlides.ts"
 
 type ActionsProps = {
@@ -14,51 +14,52 @@ type ActionsProps = {
 }
 
 function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
-
-    function onButtonClick() {
+    function onAddSlide() {
         dispatch(addSlide)
     }
 
     function onRemoveSlide() {
-        dispatch(removeSlide, { selectedSlides: selectedSlides })
+        dispatch(removeSlide, { selectedSlides: selectedSlides, setSelectedSlides: onSlideSelect })
     }
 
     function onSlideClick(e: MouseEvent, slideId: string) {
         if (e.ctrlKey) {
             if (selectedSlides.includes(slideId)) {
-                onSlideSelect(selectedSlides.filter(id => id !== slideId))
+                if (selectedSlides.length > 1 && editor.slideList.length > 1) {
+                    onSlideSelect(selectedSlides.filter(id => id !== slideId))
+                }
             } else {
                 onSlideSelect([...selectedSlides, slideId])
-
             }
         } else {
             onSlideSelect([slideId])
         }
     }
 
+
     const slides: SlideType[] = editor.slideList
-
     const slideListItems = slides.map(slide => {
-        // const slideIndex = slides.indexOf(slide)
-
-        // const [index, setIndex] = useState(slideIndex)
-        // const ref = useRef<HTMLDivElement>(null)
-        // const rect = document.getElementById(slide.id)?.getBoundingClientRect()
-
-        // useDragAndDropToMoveSlides(ref, index, setIndex)
-
+        const [shift, setShift] = useState(0)
+        const ref = useRef<HTMLDivElement>(null)
+        useDragAndDropToMoveSlides({ ref, shift, setShift, slideId: slide.id })
         return (
             <div
-                // ref={ref}
                 key={slide.id}
-                onClick={(event) => onSlideClick(event, slide.id)}
+                ref={ref}
+                onMouseDown={(event) => onSlideClick(event, slide.id)}
                 className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
                     ? styles.selectedSlide
                     : ''
                     }`}
+                style={{
+                    transform: `translateY(${shift}px)`
+                }}
             >
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
-                <div className={styles.slidePreview}>
+                <div
+                    className={styles.slidePreview}
+                    style={{ transform: 'scale(0.1362903225806452)' }}
+                >
                     <Slide slide={slide} scale={0.1362903225806452} />
                 </div>
             </div>
@@ -66,10 +67,10 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
     })
 
     return (
-        <div className={styles.actionbar}>
+        <div className={styles.actionbar} id="actionbar">
             <button
                 className={styles.actionbar__newslide}
-                onClick={onButtonClick}
+                onClick={onAddSlide}
             >
                 <div className={styles.newslidebutton__text}>Новый слайд</div>
                 <img src="/src/assets/plus.svg" alt="" />
