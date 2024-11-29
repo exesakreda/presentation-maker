@@ -150,10 +150,12 @@
     max-height: 102px;
     padding-bottom: 5px;
     border-radius: 5px;
+    position: relative;
 }
 
 .selectedSlide {
     background-color: #105CAD;
+    width: 199px;
     z-index: 1;
 }
 
@@ -184,4 +186,11 @@
     box-sizing: border-box;
     
     pointer-events: none;
+}
+
+.insertionMarker {
+    position: absolute;
+    width: 400px;
+    height: 3px;
+    background-color: #105CAD;
 }

@@ -22,7 +22,9 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
         dispatch(removeSlide, { selectedSlides: selectedSlides, setSelectedSlides: onSlideSelect })
     }
 
+    const [isDragging, setIsDragging] = useState(false)
     function onSlideClick(e: MouseEvent, slideId: string) {
+        if (isDragging) return
         if (e.ctrlKey) {
             if (selectedSlides.includes(slideId)) {
                 if (selectedSlides.length > 1 && editor.slideList.length > 1) {
@@ -36,23 +38,26 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
         }
     }
 
+    const [insertionTop, setInsertionTop] = useState(60)
 
     const slides: SlideType[] = editor.slideList
     const slideListItems = slides.map(slide => {
         const [shift, setShift] = useState(0)
         const ref = useRef<HTMLDivElement>(null)
-        useDragAndDropToMoveSlides({ ref, shift, setShift, slideId: slide.id })
+        useDragAndDropToMoveSlides({ ref, shift, setShift, slide: slide, slides: slides, isDragging, setIsDragging, setInsertionTop })
         return (
             <div
                 key={slide.id}
                 ref={ref}
+                id={slide.id}
                 onMouseDown={(event) => onSlideClick(event, slide.id)}
                 className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
                     ? styles.selectedSlide
                     : ''
                     }`}
                 style={{
-                    transform: `translateY(${shift}px)`
+                    // transform: `translateY(${shift}px)`
+                    top: `${shift}px`,
                 }}
             >
                 <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
@@ -78,7 +83,14 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
 
             <div className={styles.divider} />
 
-            <div className={styles.slidelist}>
+            <div className={styles.slidelist} id='slidelist'>
+                <div
+                    className={styles.insertionMarker}
+                    style={{
+                        top: `${insertionTop}px`,
+                        display: isDragging ? 'block' : 'none'
+                    }}
+                />
                 {slideListItems}
             </div>
 

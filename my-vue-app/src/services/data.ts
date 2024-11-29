@@ -1,7 +1,7 @@
 import { EditorType } from "./EditorType"
 
 const editor: EditorType = {
-    title: 'Новая презентация о чем-то очень важном',
+    title: 'Новая презентация',
     slideList: [
         {
             id: '1',

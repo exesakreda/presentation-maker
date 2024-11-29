@@ -61,7 +61,9 @@ function Slide({ slide, scale }: SlideProps) {
                 id="blankArea"
                 className={styles.blankArea}
                 style={{ backgroundColor: backgroundValue }}
-                onMouseDown={() => setSelectedObjects([])}
+                onClick={() => {
+                    setSelectedObjects([])
+                }}
             >
             </div>
         </div>

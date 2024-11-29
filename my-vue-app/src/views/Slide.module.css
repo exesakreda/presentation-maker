@@ -11,10 +11,11 @@
     position: absolute;
     height: 100%;
     width: 100%;
-    z-index: -1;
+    z-index: 1;
 }
 
 .textArea {
+    z-index: 100;
     position: absolute;
     display: flex;
     justify-content: center;
@@ -41,6 +42,7 @@
 }
 
 .imageArea {
+    z-index: 100;
     position: absolute;
 
     display: flex;
@@ -84,4 +86,21 @@
 
 .selectedObject {
     border: 2px solid #0099ff;
+}
+
+.slideObject {
+    display: flex;
+}
+
+.resizeHandle {
+    background-color: #fff;
+    border: 2px solid #0099ff;
+    width: 8px;
+    height: 8px;
+
+    position: absolute;
+}
+
+.resizeHandles {
+    display: none;
 }

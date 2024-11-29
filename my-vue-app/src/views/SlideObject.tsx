@@ -1,12 +1,13 @@
-import React, { useRef, useState, MouseEvent } from "react"
+import React, { useRef, useState, MouseEvent, useEffect } from "react"
 import { useDragAndDropToMoveObjects } from "../services/useDragAndDropToMoveObjects"
 import { resizeInput } from "../services/resizeInput"
 import { dispatch } from "../services/editor"
 import { setTextAreaValue } from "../services/editorFunctions"
 import styles from './Slide.module.css'
+import { TextArea, ImageArea } from "../../../types"
 
 type SlideObjectProps = {
-    obj: any
+    obj: TextArea | ImageArea,
     slideId: string
     selectedObjects: string[]
     setSelectedObjects: (objects: string[]) => void
@@ -21,13 +22,22 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale 
     obj.type == 'text' ? ref = inputRef : ref = imageRef
 
     const [pos, setPos] = useState(obj.position)
+    const isSelected = selectedObjects.includes(obj.id)
 
     const dragData = {
+        ref: ref,
+        setPos: setPos, 
         slideId: slideId,
         objId: obj.id,
-        scale: scale
+        scale: scale,
+        setSelectedObjects: setSelectedObjects,
     }
-    useDragAndDropToMoveObjects({ ref, setPos, dragData })
+
+    useDragAndDropToMoveObjects(dragData)
+    useEffect(() => {
+        setSelectedObjects([obj.id])
+    }, [pos])
+
 
     const handleObjectSelect = (e: MouseEvent<HTMLDivElement | HTMLInputElement | HTMLImageElement>) => {
         const target = e.currentTarget as HTMLElement
@@ -77,12 +87,11 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale 
 
         case 'image':
             return (
-                <img
+                <div
                     key={obj.id}
                     ref={imageRef}
                     id={obj.id}
-                    src={obj.src}
-                    className={`${styles.imageArea} ${selectedObjects?.includes(obj.id) ? styles.selectedObject : ''}`}
+                    className={`${styles.slideObject} ${styles.imageArea} ${selectedObjects?.includes(obj.id) ? styles.selectedObject : ''}`}
                     style={{
                         left: `${pos.x}px`,
                         top: `${pos.y}px`,
@@ -90,7 +99,22 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale 
                         height: `${obj.size.h}px`
                     }}
                     onMouseDown={handleObjectSelect}
-                />
+                >
+                    <div
+                        className={styles.resizeHandles}
+                        style={{
+                            display: isSelected ? 'block' : 'none'
+                        }}
+                    >
+                        <div className={`${styles.topLeftRH} ${styles.resizeHandle}`} style={{ top: '-6px', left: '-6.5px' }} />
+                        <div className={`${styles.topRightRH} ${styles.resizeHandle}`} style={{ top: '-6px', left: 'calc(100% - 5px)' }} />
+                        <div className={`${styles.botLeftRH} ${styles.resizeHandle}`} style={{ top: 'calc(100% - 5.5px)', left: '-6.5px' }} />
+                        <div className={`${styles.botRightRH} ${styles.resizeHandle}`} style={{ top: 'calc(100% - 5.5px)', left: 'calc(100% - 5px)' }} />
+                    </div>
+                    <img
+                        src={obj.src}
+                    />
+                </div>
             )
 
         default:
