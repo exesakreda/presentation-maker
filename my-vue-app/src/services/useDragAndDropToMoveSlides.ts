@@ -17,7 +17,7 @@ type DragAndDropProps = {
 function useDragAndDropToMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: DragAndDropProps) {
     const isDraggingRef = useRef(isDragging)
     useEffect(() => {
-        isDraggingRef.current = isDragging;
+        isDraggingRef.current = isDragging
     }, [isDragging])
 
     function calculateIndex(elementTop: number) {

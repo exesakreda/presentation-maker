@@ -65,6 +65,7 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
                     className={styles.slidePreview}
                     style={{ transform: 'scale(0.1362903225806452)' }}
                 >
+                    {/* showSelection */}
                     <Slide slide={slide} scale={0.1362903225806452} />
                 </div>
             </div>

@@ -111,7 +111,7 @@ function createObject(editor: EditorType, { e, slideId, currentTool, scale }: { 
             newObject = {
                 id: id,
                 position: { x: shiftX, y: shiftY },
-                size: { h: textHeight, w: textWidth },
+                size: { h: 25, w: 50 },
                 value: value,
                 fontFamily: fontFamily,
                 textSize: textSize,
@@ -255,6 +255,34 @@ function setObjectPos(editor: EditorType, { slideId, objectId, newPos }: { slide
     }
 }
 
+
+function setObjectSize(editor: EditorType, { slideId, objectId, newSize }: { slideId: string, objectId: string, newSize: { h: number, w: number } }) {
+    const updatedSlideList = editor.slideList.map(slide => {
+        if (slide.id == slideId) {
+            const newSlideObjects = slide.objects.map(obj => {
+                if (obj.id === objectId) {
+                    return {
+                        ...obj,
+                        size: { h: newSize.h, w: newSize.w}
+                    }
+                }
+                return obj
+            })
+            return {
+                ...slide,
+                objects: newSlideObjects
+            }
+        }
+        return slide
+    })
+
+
+    return {
+        ...editor,
+        slideList: updatedSlideList
+    }
+}
+
 export {
     setTitle,
     addSlide,
@@ -267,5 +295,6 @@ export {
     createObject,
     deleteObject,
     updateSlideObjects,
-    setObjectPos
+    setObjectPos,
+    setObjectSize
 }

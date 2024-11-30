@@ -1,54 +1,61 @@
-import { RefObject, useEffect } from "react"
+import { RefObject, useEffect, useRef } from "react"
 import { dispatch } from "./editor"
-import { setObjectPos } from "./editorFunctions"
+import { setObjectSize } from "./editorFunctions"
 
 type DragAndDropProps = {
     ref: RefObject<HTMLElement>,
-    setPos: (pos: { x: number, y: number }) => void,
+    size: { h: number, w: number },
+    setSize: (size: { h: number, w: number }) => void,
     slideId: string,
     objId: string,
-    scale: number
+    scale: number,
     setSelectedObjects: (newSelectedObjects: string[]) => void,
-    isResizing: boolean
+    isResizing: boolean,
+    setIsResizing: (isResizing: boolean) => void
 }
 
-function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing }: DragAndDropProps) {
+function useDragAndDropToResizeObjectsRB({ ref, size, setSize, slideId, objId, scale, setSelectedObjects, isResizing, setIsResizing }: DragAndDropProps) {
+    const isResizingRef = useRef(isResizing)
+
     useEffect(() => {
-        if (isResizing) return
+        isResizingRef.current = isResizing
+    }, [isResizing])
+
+    useEffect(() => {
         const element = ref.current
         if (!element) return
 
         const slide = document.getElementById('slide')
         if (!slide) return
-        const slideTopBorder = slide.offsetTop
-        const slideLeftBorder = slide.offsetLeft
-        const slideRightBorder = slide.offsetLeft + slide?.offsetWidth
-        const slideBottomBorder = slide.offsetTop + slide?.offsetHeight
 
         const onMouseDown = (e: MouseEvent) => {
             e.preventDefault()
+            setIsResizing(true)
+            isResizingRef.current = true
             const startPos = { x: e.pageX, y: e.pageY }
-            const initialPos = { x: element.offsetLeft, y: element.offsetTop }
+            const initialSize = size
 
-            let newPos = { x: initialPos.x, y: initialPos.y }
+            let newSize = initialSize
             const onMouseMove = (e: MouseEvent) => {
                 const delta = {
                     x: (e.pageX - startPos.x) / scale,
-                    y: (e.pageY - startPos.y) / scale,
+                    y: (e.pageY - startPos.y) / scale
                 }
-                newPos = {
-                    x: Math.max(slideLeftBorder, Math.min(slideRightBorder, initialPos.x + delta.x)),
-                    y: Math.max(slideTopBorder, Math.min(slideBottomBorder, initialPos.y + delta.y))
+                newSize = {
+                    w: Math.max(initialSize.w + delta.x, 0),
+                    h: Math.max(initialSize.h + delta.y, 0)
                 }
-                setPos(newPos)
+                setSize(newSize)
             }
 
             const onMouseUp = () => {
-                if (newPos !== initialPos) {
-                    dispatch(setObjectPos, {
+                setIsResizing(false)
+                isResizingRef.current = false
+                if (newSize.h !== initialSize.h || newSize.w !== initialSize.w) {
+                    dispatch(setObjectSize, {
                         slideId: slideId,
                         objectId: objId,
-                        newPos: newPos
+                        newSize: newSize
                     })
                 }
                 setSelectedObjects([objId])
@@ -66,7 +73,7 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
             element.removeEventListener('mousedown', onMouseDown)
         }
 
-    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing])
+    }, [ref, size, setSize, slideId, objId, scale, setSelectedObjects, setIsResizing])
 }
 
-export { useDragAndDropToMoveObjects }
+export { useDragAndDropToResizeObjectsRB }

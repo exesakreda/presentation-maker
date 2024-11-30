@@ -12,23 +12,14 @@ import { useEffect, useState } from 'react'
 type AppProps = {
   editor: EditorType
 }
-localStorage.setItem('selectedSlides', JSON.stringify(['1']))
-
 function App({ editor }: AppProps) {
-  const [selectedSlides, setSelectedSlides] = useState<string[]>(() => {
-    const savedSelectedSlides = localStorage.getItem('selectedSlides')
-    return savedSelectedSlides ? JSON.parse(savedSelectedSlides) : ['1']
-  })
-  useEffect((() => {
-    localStorage.setItem('selectedSlides', JSON.stringify(selectedSlides))
-  }))
-
+  const [selectedSlides, setSelectedSlides] = useState<string[]>(['1'])
   const [currentSlideId, setCurrentSlideId] = useState(selectedSlides[selectedSlides.length - 1])
+  const [tool, setTool] = useState<'cursor' | 'text' | 'image'>('cursor')
+
   useEffect(() => {
     setCurrentSlideId(selectedSlides[selectedSlides.length - 1])
   })
-
-  const [tool, setTool] = useState<'cursor' | 'text' | 'image'>('cursor')
 
   return (
     <>
