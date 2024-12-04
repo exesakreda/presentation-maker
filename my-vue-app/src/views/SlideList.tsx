@@ -10,31 +10,40 @@ import { useDragAndDropToMoveSlides } from "../services/useDragAndDropToMoveSlid
 type ActionsProps = {
     editor: EditorType,
     selectedSlides: string[],
-    onSlideSelect: (slidesId: string[]) => void
+    setSelectedSlides: (slidesId: string[]) => void,
+    selectedObjects: string[],
+    setSelectedObjects: (selectedObjects: string[]) => void
 }
 
-function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
+function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects, setSelectedObjects }: ActionsProps) {
     function onAddSlide() {
         dispatch(addSlide)
     }
 
     function onRemoveSlide() {
-        dispatch(removeSlide, { selectedSlides: selectedSlides, setSelectedSlides: onSlideSelect })
+        dispatch(removeSlide, { selectedSlides: selectedSlides, setSelectedSlides: setSelectedSlides })
     }
 
     const [isDragging, setIsDragging] = useState(false)
     function onSlideClick(e: MouseEvent, slideId: string) {
         if (isDragging) return
+        setSelectedObjects([])
         if (e.ctrlKey) {
             if (selectedSlides.includes(slideId)) {
                 if (selectedSlides.length > 1 && editor.slideList.length > 1) {
-                    onSlideSelect(selectedSlides.filter(id => id !== slideId))
+                    const newSelectedSlides = selectedSlides.filter(id => id !== slideId)
+                    setSelectedSlides(newSelectedSlides)
+                    localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
                 }
             } else {
-                onSlideSelect([...selectedSlides, slideId])
+                const newSelectedSlides = [...selectedSlides, slideId]
+                setSelectedSlides(newSelectedSlides)
+                localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
             }
         } else {
-            onSlideSelect([slideId])
+            const newSelectedSlides = [slideId]
+            setSelectedSlides(newSelectedSlides)
+            localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
         }
     }
 
@@ -56,7 +65,6 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
                     : ''
                     }`}
                 style={{
-                    // transform: `translateY(${shift}px)`
                     top: `${shift}px`,
                 }}
             >
@@ -66,7 +74,7 @@ function SlideList({ editor, selectedSlides, onSlideSelect }: ActionsProps) {
                     style={{ transform: 'scale(0.1362903225806452)' }}
                 >
                     {/* showSelection */}
-                    <Slide slide={slide} scale={0.1362903225806452} />
+                    <Slide slide={slide} scale={0.1362903225806452} showSelection={false} selectedObjects={selectedObjects} setSelectedObjects={setSelectedObjects} />
                 </div>
             </div>
         )

@@ -15,19 +15,16 @@
 }
 
 .textArea {
-    z-index: 100;
-
-    font: 800 16px "Inter";
-    border: 1px solid transparent;
+    z-index: 1;
     padding: 2px 4px;
-    border-radius: 5px;
+    box-sizing: border-box;
+    /* border-radius: 5px; */
     outline: none;
     width: 100%;
     height: 100%;
     resize: none;
     overflow: hidden;
     background-color: transparent;
-
 }
 
 .textArea:focus {
@@ -38,8 +35,6 @@
     border-radius: 5px;
     border: 1px solid rgb(0, 0, 0);
 }
-
-.imageArea {}
 
 .imageArea__text {
     font: 600 12px "Inter";
@@ -88,10 +83,23 @@
     border: 2px solid #0099ff;
     width: 8px;
     height: 8px;
-
+    z-index: 50;
     position: absolute;
 }
 
 .resizeHandles {
     display: none;
+}
+
+.horizontalRH {
+    position: absolute;
+    width: 100%;
+    border: 1px solid #0099ff;
+    transform: translate(-50%);
+}
+
+.verticalRH {
+    position: absolute;
+    height: 100%;
+    border: 1px solid #0099ff;
 }

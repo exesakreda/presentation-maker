@@ -50,11 +50,11 @@ function useDragAndDropToMoveSlides({ ref, shift, setShift, slide, slides, isDra
             let index = 0
 
             const onMouseMove = (e: MouseEvent) => {
+                const deltaY = e.pageY - initialMouseY
                 if (!isDraggingRef.current) {
                     setIsDragging(true)
                     isDraggingRef.current = true
                 }
-                const deltaY = e.pageY - initialMouseY
                 const slideListTop = document.getElementById('slidelist')?.getBoundingClientRect().top || 0
                 const elementTop = element.getBoundingClientRect().top - slideListTop
                 index = calculateIndex(elementTop)

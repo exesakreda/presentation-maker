@@ -1,21 +1,20 @@
-import { EditorType } from "../services/EditorType"
 import styles from './SlideArea.module.css'
-import { createObject } from "../services/editorFunctions"
+import { createTextArea } from "../services/editorFunctions"
 import { Slide } from "./Slide"
 import { dispatch } from "../services/editor"
 import { useEffect, useState } from "react"
 import { CSSProperties } from "react"
+import type { Slide as SlideType } from "../../../types"
 
 type SlideAreaProps = {
-    editor: EditorType,
-    currentSlideId: string,
+    currentSlide: SlideType,
     currentTool: 'cursor' | 'text' | 'image',
-    onToolSelect: (tool: 'cursor' | 'text' | 'image') => void
+    onToolSelect: (tool: 'cursor' | 'text' | 'image') => void,
+    selectedObjects: string[],
+    setSelectedObjects: (selectedObjectrs: string[]) => void
 }
 
-function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideAreaProps) {
-    const currentSlide = editor.slideList.find(slide => slide.id === currentSlideId)
-    
+function SlideArea({ currentSlide, currentTool, onToolSelect, selectedObjects, setSelectedObjects }: SlideAreaProps) {
     const innerWidth = 2560
     const [scale, setScale] = useState(window.innerWidth / innerWidth)
     const [zoom, setZoom] = useState(1)
@@ -53,11 +52,10 @@ function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideA
                 '--scale': scale
             } as CSSProperties}
             onClick={(event) => {
-                if (currentTool !== 'cursor') {
-                    dispatch(createObject, {
+                if (currentTool == 'text') {
+                    dispatch(createTextArea, {
                         e: event,
-                        slideId: currentSlideId,
-                        currentTool: currentTool,
+                        slideId: currentSlide.id,
                         scale: scale
                     })
                     onToolSelect('cursor')
@@ -65,7 +63,7 @@ function SlideArea({ editor, currentSlideId, currentTool, onToolSelect }: SlideA
             }}
         >
             {currentSlide ? (
-                <Slide slide={currentSlide} scale={scale} />
+                <Slide slide={currentSlide} scale={scale} showSelection={true} selectedObjects={selectedObjects} setSelectedObjects={setSelectedObjects} />
             ) : (
                 <></>
             )}

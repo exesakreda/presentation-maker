@@ -44,6 +44,7 @@ type TextArea = CommonObject & {
     fontFamily: string,
     textSize: number,
     type: 'text',
+    fontWeight: number
 }
 
 type ImageArea = CommonObject & {

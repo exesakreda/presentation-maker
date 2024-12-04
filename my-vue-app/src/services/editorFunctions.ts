@@ -1,15 +1,14 @@
 import { Slide } from "../../../types"
 import { EditorType } from "./EditorType"
-import { Tool, SlideObject } from "../../../types"
-import { getTextWidth, getTextHeight } from "./getTextDimensions"
+import { SlideObject } from "../../../types"
 import { MouseEvent } from "react"
 
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
+    localStorage.setItem('title', newTitle)
     return {
         ...editor,
         title: newTitle
-
     }
 }
 
@@ -22,26 +21,23 @@ function setTitle(editor: EditorType, newTitle: string): EditorType {
 
 function addSlide(editor: EditorType): EditorType {
     const newSlide: Slide = {
-        id: editor.slideList.length > 0
-            ? String(Number(editor.slideList[editor.slideList.length - 1].id) + 1)
-            : '1',
+        id: String(Number(editor.slideList[editor.slideList.length - 1].id) + 1),
         background: { type: 'color', value: '#FFFFFF' },
         objects: []
     }
+    localStorage.setItem('slideList', JSON.stringify([...editor.slideList, newSlide]))
     return {
         ...editor,
         slideList: [
             ...editor.slideList,
             newSlide
         ]
-
     }
 }
 
 function removeSlide(editor: EditorType, { selectedSlides, setSelectedSlides }: { selectedSlides: string[], setSelectedSlides: (slidesId: string[]) => void }): EditorType {
     if (editor.slideList.length > selectedSlides.length) {
         const newSlides = editor.slideList.filter(slide => !selectedSlides.includes(slide.id))
-
         let closestSlideId = null
         if (newSlides.length > 0) {
             const firstSelectedIndex = editor.slideList.findIndex(slide => selectedSlides.includes(slide.id))
@@ -55,10 +51,12 @@ function removeSlide(editor: EditorType, { selectedSlides, setSelectedSlides }: 
                 closestSlideId = newSlides[0].id
             }
             setSelectedSlides([closestSlideId])
+            localStorage.setItem('selectedSlides', JSON.stringify([closestSlideId]))
         } else {
             setSelectedSlides([])
+            localStorage.setItem('selectedSlides', JSON.stringify([]))
         }
-
+        localStorage.setItem('slideList', JSON.stringify(newSlides))
         return {
             ...editor,
             slideList: newSlides
@@ -79,61 +77,38 @@ function changeBackground(editor: EditorType, newSlideList: Slide[]) {
 }
 
 function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
+    localStorage.setItem('slideList', JSON.stringify(newSlideList))
     return {
         ...editor,
         slideList: newSlideList
     }
 }
 
-
-function createObject(editor: EditorType, { e, slideId, currentTool, scale }: { e: MouseEvent, slideId: string, currentTool: Tool, scale: number }) {
+function createTextArea(editor: EditorType, { e, slideId, scale }: { e: MouseEvent, slideId: string, scale: number }) {
     const slideArea = document.getElementById('slideArea')
-
     const rect = slideArea?.getBoundingClientRect()
     const shiftX = (e.clientX - (rect?.left || 0)) / scale
     const shiftY = (e.clientY - (rect?.top || 0)) / scale
-
     const currentSlideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
-
     const currentSlide = editor.slideList[currentSlideIndex]
 
-    let newObject: SlideObject | null = null
-    const id = 'obj' + Math.random().toString(36).substring(2, 9)
 
-    switch (currentTool) {
-        case 'text':
-            const textSize = 16
-            const fontFamily = 'Inter'
-            const font = `${textSize}px ${fontFamily}`
-            const value = 'Текст'
-            const textWidth = getTextWidth(value, font)
-            const textHeight = getTextHeight(value, font)
-            newObject = {
-                id: id,
-                position: { x: shiftX, y: shiftY },
-                size: { h: 25, w: 50 },
-                value: value,
-                fontFamily: fontFamily,
-                textSize: textSize,
-                type: 'text'
-            }
-            break
+    const id = 'textarea_' + Math.random().toString(36).substring(2, 9)
 
-        case 'image':
-            const src = "defaultimage.png"
-            newObject = {
-                id: id,
-                position: { x: shiftX, y: shiftY },
-                size: { h: 200, w: 200 },
-                src: src,
-                type: 'image',
-            }
-            break
+    const textSize = 24
+    const fontWeight = 800
+    const fontFamily = 'Inter'
+    const value = 'Текст'
 
-        case 'cursor':
-
-        default:
-            return
+    const newObject: SlideObject = {
+        id: id,
+        position: { x: shiftX, y: shiftY },
+        size: { h: 35, w: 80 },
+        value: value,
+        fontFamily: fontFamily,
+        textSize: textSize,
+        fontWeight: fontWeight,
+        type: 'text'
     }
 
     const updatedSlideObjects: SlideObject[] = [...currentSlide.objects, newObject]
@@ -148,6 +123,38 @@ function createObject(editor: EditorType, { e, slideId, currentTool, scale }: { 
     }
 }
 
+function createImage(editor: EditorType, { slideId, src, height, width }: { slideId: string, src: string, height: number, width: number }) {
+    const slideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
+    if (slideIndex === -1) return editor
+
+    const slideArea = document.getElementById('slideArea')
+    const rect = slideArea?.getBoundingClientRect()
+    const shiftX = (window.innerWidth / 2 - (rect?.left || 0))
+    const shiftY = (window.innerHeight / 2 - (rect?.top || 0))
+
+    const id = 'image_' + Math.random().toString(36).substring(2, 9)
+
+    const newImage: SlideObject = {
+        id: id,
+        position: { x: shiftX, y: shiftY },
+        size: { h: height, w: width },
+        src: src,
+        type: 'image'
+    }
+    const updatedSlideObjects = [...editor.slideList[slideIndex].objects, newImage]
+    const updatedSlide = {
+        ...editor.slideList[slideIndex],
+        objects: updatedSlideObjects
+    }
+    const updatedSlideList = [...editor.slideList]
+    updatedSlideList[slideIndex] = updatedSlide
+    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
+
+    return {
+        ...editor,
+        slideList: updatedSlideList
+    }
+}
 
 function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideId: string, objectsToDelete: string[] }) {
     const updatedSlideList = editor.slideList.map(slide => {
@@ -159,6 +166,7 @@ function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideI
         }
         return slide
     })
+    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
     return {
         ...editor,
         slideList: updatedSlideList
@@ -166,18 +174,20 @@ function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideI
 }
 
 function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideObject[]) {
+    const updatedSlideList = editor.slideList.map(slide => {
+        if (slide.id === slideId) {
+            return {
+                ...slide,
+                objects: objects
+            }
+        }
+        return slide
+    })
+    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
     return {
         editor: {
             ...editor,
-            slideList: editor.slideList.map(slide => {
-                if (slide.id === slideId) {
-                    return {
-                        ...slide,
-                        objects: objects
-                    }
-                }
-                return slide
-            })
+            slideList: updatedSlideList
         }
     }
 }
@@ -247,7 +257,7 @@ function setObjectPos(editor: EditorType, { slideId, objectId, newPos }: { slide
         }
         return slide
     })
-
+    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
 
     return {
         ...editor,
@@ -263,7 +273,7 @@ function setObjectSize(editor: EditorType, { slideId, objectId, newSize }: { sli
                 if (obj.id === objectId) {
                     return {
                         ...obj,
-                        size: { h: newSize.h, w: newSize.w}
+                        size: { h: newSize.h, w: newSize.w }
                     }
                 }
                 return obj
@@ -275,7 +285,7 @@ function setObjectSize(editor: EditorType, { slideId, objectId, newSize }: { sli
         }
         return slide
     })
-
+    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
 
     return {
         ...editor,
@@ -292,9 +302,10 @@ export {
     updateSlideList,
     setTextAreaValue,
     setObjectSelection,
-    createObject,
+    createTextArea,
     deleteObject,
     updateSlideObjects,
     setObjectPos,
-    setObjectSize
+    setObjectSize,
+    createImage
 }

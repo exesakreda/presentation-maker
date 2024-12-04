@@ -1,4 +1,4 @@
-import { RefObject, useEffect } from "react"
+import { RefObject, useEffect, useRef } from "react"
 import { dispatch } from "./editor"
 import { setObjectPos } from "./editorFunctions"
 
@@ -9,10 +9,19 @@ type DragAndDropProps = {
     objId: string,
     scale: number
     setSelectedObjects: (newSelectedObjects: string[]) => void,
-    isResizing: boolean
+    isResizing: boolean,
+    isDragging: boolean,
+    setIsDragging: (isDragging: boolean) => void
 }
 
-function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing }: DragAndDropProps) {
+function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, isDragging, setIsDragging }: DragAndDropProps) {
+    const isDraggingRef = useRef(isDragging)
+
+    // Убедитесь, что isDraggingRef синхронизируется с isDragging только при изменении isDragging
+    useEffect(() => {
+        isDraggingRef.current = isDragging
+    }, [isDragging])
+
     useEffect(() => {
         if (isResizing) return
         const element = ref.current
@@ -36,6 +45,10 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
                     x: (e.pageX - startPos.x) / scale,
                     y: (e.pageY - startPos.y) / scale,
                 }
+                if (!isDraggingRef.current) {
+                    setIsDragging(true)
+                    isDraggingRef.current = true
+                }
                 newPos = {
                     x: Math.max(slideLeftBorder, Math.min(slideRightBorder, initialPos.x + delta.x)),
                     y: Math.max(slideTopBorder, Math.min(slideBottomBorder, initialPos.y + delta.y))
@@ -44,14 +57,18 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
             }
 
             const onMouseUp = () => {
-                if (newPos !== initialPos) {
+                // Проверяем, изменилась ли позиция объекта, прежде чем вызывать dispatch
+                if (newPos.x !== initialPos.x || newPos.y !== initialPos.y) {
                     dispatch(setObjectPos, {
                         slideId: slideId,
                         objectId: objId,
                         newPos: newPos
                     })
                 }
+                setIsDragging(false)
+                isDraggingRef.current = false
                 setSelectedObjects([objId])
+                
                 document.removeEventListener('mousemove', onMouseMove)
                 document.removeEventListener('mouseup', onMouseUp)
             }
@@ -66,7 +83,7 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
             element.removeEventListener('mousedown', onMouseDown)
         }
 
-    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing])
+    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, setIsDragging])
 }
 
 export { useDragAndDropToMoveObjects }

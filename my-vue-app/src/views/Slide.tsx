@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from './Slide.module.css'
@@ -7,13 +7,14 @@ import { dispatch } from "../services/editor"
 import { deleteObject } from "../services/editorFunctions"
 
 type SlideProps = {
-    slide: Slide
-    scale: number
+    slide: Slide,
+    scale: number,
+    showSelection: boolean,
+    selectedObjects: string[],
+    setSelectedObjects: (selectedObjects: string[]) => void
 }
 
-function Slide({ slide, scale }: SlideProps) {
-    const [selectedObjects, setSelectedObjects] = useState<string[]>([])
-
+function Slide({ slide, scale, showSelection, selectedObjects, setSelectedObjects }: SlideProps) {
     useEffect(() => {
         document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))
 
@@ -42,6 +43,7 @@ function Slide({ slide, scale }: SlideProps) {
             selectedObjects={selectedObjects}
             setSelectedObjects={setSelectedObjects}
             scale={scale}
+            showSelection={showSelection} 
         />
     ))
 

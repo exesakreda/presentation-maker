@@ -1,8 +1,11 @@
 import { EditorType } from "./EditorType"
 
+const storedTitle = localStorage.getItem('title')
+const storedSlideList = localStorage.getItem('slideList')
+
 const editor: EditorType = {
-    title: 'Новая презентация',
-    slideList: [
+    title: storedTitle ? JSON.parse(storedTitle) : 'Новая презентация',
+    slideList: storedSlideList ? JSON.parse(storedSlideList) : [
         {
             id: '1',
             background: { type: 'color', value: '#F7F7F7' },
@@ -10,7 +13,6 @@ const editor: EditorType = {
         },
     ]
 }
-
 
 export {
     editor
