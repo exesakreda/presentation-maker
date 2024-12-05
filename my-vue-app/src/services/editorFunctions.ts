@@ -5,7 +5,7 @@ import { MouseEvent } from "react"
 
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
-    localStorage.setItem('title', newTitle)
+    localStorage.setItem('title', JSON.stringify(newTitle))
     return {
         ...editor,
         title: newTitle
@@ -129,8 +129,8 @@ function createImage(editor: EditorType, { slideId, src, height, width }: { slid
 
     const slideArea = document.getElementById('slideArea')
     const rect = slideArea?.getBoundingClientRect()
-    const shiftX = (window.innerWidth / 2 - (rect?.left || 0))
-    const shiftY = (window.innerHeight / 2 - (rect?.top || 0))
+    const shiftX = (window.innerWidth - (rect?.left || 0)) / 2  
+    const shiftY = (window.innerHeight - (rect?.top || 0)) / 2
 
     const id = 'image_' + Math.random().toString(36).substring(2, 9)
 
@@ -159,9 +159,10 @@ function createImage(editor: EditorType, { slideId, src, height, width }: { slid
 function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideId: string, objectsToDelete: string[] }) {
     const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id === slideId) {
+            const objects = slide.objects.filter(obj => !objectsToDelete.includes(obj.id))
             return {
                 ...slide,
-                objects: slide.objects.filter(obj => !objectsToDelete.includes(obj.id))
+                objects: objects
             }
         }
         return slide

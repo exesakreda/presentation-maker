@@ -44,6 +44,7 @@ function App({ editor }: AppProps) {
       <Title
         editor={editor}
       />
+      
       <SlideList
         editor={editor}
         selectedSlides={selectedSlides}
@@ -61,11 +62,11 @@ function App({ editor }: AppProps) {
       />
 
       <Tools
-        editor={editor}
         currentTool={tool}
         setTool={setTool}
         currentSlide={currentSlide}
       />
+      
       <Properties
         editor={editor}
         currentSlideId={selectedSlides[selectedSlides.length - 1]}

@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import styles from './Tools.module.css'
 import { Slide } from '../../../types'
-import { EditorType } from '../services/EditorType'
 import { createImage } from '../services/editorFunctions'
 import { dispatch } from '../services/editor'
 
@@ -9,10 +8,9 @@ type ToolsProps = {
     currentTool: 'cursor' | 'text' | 'image',
     setTool: (tool: 'cursor' | 'text' | 'image') => void,
     currentSlide: Slide
-    editor: EditorType
 }
 
-function Tools({ currentTool, setTool, currentSlide, editor }: ToolsProps) {
+function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
     const fileInputRef = useRef<HTMLInputElement>(null)
     let file = null
     const handleFileUploadClick = () => {

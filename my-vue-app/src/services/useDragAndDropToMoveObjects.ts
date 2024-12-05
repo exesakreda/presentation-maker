@@ -17,7 +17,6 @@ type DragAndDropProps = {
 function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, isDragging, setIsDragging }: DragAndDropProps) {
     const isDraggingRef = useRef(isDragging)
 
-    // Убедитесь, что isDraggingRef синхронизируется с isDragging только при изменении isDragging
     useEffect(() => {
         isDraggingRef.current = isDragging
     }, [isDragging])
@@ -45,7 +44,7 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
                     x: (e.pageX - startPos.x) / scale,
                     y: (e.pageY - startPos.y) / scale,
                 }
-                if (!isDraggingRef.current) {
+                if (!isDraggingRef.current && (delta.x > 3 || delta.y > 3)) {
                     setIsDragging(true)
                     isDraggingRef.current = true
                 }
@@ -57,7 +56,6 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
             }
 
             const onMouseUp = () => {
-                // Проверяем, изменилась ли позиция объекта, прежде чем вызывать dispatch
                 if (newPos.x !== initialPos.x || newPos.y !== initialPos.y) {
                     dispatch(setObjectPos, {
                         slideId: slideId,
@@ -68,7 +66,7 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
                 setIsDragging(false)
                 isDraggingRef.current = false
                 setSelectedObjects([objId])
-                
+
                 document.removeEventListener('mousemove', onMouseMove)
                 document.removeEventListener('mouseup', onMouseUp)
             }
