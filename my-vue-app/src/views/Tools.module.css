@@ -42,8 +42,8 @@
 }
 
 .item__image {
-    width: 14px;
-    height: 14px;
+    /* width: 14px; */
+    /* height: 14px; */
 }
 
 .selectedTool {
@@ -59,7 +59,6 @@
 
     position: absolute;
     left: 50%;
-    bottom: 64px;
     transform: translate(-50%);
     background-color: #2C2C2C;
     border-radius: 10px;
@@ -72,12 +71,12 @@
 
     user-select: none;
 
-    transition: ease-in 0.1s;
+    transition: ease-in-out 0.2s;
 }
 .fileUpload:hover {
     background-color: #004FFF;
     
-    transition: ease-in 0.1s;
+    transition: ease-in-out 0.2s;
 }
 
 .fileUpload__text {

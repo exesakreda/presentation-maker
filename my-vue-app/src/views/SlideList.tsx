@@ -5,9 +5,9 @@ import { dispatch } from '../services/editor.ts'
 import { addSlide, removeSlide } from '../services/editorFunctions.ts'
 import { EditorType } from "../services/EditorType.ts"
 import { MouseEvent, useRef, useState } from "react"
-import { useDragAndDropToMoveSlides } from "../services/useDragAndDropToMoveSlides.ts"
+import { useMoveSlides } from "../services/hooks/useMoveSlides.ts"
 
-type ActionsProps = {
+type SlideList = {
     editor: EditorType,
     selectedSlides: string[],
     setSelectedSlides: (slidesId: string[]) => void,
@@ -15,9 +15,67 @@ type ActionsProps = {
     setSelectedObjects: (selectedObjects: string[]) => void
 }
 
-function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects, setSelectedObjects }: ActionsProps) {
+type SlideItemProps = {
+    slide: SlideType
+    slides: SlideType[]
+    isDragging: boolean
+    setIsDragging: (value: boolean) => void
+    setInsertionTop: (value: number) => void
+    selectedSlides: string[]
+    selectedObjects: string[]
+    setSelectedObjects: (selectedObjects: string[]) => void
+    onSlideClick: (e: React.MouseEvent, slideId: string) => void
+}
+
+
+function SlideListItem({
+    slide,
+    slides,
+    isDragging,
+    setIsDragging,
+    setInsertionTop,
+    selectedSlides,
+    selectedObjects,
+    setSelectedObjects,
+    onSlideClick
+}: SlideItemProps) {
+    const [shift, setShift] = useState(0)
+    const ref = useRef<HTMLDivElement>(null)
+    useMoveSlides({ ref, shift, setShift, slide: slide, slides: slides, isDragging, setIsDragging, setInsertionTop })
+    return (
+        <div
+            key={slide.id}
+            ref={ref}
+            id={slide.id}
+            onMouseDown={(event) => onSlideClick(event, slide.id)}
+            className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
+                ? styles.selectedSlide
+                : ''
+                }`}
+            style={{
+                top: `${shift}px`,
+            }}
+        >
+            <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
+            <div
+                className={styles.slidePreview}
+                style={{ transform: 'scale(0.1362903225806452)' }}
+            >
+                <Slide
+                    slide={slide}
+                    scale={0.1362903225806452}
+                    showSelection={false}
+                    selectedObjects={selectedObjects}
+                    setSelectedObjects={setSelectedObjects}
+                />
+            </div>
+        </div>
+    )
+}
+
+function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects, setSelectedObjects }: SlideList) {
     function onAddSlide() {
-        dispatch(addSlide)
+        dispatch(addSlide, {})
     }
 
     function onRemoveSlide() {
@@ -50,34 +108,20 @@ function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects,
     const [insertionTop, setInsertionTop] = useState(60)
 
     const slides: SlideType[] = editor.slideList
-    const slideListItems = slides.map(slide => {
-        const [shift, setShift] = useState(0)
-        const ref = useRef<HTMLDivElement>(null)
-        useDragAndDropToMoveSlides({ ref, shift, setShift, slide: slide, slides: slides, isDragging, setIsDragging, setInsertionTop })
+    const slideListItems = slides.map((slide) => {
         return (
-            <div
+            <SlideListItem
                 key={slide.id}
-                ref={ref}
-                id={slide.id}
-                onMouseDown={(event) => onSlideClick(event, slide.id)}
-                className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
-                    ? styles.selectedSlide
-                    : ''
-                    }`}
-                style={{
-                    top: `${shift}px`,
-                }}
-            >
-                <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
-                <div
-                    className={styles.slidePreview}
-                    style={{ transform: 'scale(0.1362903225806452)' }}
-                >
-                    {/* showSelection */}
-                    <Slide slide={slide} scale={0.1362903225806452} showSelection={false} selectedObjects={selectedObjects} setSelectedObjects={setSelectedObjects} />
-                </div>
-            </div>
-        )
+                slide={slide}
+                slides={slides}
+                isDragging={isDragging}
+                setIsDragging={setIsDragging}
+                setInsertionTop={setInsertionTop}
+                selectedSlides={selectedSlides}
+                selectedObjects={selectedObjects}
+                setSelectedObjects={setSelectedObjects}
+                onSlideClick={onSlideClick}
+            />)
     })
 
     return (

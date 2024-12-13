@@ -1,28 +1,41 @@
 import { RefObject, useEffect, useRef } from "react"
-import { dispatch } from "./editor"
-import { setObjectPos } from "./editorFunctions"
+import { dispatch } from "../editor"
+import { setObjectPos } from "../editorFunctions"
 
 type DragAndDropProps = {
     ref: RefObject<HTMLElement>,
     setPos: (pos: { x: number, y: number }) => void,
     slideId: string,
     objId: string,
+    objType: 'image' | 'text',
     scale: number
     setSelectedObjects: (newSelectedObjects: string[]) => void,
     isResizing: boolean,
     isDragging: boolean,
-    setIsDragging: (isDragging: boolean) => void
+    setIsDragging: (isDragging: boolean) => void,
+    isEditing: boolean
 }
 
-function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, isDragging, setIsDragging }: DragAndDropProps) {
+function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, setSelectedObjects, isResizing, isDragging, setIsDragging, isEditing }: DragAndDropProps) {
     const isDraggingRef = useRef(isDragging)
-
+    const isResizingRef = useRef(isResizing)
+    const isEditingRef = useRef(isEditing)
+    
     useEffect(() => {
         isDraggingRef.current = isDragging
     }, [isDragging])
 
     useEffect(() => {
-        if (isResizing) return
+        isResizingRef.current = isResizing
+    }, [isResizing])
+
+    useEffect(() => {
+        isEditingRef.current = isEditing
+    }, [isEditing])
+
+    useEffect(() => {
+        if (isResizingRef.current || isEditingRef.current) return
+
         const element = ref.current
         if (!element) return
 
@@ -36,7 +49,16 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
         const onMouseDown = (e: MouseEvent) => {
             e.preventDefault()
             const startPos = { x: e.pageX, y: e.pageY }
-            const initialPos = { x: element.offsetLeft, y: element.offsetTop }
+
+            const initialPos = objType == 'text' 
+                ? {
+                    x: (element.offsetParent as HTMLElement).offsetLeft,
+                    y: (element.offsetParent as HTMLElement).offsetTop
+                }
+                : {
+                    x: element.offsetLeft,
+                    y: element.offsetTop
+                }
 
             let newPos = { x: initialPos.x, y: initialPos.y }
             const onMouseMove = (e: MouseEvent) => {
@@ -81,7 +103,7 @@ function useDragAndDropToMoveObjects({ ref, setPos, slideId, objId, scale, setSe
             element.removeEventListener('mousedown', onMouseDown)
         }
 
-    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, setIsDragging])
+    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, setIsDragging, objType, isEditing])
 }
 
-export { useDragAndDropToMoveObjects }
+export { useMoveObjects }

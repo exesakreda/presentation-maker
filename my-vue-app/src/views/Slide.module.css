@@ -25,15 +25,15 @@
     resize: none;
     overflow: hidden;
     background-color: transparent;
+    position: relative;
 }
 
 .textArea:focus {
-    background: rgba(255, 255, 255, 0.35);
+    border: none;
+    /* background-color: #00000025; */
     /* box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); */
-    backdrop-filter: blur(10.5px);
-    -webkit-backdrop-filter: blur(10.5px);
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0);
+    /* backdrop-filter: blur(10.5px); */
+    /* -webkit-backdrop-filter: blur(10.5px); */
 }
 
 .imageArea__text {
@@ -80,11 +80,11 @@
 
 .resizeHandle {
     background-color: #fff;
-    border: 2px solid #0099ff;
+    border: 3px solid #0099ff;
     width: 8px;
     height: 8px;
-    z-index: 50;
     position: absolute;
+    z-index: 50;
 }
 
 .resizeHandles {
@@ -94,12 +94,15 @@
 .horizontalRH {
     position: absolute;
     width: 100%;
-    border: 1px solid #0099ff;
+    height: 0px;
+    border: 10px solid transparent;
     transform: translate(-50%);
+    z-index: 49;
 }
 
 .verticalRH {
     position: absolute;
     height: 100%;
-    border: 1px solid #0099ff;
+    width: 0px;
+    border: 10px solid transparent;
 }

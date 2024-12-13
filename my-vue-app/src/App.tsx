@@ -5,7 +5,7 @@ import { Properties } from './views/Properties.tsx'
 import { Title } from './views/Title.tsx'
 
 import { EditorType } from './services/EditorType.ts'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type AppProps = {
   editor: EditorType
@@ -20,12 +20,16 @@ function App({ editor }: AppProps) {
     localStorage.setItem('selectedSlides', JSON.stringify(['1']))
   }
 
-  if (!isKeyExists('slideList')) {
-    localStorage.setItem('slideList', JSON.stringify(editor.slideList))
-  }
+  // if (!isKeyExists('slideList')) {
+  //   localStorage.setItem('slideList', JSON.stringify(editor.slideList))
+  // }
 
-  if (!isKeyExists('title')) {
-    localStorage.setItem('title', JSON.stringify('Новая презентация'))
+  // if (!isKeyExists('title')) {
+  //   localStorage.setItem('title', JSON.stringify('Новая презентация'))
+  // }
+
+  if (!isKeyExists('editor')) {
+    localStorage.setItem('editor', JSON.stringify(editor))
   }
 
   const [selectedSlides, setSelectedSlides] = useState<string[]>(() => {
@@ -33,44 +37,51 @@ function App({ editor }: AppProps) {
     return storedSlides ? JSON.parse(storedSlides) : ['1']
   })
 
+  useEffect(() => {
+    console.log(selectedSlides)
+  }, [selectedSlides])
+
   const [tool, setTool] = useState<'cursor' | 'text' | 'image'>('cursor')
   const currentSlide = editor.slideList.find(slide => slide.id === selectedSlides[selectedSlides.length - 1])
-  if (!currentSlide) return
-
+  console.log(currentSlide)
   const [selectedObjects, setSelectedObjects] = useState<string[]>([])
 
   return (
     <>
-      <Title
-        editor={editor}
-      />
-      
-      <SlideList
-        editor={editor}
-        selectedSlides={selectedSlides}
-        setSelectedSlides={setSelectedSlides}
-        selectedObjects={selectedObjects}
-        setSelectedObjects={setSelectedObjects}
-      />
+      {currentSlide ? (
+        <>
+          <Title editor={editor} />
 
-      <SlideArea
-        currentSlide={currentSlide}
-        currentTool={tool}
-        onToolSelect={setTool}
-        selectedObjects={selectedObjects}
-        setSelectedObjects={setSelectedObjects}
-      />
+          <SlideList
+            editor={editor}
+            selectedSlides={selectedSlides}
+            setSelectedSlides={setSelectedSlides}
+            selectedObjects={selectedObjects}
+            setSelectedObjects={setSelectedObjects}
+          />
 
-      <Tools
-        currentTool={tool}
-        setTool={setTool}
-        currentSlide={currentSlide}
-      />
-      
-      <Properties
-        editor={editor}
-        currentSlideId={selectedSlides[selectedSlides.length - 1]}
-      />
+          <SlideArea
+            currentSlide={currentSlide}
+            currentTool={tool}
+            onToolSelect={setTool}
+            selectedObjects={selectedObjects}
+            setSelectedObjects={setSelectedObjects}
+          />
+
+          <Tools
+            currentTool={tool}
+            setTool={setTool}
+            currentSlide={currentSlide}
+          />
+
+          <Properties
+            editor={editor}
+            currentSlideId={selectedSlides[selectedSlides.length - 1]}
+          />
+        </>
+      ) : (
+        <p>No slide selected</p>
+      )}
     </>
   )
 }

@@ -12,7 +12,6 @@ type ToolsProps = {
 
 function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
     const fileInputRef = useRef<HTMLInputElement>(null)
-    let file = null
     const handleFileUploadClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click()
@@ -20,18 +19,20 @@ function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        file = event.target.files?.[0]
+        const file = event.target.files?.[0]
         if (file) {
             const reader = new FileReader()
             reader.onloadend = async () => {
                 const src = reader.result as string
                 const dimensions = await getImageDimensions(src)
+                const aspectRatio = dimensions.w / dimensions.h
                 dispatch(createImage,
                     {
                         slideId: currentSlide.id,
                         src: src,
                         height: dimensions.h,
-                        width: dimensions.w
+                        width: dimensions.w,
+                        aspectRatio: aspectRatio
                     })
             }
             reader.readAsDataURL(file)
@@ -53,7 +54,7 @@ function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
             <div
                 className={styles.fileUpload}
                 style={{
-                    opacity: currentTool == 'image' ? '1' : '0'
+                    bottom: currentTool == 'image' ? '60px' : '8px'
                 }}
                 onClick={handleFileUploadClick}
             >

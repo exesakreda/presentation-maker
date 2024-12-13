@@ -1,7 +1,7 @@
-import { RefObject, useEffect, useRef } from "react"
-import { Slide } from "../../../types"
-import { dispatch } from "./editor"
-import { updateSlideList } from "./editorFunctions"
+import { RefObject, useCallback, useEffect, useRef } from "react"
+import { Slide } from "../../../../types"
+import { dispatch } from "../editor"
+import { updateSlideList } from "../editorFunctions"
 
 type DragAndDropProps = {
     ref: RefObject<HTMLElement>,
@@ -14,29 +14,31 @@ type DragAndDropProps = {
     setInsertionTop: (insertionTop: number) => void
 }
 
-function useDragAndDropToMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: DragAndDropProps) {
+
+function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: DragAndDropProps) {
     const isDraggingRef = useRef(isDragging)
     useEffect(() => {
         isDraggingRef.current = isDragging
     }, [isDragging])
 
-    function calculateIndex(elementTop: number) {
+
+    const calculateIndex = useCallback((elementTop: number) => {
         let index = Math.round(elementTop / 107)
         index = Math.max(0, Math.min(index, slides.length - 1))
-        let newInsertionTop = index * 107 + 60 + 53.5
+        const newInsertionTop = index * 107 + 60 + 53.5
 
         setInsertionTop(newInsertionTop)
 
         return index
-    }
+    }, [setInsertionTop, slides.length])
 
-    function insertSlide(index: number, oldIndex: number) {
+    const insertSlide = useCallback((index: number, oldIndex: number) => {
         const newSlideList = [...slides]
         newSlideList.splice(oldIndex, 1)
         newSlideList.splice(index, 0, slide)
 
         dispatch(updateSlideList, newSlideList)
-    }
+    }, [slide, slides])
 
     useEffect(() => {
         const element = ref.current
@@ -82,7 +84,7 @@ function useDragAndDropToMoveSlides({ ref, shift, setShift, slide, slides, isDra
         return () => {
             element.removeEventListener('mousedown', onMouseDown)
         }
-    }, [ref, setShift, shift, slide, slides, setIsDragging])
+    }, [ref, setShift, shift, slide, slides, setIsDragging, calculateIndex, insertSlide])
 }
 
-export { useDragAndDropToMoveSlides }
+export { useMoveSlides }

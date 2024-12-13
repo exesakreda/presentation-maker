@@ -1,18 +1,10 @@
 import React, { useRef, useState, MouseEvent } from "react"
-import { useDragAndDropToMoveObjects } from "../services/useDragAndDropToMoveObjects"
-import { resizeInput } from "../services/resizeInput"
+import { useMoveObjects } from "../services/hooks/useMoveObjects"
 import { dispatch } from "../services/editor"
 import { setTextAreaValue } from "../services/editorFunctions"
 import styles from './Slide.module.css'
 import { TextArea, ImageArea } from "../../../types"
-import { useDragAndDropToResizeObjectsLT } from "../services/useDragAndDropToResizeObjectsLeftTop"
-import { useDragAndDropToResizeObjectsRT } from "../services/useDragAndDropToResizeObjectsRightTop"
-import { useDragAndDropToResizeObjectsLB } from "../services/useDragAndDropToResizeObjectsLeftBot"
-import { useDragAndDropToResizeObjectsRB } from "../services/useDragAndDropToResizeObjectsRightBot"
-import { useDragAndDropToResizeObjectsTop } from "../services/useDragAndDropToResizeObjectsTop"
-import { useDragAndDropToResizeObjectsBot } from "../services/useDragAndDropToResizeObjectsBot"
-import { useDragAndDropToResizeObjectsLeft } from "../services/useDragAndDropToResizeObjectsLeft"
-import { useDragAndDropToResizeObjectsRight } from "../services/useDragAndDropToResizeObjectsRight"
+import { useResizeObjects } from "../services/hooks/useResizeObjects"
 
 type SlideObjectProps = {
     obj: TextArea | ImageArea,
@@ -24,32 +16,44 @@ type SlideObjectProps = {
 }
 
 function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale, showSelection }: SlideObjectProps) {
-    const inputRef = useRef<HTMLInputElement>(null)
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
-    let ref
-    obj.type == 'text' ? ref = inputRef : ref = imageRef
+    const ref = obj.type == 'text' ? textAreaRef : imageRef
 
     const [pos, setPos] = useState(obj.position)
 
     const [size, setSize] = useState(obj.size)
     const [isResizing, setIsResizing] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
 
     const isSelected = selectedObjects.includes(obj.id)
 
-    useDragAndDropToMoveObjects({
+    const hanldeStartEditing = () => {
+        if (textAreaRef.current) {
+            textAreaRef.current.focus()
+            setIsEditing(true)
+        }
+    }
+
+    const hanldeFinishEditing = () => {
+        setIsEditing(false)
+    }
+
+    useMoveObjects({
         ref: ref,
         setPos: setPos,
         slideId: slideId,
         objId: obj.id,
+        objType: obj.type,
         scale: scale,
         setSelectedObjects: setSelectedObjects,
         isResizing: isResizing,
         isDragging: isDragging,
-        setIsDragging: setIsDragging
+        setIsDragging: setIsDragging,
+        isEditing: isEditing
     })
-
 
     const handleObjectSelect = (e: MouseEvent<HTMLDivElement | HTMLInputElement | HTMLImageElement>) => {
         const target = e.currentTarget as HTMLElement
@@ -67,18 +71,18 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         }
     }
 
-
-    const onTextAreaChange: React.ChangeEventHandler = (e) => {
+    const onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
         dispatch(setTextAreaValue, {
-            newValue: (e.target as HTMLInputElement).value,
-            objId: (e.target as HTMLInputElement).id,
+            newValue: e.currentTarget.value,
+            objId: obj.id,
             slideId: slideId
         })
     }
 
-    const topLeftRH = () => {
+    const TopLeftRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsLT({
+        useResizeObjects({
+            anchorPoint: 'topleft',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -87,7 +91,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
@@ -99,9 +106,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         )
     }
 
-    const topRightRH = () => {
+    const TopRightRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsRT({
+        useResizeObjects({
+            anchorPoint: 'topright',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -110,7 +118,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
@@ -122,9 +133,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         )
     }
 
-    const botLeftRH = () => {
+    const BotLeftRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsLB({
+        useResizeObjects({
+            anchorPoint: 'botleft',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -133,7 +145,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
@@ -145,9 +160,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         )
     }
 
-    const botRightRH = () => {
+    const BotRightRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsRB({
+        useResizeObjects({
+            anchorPoint: 'botright',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -156,7 +172,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
@@ -168,9 +187,10 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         )
     }
 
-    const topHorizontalRH = () => {
+    const TopHorizontalRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsTop({
+        useResizeObjects({
+            anchorPoint: 'top',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -179,21 +199,25 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
             <div
                 ref={resizeRef}
                 className={`${styles.horizontalRH}`}
-                style={{ top: '-2px', cursor: 'n-resize' }}
+                style={{ top: '-10px', cursor: 'n-resize' }}
             />
         )
     }
 
-    const botHorizontalRH = () => {
+    const BotHorizontalRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsBot({
+        useResizeObjects({
+            anchorPoint: 'bot',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -202,21 +226,25 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
             <div
                 ref={resizeRef}
                 className={`${styles.horizontalRH}`}
-                style={{ top: 'calc(100%)', cursor: 'n-resize' }}
+                style={{ top: 'calc(100% - 10px)', cursor: 'n-resize' }}
             />
         )
     }
 
-    const letftVerticalRH = () => {
+    const LetftVerticalRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsLeft({
+        useResizeObjects({
+            anchorPoint: 'left',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -225,21 +253,25 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
             <div
                 ref={resizeRef}
                 className={`${styles.verticalRH}`}
-                style={{ top: '0px', left: '-2px', cursor: 'e-resize' }}
+                style={{ top: '-10px', left: '-10px', cursor: 'e-resize' }}
             />
         )
     }
 
-    const rightVerticalRH = () => {
+    const RightVerticalRH = () => {
         const resizeRef = useRef<HTMLDivElement>(null)
-        useDragAndDropToResizeObjectsRight({
+        useResizeObjects({
+            anchorPoint: 'right',
             ref: resizeRef,
             size: size,
             setSize: setSize,
@@ -248,54 +280,65 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             scale: scale,
             setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
-            setIsResizing: setIsResizing
+            setIsResizing: setIsResizing,
+            pos: pos,
+            setPos: setPos,
+            aspectRatio: obj.type == 'image' ? obj.aspectRatio : 1
         })
 
         return (
             <div
                 ref={resizeRef}
                 className={`${styles.verticalRH}`}
-                style={{ top: '0px', left: '100%', cursor: 'e-resize' }}
+                style={{ top: '-10px', left: 'calc(100% - 10px)', cursor: 'e-resize' }}
             />
         )
     }
+
 
     switch (obj.type) {
         case 'text':
             return (
                 <div
                     key={obj.id}
-                    ref={inputRef}
-                    id={obj.id}
                     className={`${styles.slideObject} ${(selectedObjects?.includes(obj.id) && showSelection) ? styles.selectedObject : ''}`}
                     style={{
                         left: `${pos.x}px`,
                         top: `${pos.y}px`,
-                        width: `${obj.size.w}px`,
-                        height: `${obj.size.h}px`,
+                        width: `${size.w}px`,
+                        height: `${size.h}px`,
                     }}
-                    onMouseDown={handleObjectSelect}
+                    onMouseDown={(e: MouseEvent<HTMLDivElement>) => {
+                        if (!isDragging) {
+                            handleObjectSelect(e)
+                        }
+                    }}
                 >
                     <div
                         className={styles.resizeHandles}
                         style={{
-                            display: isSelected ? 'block' : 'none'
+                            display: (isSelected && !isEditing) ? 'block' : 'none'
                         }}
                     >
-                        {topLeftRH()}
-                        {topRightRH()}
-                        {botLeftRH()}
-                        {botRightRH()}
-                        {topHorizontalRH()}
-                        {botHorizontalRH()}
-                        {letftVerticalRH()}
-                        {rightVerticalRH()}
+                        {TopLeftRH()}
+                        {TopRightRH()}
+                        {BotLeftRH()}
+                        {BotRightRH()}
+                        {TopHorizontalRH()}
+                        {BotHorizontalRH()}
+                        {LetftVerticalRH()}
+                        {RightVerticalRH()}
                     </div>
                     <textarea
+                        ref={textAreaRef}
                         className={styles.textArea}
                         defaultValue={obj.value}
-                        onBlur={onTextAreaChange}
-                        onInput={(event) => resizeInput(event.target as HTMLInputElement)}
+                        id={obj.id}
+                        onDoubleClick={hanldeStartEditing}
+                        onBlur={(e) => {
+                            onTextAreaChange(e)
+                            hanldeFinishEditing()
+                        }}
                         style={{
                             border: isSelected ? 'none' : '1px solid #59595975',
                             fontSize: `${obj.textSize}px`,
@@ -331,14 +374,14 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
                             display: (isSelected && showSelection) ? 'block' : 'none'
                         }}
                     >
-                        {topLeftRH()}
-                        {topRightRH()}
-                        {botLeftRH()}
-                        {botRightRH()}
-                        {topHorizontalRH()}
-                        {botHorizontalRH()}
-                        {letftVerticalRH()}
-                        {rightVerticalRH()}
+                        {TopLeftRH()}
+                        {TopRightRH()}
+                        {BotLeftRH()}
+                        {BotRightRH()}
+                        {TopHorizontalRH()}
+                        {BotHorizontalRH()}
+                        {LetftVerticalRH()}
+                        {RightVerticalRH()}
                     </div>
                     <img
                         src={obj.src}

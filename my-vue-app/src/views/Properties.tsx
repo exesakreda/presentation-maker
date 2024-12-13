@@ -4,7 +4,7 @@ import { dispatch } from '../services/editor'
 import { changeBackground } from '../services/editorFunctions'
 import { Background } from '../../../types'
 
-import { resizeInput } from '../services/resizeInput'
+import { resizeInput } from '../services/hooks/resizeInput'
 import { useEffect, useRef } from 'react'
 
 type PropertiesProps = {
@@ -114,10 +114,7 @@ function Properties({ editor, currentSlideId }: PropertiesProps) {
                 </div> */}
 
             </div>
-
-            <div className={styles.export}>
-                <div className={styles.export__text}>Export to PDF</div>
-            </div>
+            
         </div>
     )
 }

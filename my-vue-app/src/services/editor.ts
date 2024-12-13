@@ -2,7 +2,7 @@ import { editor } from "./data"
 import { EditorType } from "./EditorType"
 
 let _editor = editor
-let _handler: Function = () => { }
+let _handler: () => void = () => { }
 
 function getEditor() {
   return _editor
@@ -12,7 +12,9 @@ function setEditor(newEditor: EditorType) {
   _editor = newEditor
 }
 
-function dispatch(modifyFn: Function, payload?: Object): void {
+type ModifyFunction<T = unknown> = (editor: EditorType, payload: T) => EditorType
+
+function dispatch<T>(modifyFn: ModifyFunction<T>, payload: T): void {
   const newEditor = modifyFn(_editor, payload)
   setEditor(newEditor)
 
@@ -21,7 +23,7 @@ function dispatch(modifyFn: Function, payload?: Object): void {
   }
 }
 
-function addEditorChangeHandler(handler: Function): void {
+function addEditorChangeHandler(handler: () => void): void {
   _handler = handler
 }
 

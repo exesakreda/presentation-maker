@@ -50,6 +50,7 @@ type TextArea = CommonObject & {
 type ImageArea = CommonObject & {
     src: string,
     type: 'image',
+    aspectRatio: number
 }
 
 type Tool = 'cursor' | 'text' | 'image' | 'shape'

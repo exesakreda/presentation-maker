@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from './Slide.module.css'
-import { resizeInput } from "../services/resizeInput"
+import { resizeInput } from "../services/hooks/resizeInput"
 import { dispatch } from "../services/editor"
 import { deleteObject } from "../services/editorFunctions"
 
@@ -33,7 +33,7 @@ function Slide({ slide, scale, showSelection, selectedObjects, setSelectedObject
         return () => {
             document.removeEventListener('keydown', handleKeyDown)
         }
-    }, [selectedObjects, slide.id])
+    }, [selectedObjects, slide.id, setSelectedObjects])
 
     const slideObjects = slide.objects.map(obj => (
         <SlideObject

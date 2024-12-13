@@ -1,15 +1,17 @@
-import { Slide } from "../../../types"
+import { ImageArea, Slide } from "../../../types"
 import { EditorType } from "./EditorType"
 import { SlideObject } from "../../../types"
 import { MouseEvent } from "react"
 
 
 function setTitle(editor: EditorType, newTitle: string): EditorType {
-    localStorage.setItem('title', JSON.stringify(newTitle))
-    return {
+
+    const newEditor = {
         ...editor,
         title: newTitle
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+    return newEditor
 }
 
 // function setSelection(editor: EditorType, newSelection: SelectionType): EditorType {
@@ -25,14 +27,15 @@ function addSlide(editor: EditorType): EditorType {
         background: { type: 'color', value: '#FFFFFF' },
         objects: []
     }
-    localStorage.setItem('slideList', JSON.stringify([...editor.slideList, newSlide]))
-    return {
+    const newEditor = {
         ...editor,
         slideList: [
             ...editor.slideList,
             newSlide
-        ]
+    ]
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+    return newEditor
 }
 
 function removeSlide(editor: EditorType, { selectedSlides, setSelectedSlides }: { selectedSlides: string[], setSelectedSlides: (slidesId: string[]) => void }): EditorType {
@@ -56,11 +59,13 @@ function removeSlide(editor: EditorType, { selectedSlides, setSelectedSlides }: 
             setSelectedSlides([])
             localStorage.setItem('selectedSlides', JSON.stringify([]))
         }
-        localStorage.setItem('slideList', JSON.stringify(newSlides))
-        return {
+
+        const newEditor = {
             ...editor,
             slideList: newSlides
         }
+        localStorage.setItem('editor', JSON.stringify(newEditor))
+        return newEditor
     }
     return editor
 }
@@ -77,11 +82,12 @@ function changeBackground(editor: EditorType, newSlideList: Slide[]) {
 }
 
 function updateSlideList(editor: EditorType, newSlideList: Slide[]) {
-    localStorage.setItem('slideList', JSON.stringify(newSlideList))
-    return {
+    const newEditor = {
         ...editor,
         slideList: newSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+    return newEditor
 }
 
 function createTextArea(editor: EditorType, { e, slideId, scale }: { e: MouseEvent, slideId: string, scale: number }) {
@@ -123,23 +129,24 @@ function createTextArea(editor: EditorType, { e, slideId, scale }: { e: MouseEve
     }
 }
 
-function createImage(editor: EditorType, { slideId, src, height, width }: { slideId: string, src: string, height: number, width: number }) {
+function createImage(editor: EditorType, { slideId, src, height, width, aspectRatio }: { slideId: string, src: string, height: number, width: number, aspectRatio: number }) {
     const slideIndex = editor.slideList.findIndex(slide => slide.id === slideId)
     if (slideIndex === -1) return editor
 
     const slideArea = document.getElementById('slideArea')
     const rect = slideArea?.getBoundingClientRect()
-    const shiftX = (window.innerWidth - (rect?.left || 0)) / 2  
+    const shiftX = (window.innerWidth - (rect?.left || 0)) / 2
     const shiftY = (window.innerHeight - (rect?.top || 0)) / 2
 
     const id = 'image_' + Math.random().toString(36).substring(2, 9)
 
-    const newImage: SlideObject = {
+    const newImage: ImageArea = {
         id: id,
         position: { x: shiftX, y: shiftY },
         size: { h: height, w: width },
         src: src,
-        type: 'image'
+        type: 'image',
+        aspectRatio: aspectRatio
     }
     const updatedSlideObjects = [...editor.slideList[slideIndex].objects, newImage]
     const updatedSlide = {
@@ -148,12 +155,14 @@ function createImage(editor: EditorType, { slideId, src, height, width }: { slid
     }
     const updatedSlideList = [...editor.slideList]
     updatedSlideList[slideIndex] = updatedSlide
-    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
 
-    return {
+    const newEditor = {
         ...editor,
         slideList: updatedSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+
+    return newEditor
 }
 
 function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideId: string, objectsToDelete: string[] }) {
@@ -167,11 +176,12 @@ function deleteObject(editor: EditorType, { slideId, objectsToDelete }: { slideI
         }
         return slide
     })
-    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
-    return {
+    const newEditor = {
         ...editor,
         slideList: updatedSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+    return newEditor
 }
 
 function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideObject[]) {
@@ -184,41 +194,42 @@ function updateSlideObjects(editor: EditorType, slideId: string, objects: SlideO
         }
         return slide
     })
-    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
-    return {
-        editor: {
-            ...editor,
-            slideList: updatedSlideList
-        }
+
+    const newEditor = {
+        ...editor,
+        slideList: updatedSlideList
     }
+
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+    return newEditor
 }
 
 function setTextAreaValue(editor: EditorType, { newValue, objId, slideId }: { newValue: string, slideId: string, objId: string }) {
-    const updateSlideList = editor.slideList.map(slide => {
+    const updatedSlideList = editor.slideList.map(slide => {
         if (slide.id === slideId) {
-            const updateSlideObjects = slide.objects.map(object => {
-                if (object.id === objId) {
+            const newSlideObjects = slide.objects.map(obj => {
+                if (obj.id === objId && obj.type == 'text') {
                     return {
-                        ...object,
+                        ...obj,
                         value: newValue
                     }
                 }
-                return object
+                return obj
             })
             return {
                 ...slide,
-                objects: updateSlideObjects
+                objects: newSlideObjects
             }
         }
         return slide
     })
-
-    return {
-        editor: {
-            ...editor,
-            slideList: updateSlideList
-        }
+    const newEditor = {
+        ...editor,
+        slideList: updatedSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+
+    return newEditor
 }
 
 function setObjectSelection(editor: EditorType, slideId: string, objects: string[]) {
@@ -258,12 +269,13 @@ function setObjectPos(editor: EditorType, { slideId, objectId, newPos }: { slide
         }
         return slide
     })
-    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
-
-    return {
+    const newEditor = {
         ...editor,
         slideList: updatedSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+
+    return newEditor
 }
 
 
@@ -286,12 +298,13 @@ function setObjectSize(editor: EditorType, { slideId, objectId, newSize }: { sli
         }
         return slide
     })
-    localStorage.setItem('slideList', JSON.stringify(updatedSlideList))
-
-    return {
+    const newEditor = {
         ...editor,
         slideList: updatedSlideList
     }
+    localStorage.setItem('editor', JSON.stringify(newEditor))
+
+    return newEditor
 }
 
 export {
