@@ -3,7 +3,7 @@ import { SlideArea } from './views/SlideArea.tsx'
 import { Tools } from './views/Tools.tsx'
 import { Properties } from './views/Properties.tsx'
 import { Title } from './views/Title.tsx'
-
+import { FileMenu } from './views/FileMenu.tsx'
 import { EditorType } from './services/EditorType.ts'
 import { useEffect, useState } from 'react'
 
@@ -52,6 +52,8 @@ function App({ editor }: AppProps) {
         <>
           <Title editor={editor} />
 
+          <FileMenu editor={editor} />
+          
           <SlideList
             editor={editor}
             selectedSlides={selectedSlides}
