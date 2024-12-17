@@ -55,6 +55,13 @@ type ImageArea = CommonObject & {
 
 type Tool = 'cursor' | 'text' | 'image' | 'shape'
 
+type Notification = {
+    id: string,
+    message: string,
+    info?: string,
+    type: 'error' | 'success' | 'info'
+}
+
 export type {
     Presentation,
     Slide,
@@ -67,5 +74,6 @@ export type {
     Size,
     TextArea,
     ImageArea,
-    Tool
+    Tool,
+    Notification
 }

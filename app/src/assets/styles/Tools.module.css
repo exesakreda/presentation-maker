@@ -1,0 +1,91 @@
+.tools {
+    width: 176px;
+    height: 44px;
+
+    transform: scale(calc(1vw / (176 / 100)));
+    transform-origin: top left;
+
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    transform: translate(-50%);
+
+    background-color: #2C2C2C;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    user-select: none;
+}
+
+.tools__item {
+    height: 28px;
+    width: 28px;
+    background-color: #2C2C2C;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: .1s ease-in;
+}
+
+.tools__item:hover {
+    background-color: #004FFF;
+    /* background-color: #F65009; */
+    transition: .1s ease-in;
+}
+
+.item__image {
+    width: 16px;
+    height: 16px;
+}
+
+.selectedTool {
+    background-color: #004FFF;
+}
+
+.fileUpload {
+    width: 176px;
+    height: 39px;
+
+    transform: scale(calc(1vw / (176 / 100)));
+    transform-origin: top left;
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+    background-color: #2C2C2C;
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    user-select: none;
+    cursor: pointer;
+    transition: ease-in-out 0.2s;
+}
+.fileUpload:hover {
+    background-color: #004FFF;
+    
+    transition: ease-in-out 0.2s;
+}
+
+.fileUpload__text {
+    font: bold 12px 'Inter';
+    color: #ffffff;
+    margin-left: 16px;
+}
+
+.fileUpload__icon {
+    float: right;
+    margin-right: 16px;
+}
