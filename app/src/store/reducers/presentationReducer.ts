@@ -1,8 +1,11 @@
 import { PresentationActionType } from "../types/presentationTypes";
 import { Presentation } from "../../../../types";
-import { editor } from "../../services/data";
+import { uid } from 'uid';
 
-const initialState: Presentation = editor
+const initialState: Presentation = {
+    title: '',
+    slideList: []
+}
 
 const presentationReducer = (state = initialState, action: any): Presentation => {
     switch (action.type) {
@@ -53,7 +56,7 @@ const presentationReducer = (state = initialState, action: any): Presentation =>
                             objects: [
                                 ...slide.objects,
                                 {
-                                    id: 'textarea_' + Math.random().toString(36).substring(2, 9),
+                                    id: 'textarea_' + uid(10),
                                     type: 'text',
                                     position: action.payload.position,
                                     size: { h: 35, w: 80 },
@@ -92,7 +95,7 @@ const presentationReducer = (state = initialState, action: any): Presentation =>
                             objects: [
                                 ...slide.objects,
                                 {
-                                    id: 'image_' + Math.random().toString(36).substring(2, 9),
+                                    id: 'image_' + uid(10),
                                     type: 'image',
                                     position: action.payload.position,
                                     size: { w: action.payload.dimensions.width, h: action.payload.dimensions.height },

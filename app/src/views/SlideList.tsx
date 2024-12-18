@@ -1,19 +1,13 @@
 import type { Slide as SlideType } from "../../../types.ts"
 import { Slide } from "./Slide.tsx"
 import styles from '../assets/styles/SlideList.module.css'
-import { dispatch } from '../services/editor.ts'
-import { addSlide, removeSlide } from '../services/editorFunctions.ts'
-import { EditorType } from "../services/EditorType.ts"
-import { MouseEvent, useRef, useState } from "react"
+import { MouseEvent, useEffect, useRef, useState } from "react"
 import { useMoveSlides } from "../services/hooks/useMoveSlides.ts"
 
-type SlideList = {
-    editor: EditorType,
-    selectedSlides: string[],
-    setSelectedSlides: (slidesId: string[]) => void,
-    selectedObjects: string[],
-    setSelectedObjects: (selectedObjects: string[]) => void
-}
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "../store/reducers/rootReducer.ts"
+import { addSlide, removeSlides } from "../store/actions/presentationActions.ts"
+import { setSelectedSlides, setSelectedObjects } from "../store/actions/selectionActions.ts"
 
 type SlideItemProps = {
     slide: SlideType
@@ -22,11 +16,8 @@ type SlideItemProps = {
     setIsDragging: (value: boolean) => void
     setInsertionTop: (value: number) => void
     selectedSlides: string[]
-    selectedObjects: string[]
-    setSelectedObjects: (selectedObjects: string[]) => void
     onSlideClick: (e: React.MouseEvent, slideId: string) => void
 }
-
 
 function SlideListItem({
     slide,
@@ -35,8 +26,6 @@ function SlideListItem({
     setIsDragging,
     setInsertionTop,
     selectedSlides,
-    selectedObjects,
-    setSelectedObjects,
     onSlideClick
 }: SlideItemProps) {
     const [shift, setShift] = useState(0)
@@ -65,61 +54,71 @@ function SlideListItem({
                     slide={slide}
                     scale={0.1362903225806452}
                     showSelection={false}
-                    selectedObjects={selectedObjects}
-                    setSelectedObjects={setSelectedObjects}
                 />
             </div>
         </div>
     )
 }
 
-function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects, setSelectedObjects }: SlideList) {
-    function onAddSlide() {
-        dispatch(addSlide, {})
-    }
-
-    function onRemoveSlide() {
-        dispatch(removeSlide, { selectedSlides: selectedSlides, setSelectedSlides: setSelectedSlides })
-    }
+function SlideList() {
+    const slideList = useSelector((state: RootState) => state.presentation.slideList)
+    const selection = useSelector((state: RootState) => state.selection)
+    const dispatch = useDispatch()
 
     const [isDragging, setIsDragging] = useState(false)
+    const [insertionTop, setInsertionTop] = useState(60)
+
     function onSlideClick(e: MouseEvent, slideId: string) {
         if (isDragging) return
-        setSelectedObjects([])
+        dispatch(setSelectedObjects([]))
         if (e.ctrlKey) {
-            if (selectedSlides.includes(slideId)) {
-                if (selectedSlides.length > 1 && editor.slideList.length > 1) {
-                    const newSelectedSlides = selectedSlides.filter(id => id !== slideId)
-                    setSelectedSlides(newSelectedSlides)
-                    localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
+            if (selection.slides.includes(slideId)) {
+                if (selection.slides.length > 1 && slideList.length > 1) {
+                    const newSelectedSlides = selection.slides.filter(id => id !== slideId)
+                    dispatch(setSelectedSlides(newSelectedSlides))
                 }
             } else {
-                const newSelectedSlides = [...selectedSlides, slideId]
-                setSelectedSlides(newSelectedSlides)
-                localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
+                const newSelectedSlides = [...selection.slides, slideId]
+                dispatch(setSelectedSlides(newSelectedSlides))
             }
         } else {
             const newSelectedSlides = [slideId]
-            setSelectedSlides(newSelectedSlides)
-            localStorage.setItem('selectedSlides', JSON.stringify(newSelectedSlides))
+            dispatch(setSelectedSlides(newSelectedSlides))
         }
     }
 
-    const [insertionTop, setInsertionTop] = useState(60)
+    function handleRemoveSlide() {
+        dispatch(removeSlides(selection.slides))
+        const newSlides = slideList.filter(slide => !selection.slides.includes(slide.id))
+        let closestSlideId = null
+        if (newSlides.length > 0) {
+            const firstSelectedIndex = slideList.findIndex(slide => selection.slides.includes(slide.id))
+            if (firstSelectedIndex !== -1) {
+                if (firstSelectedIndex < newSlides.length) {
+                    closestSlideId = newSlides[firstSelectedIndex].id
+                } else {
+                    closestSlideId = newSlides[newSlides.length - 1].id
+                }
+            } else {
+                closestSlideId = newSlides[0].id
+            }
+            dispatch(setSelectedSlides([closestSlideId]))
+        } else {
+            dispatch(setSelectedSlides([]))
+        }
+    }
 
-    const slides: SlideType[] = editor.slideList
-    const slideListItems = slides.map((slide) => {
+    const slideListItems = slideList.map((slide) => {
+        if (!slide || !slide.id) return null
         return (
             <SlideListItem
                 key={slide.id}
                 slide={slide}
-                slides={slides}
+                slides={slideList}
                 isDragging={isDragging}
                 setIsDragging={setIsDragging}
                 setInsertionTop={setInsertionTop}
-                selectedSlides={selectedSlides}
-                selectedObjects={selectedObjects}
-                setSelectedObjects={setSelectedObjects}
+                selectedSlides={selection.slides}
                 onSlideClick={onSlideClick}
             />)
     })
@@ -128,7 +127,13 @@ function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects,
         <div className={styles.actionbar} id="actionbar">
             <button
                 className={styles.actionbar__newslide}
-                onClick={onAddSlide}
+                onClick={() =>
+                    dispatch(addSlide({
+                        id: String(Number(slideList[slideList.length - 1]?.id || 0) + 1),
+                        background: { type: 'color', value: '#ffffff' },
+                        objects: []
+                    }))
+                }
             >
                 <div className={styles.newslidebutton__text}>Новый слайд</div>
                 <img src="/src/assets/images/plus.svg" alt="" />
@@ -148,7 +153,7 @@ function SlideList({ editor, selectedSlides, setSelectedSlides, selectedObjects,
             </div>
 
             <button className={styles.actionbar__deleteslide}>
-                <div className={styles.deleteslidebutton__text} onClick={onRemoveSlide}>Удалить выбранные слайды</div>
+                <div className={styles.deleteslidebutton__text} onClick={() => handleRemoveSlide()}>Удалить выбранные слайды</div>
                 <img src="/src/assets/images/minus.svg" alt="" />
             </button>
 

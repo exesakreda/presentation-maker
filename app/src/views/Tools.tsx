@@ -1,22 +1,25 @@
 import { useRef } from 'react'
 import styles from '../assets/styles/Tools.module.css'
-import { Slide } from '../../../types'
-import { createImage } from '../services/editorFunctions'
-import { dispatch } from '../services/editor'
+import { RootState } from '../store/reducers/rootReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { createImage } from '../store/actions/presentationActions'
+import { setTool } from '../store/actions/toolActions'
 
-type ToolsProps = {
-    currentTool: 'cursor' | 'text' | 'image',
-    setTool: (tool: 'cursor' | 'text' | 'image') => void,
-    currentSlide: Slide
-}
+function Tools() {
+    const slideList = useSelector((state: RootState) => state.presentation.slideList)
+    const selectedSlides = useSelector((state: RootState) => state.selection.slides)
+    const currentTool = useSelector((state: RootState) => state.tool)
+    const dispatch = useDispatch()
 
-function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
+    const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
+
     const fileInputRef = useRef<HTMLInputElement>(null)
     const handleFileUploadClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click()
         }
     }
+
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
@@ -26,14 +29,8 @@ function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
                 const src = reader.result as string
                 const dimensions = await getImageDimensions(src)
                 const aspectRatio = dimensions.w / dimensions.h
-                dispatch(createImage,
-                    {
-                        slideId: currentSlide.id,
-                        src: src,
-                        height: dimensions.h,
-                        width: dimensions.w,
-                        aspectRatio: aspectRatio
-                    })
+                const pos = { x: dimensions.w / 2, y: dimensions.h / 2}
+                if (currentSlide) dispatch(createImage(currentSlide?.id, src, { height: dimensions.h, width: dimensions.w, aspectRatio }, pos))
             }
             reader.readAsDataURL(file)
         }
@@ -70,15 +67,15 @@ function Tools({ currentTool, setTool, currentSlide }: ToolsProps) {
             />
 
             <div className={styles.tools}>
-                <div className={`${styles.tools__item} ${currentTool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => setTool('cursor')}>
+                <div className={`${styles.tools__item} ${currentTool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('cursor'))}>
                     <img src="/src/assets/images/cursor.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool === 'text' ? styles.selectedTool : ''}`} onClick={() => setTool('text')}>
+                <div className={`${styles.tools__item} ${currentTool === 'text' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('text'))}>
                     <img src="/src/assets/images/text.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool === 'image' ? styles.selectedTool : ''}`} onClick={() => setTool('image')}>
+                <div className={`${styles.tools__item} ${currentTool === 'image' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('image'))}>
                     <img src="/src/assets/images/image.svg" alt="" className={styles.item__image} />
                 </div>
 

@@ -1,6 +1,7 @@
 import { RefObject, useCallback, useEffect, useRef } from "react"
-import { dispatch } from "../editor"
-import { setObjectPos, setObjectSize } from "../editorFunctions"
+import { useDispatch } from "react-redux"
+import { setObjectSize, setObjectPosition } from "../../store/actions/presentationActions"
+import { setSelectedObjects } from "../../store/actions/selectionActions"
 
 type DragAndDropProps = {
     anchorPoint: 'topleft' | 'topright' | 'botleft' | 'botright' | 'top' | 'bot' | 'left' | 'right',
@@ -10,7 +11,6 @@ type DragAndDropProps = {
     slideId: string,
     objId: string,
     scale: number,
-    setSelectedObjects: (newSelectedObjects: string[]) => void,
     isResizing: boolean,
     setIsResizing: (isResizing: boolean) => void,
     pos: { x: number, y: number },
@@ -18,7 +18,9 @@ type DragAndDropProps = {
     aspectRatio: number
 }
 
-function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, scale, setSelectedObjects, isResizing, setIsResizing, pos, setPos, aspectRatio }: DragAndDropProps) {
+function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, scale, isResizing, setIsResizing, pos, setPos, aspectRatio }: DragAndDropProps) {
+    const dispatch = useDispatch()
+    
     const isResizingRef = useRef(isResizing)
 
     const onMouseDown = useCallback((e: MouseEvent) => {
@@ -289,27 +291,19 @@ function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, sca
             setIsResizing(false)
             isResizingRef.current = false
             if (newSize.h !== initialSize.h || newSize.w !== initialSize.w) {
-                dispatch(setObjectSize, {
-                    slideId: slideId,
-                    objectId: objId,
-                    newSize: newSize
-                })
+                dispatch(setObjectSize(slideId, objId, newSize))
             }
             if (newPos.x !== initialPos.x || newPos.y !== initialPos.y) {
-                dispatch(setObjectPos, {
-                    slideId: slideId,
-                    objectId: objId,
-                    newPos: newPos
-                })
+                dispatch(setObjectPosition(slideId, objId, newPos))
             }
-            setSelectedObjects([objId])
+            dispatch(setSelectedObjects([objId]))
             document.removeEventListener('mousemove', onMouseMove)
             document.removeEventListener('mouseup', onMouseUp)
         }
 
         document.addEventListener('mousemove', onMouseMove)
         document.addEventListener('mouseup', onMouseUp, { once: true })
-    }, [setIsResizing, pos, size, scale, aspectRatio, slideId, objId, setSelectedObjects, anchorPoint, setPos, setSize])
+    }, [setIsResizing, pos, size, scale, aspectRatio, slideId, objId, anchorPoint, setPos, setSize, dispatch])
 
     useEffect(() => {
         isResizingRef.current = isResizing

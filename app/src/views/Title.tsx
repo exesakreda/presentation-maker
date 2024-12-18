@@ -1,27 +1,28 @@
-import { EditorType } from "../services/EditorType"
 import styles from '../assets/styles/Title.module.css'
-import { dispatch } from "../services/editor"
-import { setTitle } from "../services/editorFunctions"
-import React, { useRef, useEffect } from 'react'
 import { resizeInput } from "../services/hooks/resizeInput"
 
-type TitleProps = {
-    editor: EditorType
-}
+import React, { useRef, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../store/reducers/rootReducer'
+import { setTitle } from '../store/actions/presentationActions'
 
-function Title({ editor }: TitleProps) {
+function Title() {
+    const {
+        title,
+    } = useSelector((state: RootState) => state.presentation)
+    const dispatch = useDispatch()
+
     const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {
         resizeInput(inputRef.current!)
-        document.title = editor.title
-    }, [editor.title])
-
+        document.title = title
+    }, [title])
 
     const onTitleChange: React.ChangeEventHandler = (event) => {
         if ((event.target as HTMLInputElement).value) {
-            dispatch(setTitle, (event.target as HTMLInputElement).value)
+            dispatch(setTitle((event.target as HTMLInputElement).value))
         } else {
-            dispatch(setTitle, 'Презентация без названия')
+            dispatch(setTitle('Презентация без названия'))
         }
     }
 
@@ -33,7 +34,7 @@ function Title({ editor }: TitleProps) {
                     ref={inputRef}
                     className={styles.title}
                     type='text'
-                    defaultValue={editor.title}
+                    defaultValue={title}
                     placeholder='Введите название презентации'
                     onBlur={onTitleChange}
                     onInput={(event: React.ChangeEvent<HTMLInputElement>) => {

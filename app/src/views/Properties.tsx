@@ -1,42 +1,33 @@
 import styles from '../assets/styles/Properties.module.css'
-import { EditorType } from '../services/EditorType'
-import { dispatch } from '../services/editor'
-import { changeBackground } from '../services/editorFunctions'
 import { Background } from '../../../types'
-
 import { resizeInput } from '../services/hooks/resizeInput'
 import { useEffect, useRef } from 'react'
 
-type PropertiesProps = {
-    editor: EditorType,
-    currentSlideId: string
-}
+import { RootState } from '../store/reducers/rootReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { changeBackground } from '../store/actions/presentationActions'
 
-function Properties({ editor, currentSlideId }: PropertiesProps) {
+function Properties() {
+    const slideList = useSelector((state: RootState) => state.presentation.slideList)
+    const selectedSlides = useSelector((state: RootState) => state.selection.slides)
+    const dispatch = useDispatch()
+
+    const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
+    const currentSlideId = currentSlide ? currentSlide.id : '0'
+
     function isValidColor(value: string) {
         const pattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
         return pattern.test(value)
     }
 
-    const slideIndex = editor.slideList.findIndex(slide => slide.id === currentSlideId)
-    const slide = editor.slideList[slideIndex]
-    const backgroundValue = slide?.background.type === 'color' && slide.background.value
-        ? slide.background.value.slice(1)
+    const backgroundValue = currentSlide?.background.type === 'color' && currentSlide.background.value
+        ? currentSlide.background.value.slice(1)
         : ''
 
     const onColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newBackground: Background = { type: 'color', value: String(event.target.value) }
-        const newSlideList = editor.slideList.map(slide => {
-            if (slide.id == currentSlideId) {
-                return {
-                    ...slide,
-                    background: newBackground
-                }
-            }
-            return slide
-        })
 
-        dispatch(changeBackground, newSlideList)
+        dispatch(changeBackground(currentSlideId, newBackground))
     }
 
     const onColorTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,17 +41,7 @@ function Properties({ editor, currentSlideId }: PropertiesProps) {
             newBackground = { type: 'color', value: '#FFFFFF' }
         }
 
-        const newSlideList = editor.slideList.map(slide => {
-            if (slide.id == currentSlideId) {
-                return {
-                    ...slide,
-                    background: newBackground
-                }
-            }
-            return slide
-        })
-
-        dispatch(changeBackground, newSlideList)
+        dispatch(changeBackground(currentSlideId, newBackground))
     }
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +52,7 @@ function Properties({ editor, currentSlideId }: PropertiesProps) {
     return (
         <div className={styles.properties} id="properties">
             <div className={styles.slideid}>
-                <p>Слайд {slideIndex + 1} (id: {currentSlideId})</p>
+                <p>Слайд id: {currentSlideId}</p>
             </div>
 
             <div className={styles.divider} />

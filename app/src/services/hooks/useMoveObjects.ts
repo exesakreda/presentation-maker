@@ -1,6 +1,7 @@
+
 import { RefObject, useEffect, useRef } from "react"
-import { dispatch } from "../editor"
-import { setObjectPos } from "../editorFunctions"
+import { setObjectPosition } from "../../store/actions/presentationActions"
+import { useDispatch } from "react-redux"
 
 type DragAndDropProps = {
     ref: RefObject<HTMLElement>,
@@ -9,14 +10,15 @@ type DragAndDropProps = {
     objId: string,
     objType: 'image' | 'text',
     scale: number
-    setSelectedObjects: (newSelectedObjects: string[]) => void,
     isResizing: boolean,
     isDragging: boolean,
     setIsDragging: (isDragging: boolean) => void,
     isEditing: boolean
 }
 
-function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, setSelectedObjects, isResizing, isDragging, setIsDragging, isEditing }: DragAndDropProps) {
+function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, isResizing, isDragging, setIsDragging, isEditing }: DragAndDropProps) {
+    const dispatch = useDispatch()
+
     const isDraggingRef = useRef(isDragging)
     const isResizingRef = useRef(isResizing)
     const isEditingRef = useRef(isEditing)
@@ -79,15 +81,10 @@ function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, setSelect
 
             const onMouseUp = () => {
                 if (newPos.x !== initialPos.x || newPos.y !== initialPos.y) {
-                    dispatch(setObjectPos, {
-                        slideId: slideId,
-                        objectId: objId,
-                        newPos: newPos
-                    })
+                    dispatch(setObjectPosition(slideId, objId, newPos))
                 }
                 setIsDragging(false)
                 isDraggingRef.current = false
-                setSelectedObjects([objId])
 
                 document.removeEventListener('mousemove', onMouseMove)
                 document.removeEventListener('mouseup', onMouseUp)
@@ -103,7 +100,7 @@ function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, setSelect
             element.removeEventListener('mousedown', onMouseDown)
         }
 
-    }, [ref, setPos, slideId, objId, scale, setSelectedObjects, isResizing, setIsDragging, objType, isEditing])
+    }, [ref, setPos, slideId, objId, scale, isResizing, setIsDragging, objType, isEditing, dispatch])
 }
 
 export { useMoveObjects }

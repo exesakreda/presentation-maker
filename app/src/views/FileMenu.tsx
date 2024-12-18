@@ -1,56 +1,25 @@
-import { EditorType } from "../services/EditorType"
 import { useState, useRef } from "react"
-import { dispatch } from "../services/editor"
-import { setTitle, updateSlideList } from "../services/editorFunctions"
 import styles from '../assets/styles/FileMenu.module.css'
-import Ajv from "ajv"
+
 import { Notification } from "../../../types"
+import { useSelector, useDispatch } from "react-redux"
+import { RootState } from "../store/reducers/rootReducer"
+import { setTitle, updateSlideList } from "../store/actions/presentationActions"
+import { setSelectedSlides } from "../store/actions/selectionActions"
+import validateJSON from "../services/validateJSON"
 
 type FileMenuProps = {
-    editor: EditorType,
     notifications: Notification[],
     setNotifications: (notifications: Notification[]) => void
 }
 
-const ajv = new Ajv()
-const schema = {
-    type: 'object',
-    properties: {
-        title: { type: 'string' },
-        slideList: {
-            type: 'array',
-            items: {
-                type: 'object',
-                properties: {
-                    id: { type: 'string' },
-                    background: {
-                        type: 'object',
-                        properties: {
-                            type: { type: 'string' },
-                            value: { type: 'string' },
-                            src: { type: 'string' }
-                        },
-                        required: ['type'],
-                        oneOf: [
-                            { required: ['value'] },
-                            { required: ['src'] }
-                        ],
-                        additionalProperties: false
-                    },
-                    objects: { type: 'array' }
-                },
-                required: ['id', 'background', 'objects'],
-                additionalProperties: false
-            }
-        }
-    },
-    required: ['title', 'slideList'],
-    additionalProperties: false
-}
-const validate = ajv.compile(schema)
 
-function FileMenu({ editor, notifications, setNotifications }: FileMenuProps) {
-    const addNotification = (message: string,  type: 'error' | 'success' | 'info', info?: string) => {
+
+function FileMenu({ notifications, setNotifications }: FileMenuProps) {
+    const dispatch = useDispatch()
+    const presentation = useSelector((state: RootState) => state.presentation)
+
+    const addNotification = (message: string, type: 'error' | 'success' | 'info', info?: string) => {
         const id = 'notification_' + Math.random().toString(36).substring(2, 9)
         setNotifications([...notifications, { id, message, info, type }])
     }
@@ -61,8 +30,8 @@ function FileMenu({ editor, notifications, setNotifications }: FileMenuProps) {
     }
     function savePresentationAsJSON() {
         const jsonData = {
-            title: editor.title,
-            slideList: editor.slideList
+            title: presentation.title,
+            slideList: presentation.slideList
         }
 
         const jsonString = JSON.stringify(jsonData, null, 2)
@@ -70,7 +39,7 @@ function FileMenu({ editor, notifications, setNotifications }: FileMenuProps) {
 
         const link = document.createElement('a')
         link.href = URL.createObjectURL(blob)
-        link.download = editor.title + '.json'
+        link.download = presentation.title + '.json'
         link.click()
         URL.revokeObjectURL(link.href)
 
@@ -91,22 +60,30 @@ function FileMenu({ editor, notifications, setNotifications }: FileMenuProps) {
                 let parsedObject
                 try {
                     parsedObject = storedObject ? JSON.parse(storedObject) : null
-                } catch (e) {
-                    console.error('Invalid JSON in localStorage.', e)
+                } catch {
                     parsedObject = null
                 }
-                const isValid = validate(parsedObject)
+                const isValid = validateJSON(parsedObject)
                 if (parsedObject && isValid) {
-                    await dispatch(setTitle, parsedObject.title)
-                    await dispatch(updateSlideList, parsedObject.slideList)
-                    addNotification('Презентация успешно загружена', 'success')
+                    await dispatch(setTitle(parsedObject.title))
+                    await dispatch(updateSlideList(parsedObject.slideList))
+                    // addNotification('Презентация успешно загружена', 'success')
                 } else {
                     addNotification('Не удалось загрузить презентацию', 'error', 'Неправильный формат JSON')
-                    console.error('Invalid data format:', validate.errors)
                 }
             }
             reader.readAsText(file)
         }
+    }
+
+    function createNewPresentation() {
+        dispatch(setTitle('Новая презентация'))
+        dispatch(updateSlideList([{
+            id: '1',
+            background: {type: 'color', value: '#ffffff'},
+            objects: []
+        }]))
+        dispatch(setSelectedSlides(['1']))
     }
 
     return (
@@ -125,7 +102,7 @@ function FileMenu({ editor, notifications, setNotifications }: FileMenuProps) {
                 opacity: isMenuActive ? '1' : '0',
                 pointerEvents: isMenuActive ? 'all' : 'none'
             }}>
-                <div className={styles.menu__item}>Новая презентация</div>
+                <div className={styles.menu__item} onClick={createNewPresentation}>Новая презентация</div>
                 <div className={styles.menu__item} onClick={handleFileUploadClick}>Открыть</div>
                 <input
                     type="file"

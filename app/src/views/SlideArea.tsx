@@ -1,20 +1,22 @@
 import styles from '../assets/styles/SlideArea.module.css'
-import { createTextArea } from "../services/editorFunctions"
 import { Slide } from "./Slide"
-import { dispatch } from "../services/editor"
-import { useEffect, useState } from "react"
+import { MouseEvent, useEffect, useState } from "react"
 import { CSSProperties } from "react"
-import type { Slide as SlideType } from "../../../types"
 
-type SlideAreaProps = {
-    currentSlide: SlideType,
-    currentTool: 'cursor' | 'text' | 'image',
-    onToolSelect: (tool: 'cursor' | 'text' | 'image') => void,
-    selectedObjects: string[],
-    setSelectedObjects: (selectedObjectrs: string[]) => void
-}
+import { RootState } from '../store/reducers/rootReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import { createTextarea } from '../store/actions/presentationActions'
+import { setTool } from '../store/actions/toolActions'
+import getCursorPosOnSlide from '../services/getCursorPosOnSlide'
 
-function SlideArea({ currentSlide, currentTool, onToolSelect, selectedObjects, setSelectedObjects }: SlideAreaProps) {
+function SlideArea() {
+    const slideList = useSelector((state: RootState) => state.presentation.slideList)
+    const currentTool = useSelector((state: RootState) => state.tool)
+    const selectedSlides = useSelector((state: RootState) => state.selection.slides)
+    const dispatch = useDispatch()
+
+    const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
+
     const innerWidth = 2560
     const [scale, setScale] = useState(window.innerWidth / innerWidth)
     const [zoom, setZoom] = useState(1)
@@ -48,22 +50,18 @@ function SlideArea({ currentSlide, currentTool, onToolSelect, selectedObjects, s
             className={styles.slideArea}
             id='slideArea'
             style={{
-                cursor: currentTool === 'cursor' ? 'default' : 'text',
+                cursor: currentTool == 'text' ? 'text' : 'default',
                 '--scale': scale
             } as CSSProperties}
-            onClick={(event) => {
-                if (currentTool == 'text') {
-                    dispatch(createTextArea, {
-                        e: event,
-                        slideId: currentSlide.id,
-                        scale: scale
-                    })
-                    onToolSelect('cursor')
+            onClick={(e: MouseEvent) => {
+                if (currentTool == 'text' && currentSlide) {
+                    dispatch(createTextarea(currentSlide.id, getCursorPosOnSlide(e, scale)))
+                    dispatch(setTool('cursor'))
                 }
             }}
         >
             {currentSlide ? (
-                <Slide slide={currentSlide} scale={scale} showSelection={true} selectedObjects={selectedObjects} setSelectedObjects={setSelectedObjects} />
+                <Slide slide={currentSlide} scale={scale} showSelection={true} />
             ) : (
                 <></>
             )}

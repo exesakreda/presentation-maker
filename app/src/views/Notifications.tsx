@@ -1,6 +1,6 @@
 import styles from '../assets/styles/Notifications.module.css'
 import { Notification } from "../../../types"
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 type NotificationProps = {
     notifications: Notification[],
@@ -10,6 +10,10 @@ type NotificationProps = {
 function Notifications({ notifications, setNotifications }: NotificationProps) {
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null)
 
+    const removeNotification = useCallback((id: string) => {
+        setNotifications(notifications.filter(notification => notification.id !== id))
+    }, [setNotifications, notifications])
+
     useEffect(() => {
         if (timerId) {
             clearTimeout(timerId)
@@ -18,7 +22,7 @@ function Notifications({ notifications, setNotifications }: NotificationProps) {
         if (notifications.length > 0) {
             const newTimerId = setTimeout(() => {
                 removeNotification(notifications[0].id)
-            }, 10000) 
+            }, 10000)
 
             setTimerId(newTimerId)
 
@@ -26,11 +30,8 @@ function Notifications({ notifications, setNotifications }: NotificationProps) {
                 clearTimeout(newTimerId)
             }
         }
-    }, [notifications])
+    }, [notifications, removeNotification, timerId])
 
-    const removeNotification = (id: string) => {
-        setNotifications(notifications.filter(notification => notification.id !== id))
-    }
 
     const notificationList = notifications.map(notification => (
         notification.type === 'error' ? (

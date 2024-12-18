@@ -1,14 +1,13 @@
 import { SelectionActionType } from "../types/selectionTypes";
-import { editor } from "../../services/data";
 
 type Selection = {
-    selectedSlides: string[],
-    selectedObjects: string[]
+    slides: string[],
+    objects: string[]
 }
 
 const initialState: Selection = {
-    selectedSlides: [editor.slideList[0].id],
-    selectedObjects: []
+    slides: [],
+    objects: []
 }
 
 const selectionReducer = (state = initialState, action: any): Selection => {
@@ -16,13 +15,13 @@ const selectionReducer = (state = initialState, action: any): Selection => {
         case SelectionActionType.SLIDES_SET_SELECTION:
             return {
                 ...state,
-                selectedSlides: action.payload.newSelectedSlides
+                slides: action.payload.newSelectedSlides
             }
 
         case SelectionActionType.OBJECTS_SET_SELECTION:
             return {
                 ...state,
-                selectedObjects: action.payload.newSelectedObjects
+                objects: action.payload.newSelectedObjects
             }
 
         default:

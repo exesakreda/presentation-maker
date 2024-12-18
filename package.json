@@ -10,11 +10,15 @@
   "description": "",
   "dependencies": {
     "ajv": "^8.17.1",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "uid": "^2.0.2",
+    "uid2": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.10.0",
     "@types/node": "^22.5.4",
+    "@types/uid2": "^0.0.2",
+    "@types/uniqid": "^5.3.4",
     "eslint": "^9.10.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.9.0",

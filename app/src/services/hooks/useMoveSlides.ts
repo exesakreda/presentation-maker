@@ -1,7 +1,7 @@
 import { RefObject, useCallback, useEffect, useRef } from "react"
 import { Slide } from "../../../../types"
-import { dispatch } from "../editor"
-import { updateSlideList } from "../editorFunctions"
+import { useDispatch } from "react-redux"
+import { updateSlideList } from "../../store/actions/presentationActions"
 
 type DragAndDropProps = {
     ref: RefObject<HTMLElement>,
@@ -16,11 +16,12 @@ type DragAndDropProps = {
 
 
 function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: DragAndDropProps) {
+    const dispatch = useDispatch()
+
     const isDraggingRef = useRef(isDragging)
     useEffect(() => {
         isDraggingRef.current = isDragging
     }, [isDragging])
-
 
     const calculateIndex = useCallback((elementTop: number) => {
         let index = Math.round(elementTop / 107)
@@ -37,8 +38,8 @@ function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsD
         newSlideList.splice(oldIndex, 1)
         newSlideList.splice(index, 0, slide)
 
-        dispatch(updateSlideList, newSlideList)
-    }, [slide, slides])
+        dispatch(updateSlideList(newSlideList))
+    }, [slide, slides, dispatch])
 
     useEffect(() => {
         const element = ref.current

@@ -3,28 +3,28 @@ import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from '../assets/styles/Slide.module.css'
 import { resizeInput } from "../services/hooks/resizeInput"
-import { dispatch } from "../services/editor"
-import { deleteObject } from "../services/editorFunctions"
+import { RootState } from "../store/reducers/rootReducer"
+import { useDispatch, useSelector } from "react-redux"
+import { setSelectedObjects } from "../store/actions/selectionActions"
+import { deleteObjects } from "../store/actions/presentationActions"
 
 type SlideProps = {
     slide: Slide,
     scale: number,
     showSelection: boolean,
-    selectedObjects: string[],
-    setSelectedObjects: (selectedObjects: string[]) => void
 }
 
-function Slide({ slide, scale, showSelection, selectedObjects, setSelectedObjects }: SlideProps) {
+function Slide({ slide, scale, showSelection }: SlideProps) {
+    const selectedObjects = useSelector((state: RootState) => state.selection.objects)
+    const dispatch = useDispatch()
+
     useEffect(() => {
         document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))
 
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Delete' && selectedObjects.length > 0) {
-                dispatch(deleteObject, {
-                    slideId: slide.id,
-                    objectsToDelete: selectedObjects
-                })
-                setSelectedObjects([])
+                dispatch(deleteObjects(slide.id, selectedObjects))
+                dispatch(setSelectedObjects([]))
             }
         }
 
@@ -33,17 +33,15 @@ function Slide({ slide, scale, showSelection, selectedObjects, setSelectedObject
         return () => {
             document.removeEventListener('keydown', handleKeyDown)
         }
-    }, [selectedObjects, slide.id, setSelectedObjects])
+    }, [selectedObjects, slide.id, dispatch])
 
     const slideObjects = slide.objects.map(obj => (
         <SlideObject
             key={obj.id}
             obj={obj}
             slideId={slide.id}
-            selectedObjects={selectedObjects}
-            setSelectedObjects={setSelectedObjects}
             scale={scale}
-            showSelection={showSelection} 
+            showSelection={showSelection}
         />
     ))
 
@@ -63,9 +61,7 @@ function Slide({ slide, scale, showSelection, selectedObjects, setSelectedObject
                 id="blankArea"
                 className={styles.blankArea}
                 style={{ backgroundColor: backgroundValue }}
-                onClick={() => {
-                    setSelectedObjects([])
-                }}
+                onClick={() => { dispatch(setSelectedObjects([])) }}
             >
             </div>
         </div>

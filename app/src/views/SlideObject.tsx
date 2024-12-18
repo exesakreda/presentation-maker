@@ -1,21 +1,25 @@
 import React, { useRef, useState, MouseEvent } from "react"
 import { useMoveObjects } from "../services/hooks/useMoveObjects"
-import { dispatch } from "../services/editor"
-import { setTextAreaValue } from "../services/editorFunctions"
 import styles from '../assets/styles/Slide.module.css'
 import { TextArea, ImageArea } from "../../../types"
 import { useResizeObjects } from "../services/hooks/useResizeObjects"
 
+import { RootState } from "../store/reducers/rootReducer"
+import { useDispatch, useSelector } from "react-redux"
+import { setSelectedObjects } from "../store/actions/selectionActions"
+import { setTextAreaValue } from "../store/actions/presentationActions"
+
 type SlideObjectProps = {
     obj: TextArea | ImageArea,
-    slideId: string
-    selectedObjects: string[]
-    setSelectedObjects: (objects: string[]) => void
+    slideId: string,
     scale: number,
     showSelection: boolean
 }
 
-function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale, showSelection }: SlideObjectProps) {
+function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
+    const selectedObjects = useSelector((state: RootState) => state.selection.objects)
+    const dispatch = useDispatch()
+
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
@@ -48,7 +52,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         objId: obj.id,
         objType: obj.type,
         scale: scale,
-        setSelectedObjects: setSelectedObjects,
         isResizing: isResizing,
         isDragging: isDragging,
         setIsDragging: setIsDragging,
@@ -62,21 +65,17 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
         if (e.ctrlKey) {
             if (selectedObjects.includes(target.id)) {
                 const newSelectedObjects = selectedObjects.filter(objId => objId !== target.id)
-                setSelectedObjects(newSelectedObjects)
+                dispatch(setSelectedObjects(newSelectedObjects))
             } else {
-                setSelectedObjects([...selectedObjects, target.id])
+                dispatch(setSelectedObjects([...selectedObjects, target.id]))
             }
         } else {
-            setSelectedObjects([target.id])
+            dispatch(setSelectedObjects([target.id]))
         }
     }
 
     const onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-        dispatch(setTextAreaValue, {
-            newValue: e.currentTarget.value,
-            objId: obj.id,
-            slideId: slideId
-        })
+        dispatch(setTextAreaValue(slideId, obj.id, e.currentTarget.value))
     }
 
     const TopLeftRH = () => {
@@ -89,7 +88,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -116,7 +114,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -143,7 +140,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -170,7 +166,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -197,7 +192,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -224,7 +218,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -251,7 +244,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -278,7 +270,6 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
             slideId: slideId,
             objId: obj.id,
             scale: scale,
-            setSelectedObjects: setSelectedObjects,
             isResizing: isResizing,
             setIsResizing: setIsResizing,
             pos: pos,
@@ -340,7 +331,7 @@ function SlideObject({ obj, slideId, selectedObjects, setSelectedObjects, scale,
                             handleFinishEditing()
                         }}
                         style={{
-                            border: isSelected ? 'none' : '1px solid #59595975',
+                            border: isSelected ? 'none' : '1px solid #59595950',
                             fontSize: `${obj.textSize}px`,
                             fontFamily: obj.fontFamily,
                             fontWeight: obj.fontWeight

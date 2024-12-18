@@ -6,11 +6,12 @@ export const setTitle = (newTitle: string) => ({
     payload: { newTitle }
 })
 
-export const addSlide = () => ({
+export const addSlide = (newSlide: Slide) => ({
     type: PresentationActionType.PRESENTATION_ADD_SLIDE,
+    payload: { newSlide }
 })
 
-export const removeSlide = (slidesIdToRemove: string[]) => ({
+export const removeSlides = (slidesIdToRemove: string[]) => ({
     type: PresentationActionType.PRESENTATION_REMOVE_SLIDE,
     payload: { slidesIdToRemove }
 })
@@ -30,7 +31,7 @@ export const createTextarea = (slideId: string, position: { x: number, y: number
     payload: { slideId, position }
 })
 
-export const deleteObjects = (slideId: string, objectsId: string) => ({
+export const deleteObjects = (slideId: string, objectsId: string[]) => ({
     type: PresentationActionType.SLIDE_DELETE_OBJECTS,
     payload: { slideId, objectsId }
 })
