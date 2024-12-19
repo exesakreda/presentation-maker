@@ -1,4 +1,4 @@
-import { SelectionActionType } from "../types/selectionTypes";
+import { SelectionActionType } from "../types/selectionType";
 
 type Selection = {
     slides: string[],

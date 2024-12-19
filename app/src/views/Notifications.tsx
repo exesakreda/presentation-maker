@@ -1,37 +1,11 @@
 import styles from '../assets/styles/Notifications.module.css'
-import { Notification } from "../../../types"
-import { useCallback, useEffect, useState } from 'react'
+import { removeNotification } from '../store/actions/notificationActions'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../store/reducers/rootReducer'
 
-type NotificationProps = {
-    notifications: Notification[],
-    setNotifications: (notifications: Notification[]) => void
-}
-
-function Notifications({ notifications, setNotifications }: NotificationProps) {
-    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null)
-
-    const removeNotification = useCallback((id: string) => {
-        setNotifications(notifications.filter(notification => notification.id !== id))
-    }, [setNotifications, notifications])
-
-    useEffect(() => {
-        if (timerId) {
-            clearTimeout(timerId)
-        }
-
-        if (notifications.length > 0) {
-            const newTimerId = setTimeout(() => {
-                removeNotification(notifications[0].id)
-            }, 10000)
-
-            setTimerId(newTimerId)
-
-            return () => {
-                clearTimeout(newTimerId)
-            }
-        }
-    }, [notifications, removeNotification, timerId])
-
+function Notifications() {
+    const notifications = useSelector((state: RootState) => state.notifications)
+    const dispatch = useDispatch()
 
     const notificationList = notifications.map(notification => (
         notification.type === 'error' ? (
@@ -40,7 +14,7 @@ function Notifications({ notifications, setNotifications }: NotificationProps) {
                 id={notification.id}
                 className={styles.notification}
                 style={{ height: '54px' }}
-                onClick={() => removeNotification(notification.id)}
+                onClick={() => dispatch(removeNotification(notification.id))}
             >
                 <div className={styles.notification__text}>
                     <div className={styles.notification__message}>{notification.message}</div>
@@ -54,7 +28,7 @@ function Notifications({ notifications, setNotifications }: NotificationProps) {
                 id={notification.id}
                 className={styles.notification}
                 style={{ height: '39px' }}
-                onClick={() => removeNotification(notification.id)}
+                onClick={() => dispatch(removeNotification(notification.id))}
             >
                 <div className={styles.notification__message}>{notification.message}</div>
                 <img src="/src/assets/images/success.svg" className={styles.success_icon} alt="" />

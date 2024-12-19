@@ -1,0 +1,4 @@
+export const NotificationActionType = {
+    ADD_NOTIFICATION: 'ADD_NOTIFICATION',
+    REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION'
+}

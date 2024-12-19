@@ -41,10 +41,12 @@ type Size = {
 
 type TextArea = CommonObject & {
     value: string,
-    fontFamily: string,
-    textSize: number,
     type: 'text',
-    fontWeight: number
+    font: {
+        weight: number,
+        fontFamily: string,
+        size: number
+    }
 }
 
 type ImageArea = CommonObject & {

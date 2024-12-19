@@ -1,4 +1,4 @@
-import { PresentationActionType } from "../types/presentationTypes";
+import { PresentationActionType } from "../types/presentationType";
 import { Presentation } from "../../../../types";
 import { uid } from 'uid';
 
@@ -61,10 +61,11 @@ const presentationReducer = (state = initialState, action: any): Presentation =>
                                     position: action.payload.position,
                                     size: { h: 35, w: 80 },
                                     value: 'Текст',
-                                    fontFamily: 'Inter',
-                                    fontWeight: 800,
-                                    textSize: 24,
-
+                                    font: {
+                                        fontFamily: 'Inter',
+                                        weight: 800,
+                                        size: 24,
+                                    }
                                 }
                             ]
                         }

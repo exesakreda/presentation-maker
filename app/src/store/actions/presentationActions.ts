@@ -1,5 +1,5 @@
 import { Background, Slide } from "../../../../types";
-import { PresentationActionType, } from "../types/presentationTypes";
+import { PresentationActionType, } from "../types/presentationType";
 
 export const setTitle = (newTitle: string) => ({
     type: PresentationActionType.PRESENTATION_SET_TITLE,

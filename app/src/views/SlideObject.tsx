@@ -309,7 +309,7 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
                     <div
                         className={styles.resizeHandles}
                         style={{
-                            display: (isSelected && !isEditing) ? 'block' : 'none'
+                            display: (isSelected && !isEditing && showSelection) ? 'block' : 'none'
                         }}
                     >
                         {TopLeftRH()}

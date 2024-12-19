@@ -1,5 +1,5 @@
 import { Tool } from "../../../../types";
-import { ToolActionType } from "../types/toolTypes";
+import { ToolActionType } from "../types/toolType";
 
 const initialState: Tool = 'cursor'
 

@@ -51,7 +51,6 @@ function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, isResizin
         const onMouseDown = (e: MouseEvent) => {
             e.preventDefault()
             const startPos = { x: e.pageX, y: e.pageY }
-
             const initialPos = objType == 'text' 
                 ? {
                     x: (element.offsetParent as HTMLElement).offsetLeft,

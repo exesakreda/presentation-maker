@@ -1,5 +1,6 @@
 import { createStore } from "redux";
 import rootReducer from "./reducers/rootReducer";
+import validateJSON from "../services/validateJSON";
 
 const defaultState = {
     presentation: {
@@ -17,8 +18,12 @@ const defaultState = {
     tool: 'cursor'
 }
 
-const initialState = localStorage['redux-store']
+const storedState = localStorage['redux-store']
     ? JSON.parse(localStorage['redux-store'])
+    : null
+
+const initialState = storedState && validateJSON(storedState)
+    ? storedState
     : defaultState
 
 const modifiedState = {

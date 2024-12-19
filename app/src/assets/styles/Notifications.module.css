@@ -9,6 +9,8 @@
     display: flex;
     gap: 8px;
     flex-direction: column-reverse;
+
+    overflow: hidden;
 }
 
 .notification {

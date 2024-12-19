@@ -1,7 +1,7 @@
 import type { Slide as SlideType } from "../../../types.ts"
 import { Slide } from "./Slide.tsx"
 import styles from '../assets/styles/SlideList.module.css'
-import { MouseEvent, useEffect, useRef, useState } from "react"
+import { MouseEvent, useRef, useState } from "react"
 import { useMoveSlides } from "../services/hooks/useMoveSlides.ts"
 
 import { useDispatch, useSelector } from "react-redux"
@@ -88,23 +88,25 @@ function SlideList() {
     }
 
     function handleRemoveSlide() {
-        dispatch(removeSlides(selection.slides))
-        const newSlides = slideList.filter(slide => !selection.slides.includes(slide.id))
-        let closestSlideId = null
-        if (newSlides.length > 0) {
-            const firstSelectedIndex = slideList.findIndex(slide => selection.slides.includes(slide.id))
-            if (firstSelectedIndex !== -1) {
-                if (firstSelectedIndex < newSlides.length) {
-                    closestSlideId = newSlides[firstSelectedIndex].id
+        if (slideList.length - selection.slides.length > 0 ) {
+            dispatch(removeSlides(selection.slides))
+            const newSlides = slideList.filter(slide => !selection.slides.includes(slide.id))
+            let closestSlideId = null
+            if (newSlides.length > 0) {
+                const firstSelectedIndex = slideList.findIndex(slide => selection.slides.includes(slide.id))
+                if (firstSelectedIndex !== -1) {
+                    if (firstSelectedIndex < newSlides.length) {
+                        closestSlideId = newSlides[firstSelectedIndex].id
+                    } else {
+                        closestSlideId = newSlides[newSlides.length - 1].id
+                    }
                 } else {
-                    closestSlideId = newSlides[newSlides.length - 1].id
+                    closestSlideId = newSlides[0].id
                 }
+                dispatch(setSelectedSlides([closestSlideId]))
             } else {
-                closestSlideId = newSlides[0].id
+                dispatch(setSelectedSlides([]))
             }
-            dispatch(setSelectedSlides([closestSlideId]))
-        } else {
-            dispatch(setSelectedSlides([]))
         }
     }
 
@@ -151,7 +153,7 @@ function SlideList() {
                 />
                 {slideListItems}
             </div>
-
+                    
             <button className={styles.actionbar__deleteslide}>
                 <div className={styles.deleteslidebutton__text} onClick={() => handleRemoveSlide()}>Удалить выбранные слайды</div>
                 <img src="/src/assets/images/minus.svg" alt="" />

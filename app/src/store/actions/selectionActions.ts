@@ -1,4 +1,4 @@
-import { SelectionActionType } from "../types/selectionTypes";
+import { SelectionActionType } from "../types/selectionType";
 
 export const setSelectedSlides = (newSelectedSlides: string[]) => ({
     type: SelectionActionType.SLIDES_SET_SELECTION,
