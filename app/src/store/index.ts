@@ -1,7 +1,6 @@
 import { createStore } from "redux";
 import rootReducer from "./reducers/rootReducer";
 import validateJSON from "../services/validateJSON";
-
 const defaultState = {
     presentation: {
         title: 'Новая презентация',
@@ -15,16 +14,34 @@ const defaultState = {
         objects: [],
         slides: ['1']
     },
-    tool: 'cursor'
+    tool: { type: 'cursor' },
+    notifications: [],
+    // history: {
+    //     past: [],
+    //     future: []
+    // }
 }
 
 const storedState = localStorage['redux-store']
     ? JSON.parse(localStorage['redux-store'])
     : null
 
-const initialState = storedState && validateJSON(storedState)
-    ? storedState
-    : defaultState
+let initialState
+if (storedState && validateJSON(storedState)) {
+    initialState = {
+        ...storedState,
+        notifications: []
+    }
+} else {
+    initialState = {
+        ...defaultState,
+        notifications: [{
+            type: 'error',
+            message: 'Ошибка загрузки данных.',
+            info: 'Данные презентации повреждены или отсутствуют. Создана новая презентация для продолжения работы.'
+        }]
+    }
+}
 
 const modifiedState = {
     ...initialState,
@@ -32,7 +49,7 @@ const modifiedState = {
         objects: [],
         slides: [...initialState.selection.slides]
     },
-    tool: 'cursor'
+    tool: { type: 'cursor' }
 }
 
 const store = createStore(rootReducer, modifiedState)

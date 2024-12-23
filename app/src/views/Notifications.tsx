@@ -2,43 +2,53 @@ import styles from '../assets/styles/Notifications.module.css'
 import { removeNotification } from '../store/actions/notificationActions'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../store/reducers/rootReducer'
+import { motion, AnimatePresence } from 'motion/react'
+import { Notification } from '../../../types'
 
 function Notifications() {
     const notifications = useSelector((state: RootState) => state.notifications)
     const dispatch = useDispatch()
 
-    const notificationList = notifications.map(notification => (
+    const renderNotification = (notification: Notification) => (
         notification.type === 'error' ? (
-            <div
+            <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, y: 100 }}
                 key={notification.id}
                 id={notification.id}
                 className={styles.notification}
-                style={{ height: '54px' }}
                 onClick={() => dispatch(removeNotification(notification.id))}
             >
                 <div className={styles.notification__text}>
                     <div className={styles.notification__message}>{notification.message}</div>
                     <div className={styles.notification__info}>{notification.info}</div>
                 </div>
-                <img src="/src/assets/images/alert.svg" alt="" />
-            </div>
+                <img className={styles.notification__image} src="/src/assets/images/alert_2.svg" alt="" />
+            </motion.div>
         ) : (
-            <div
+            <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, y: 100 }}
                 key={notification.id}
                 id={notification.id}
                 className={styles.notification}
-                style={{ height: '39px' }}
                 onClick={() => dispatch(removeNotification(notification.id))}
             >
                 <div className={styles.notification__message}>{notification.message}</div>
-                <img src="/src/assets/images/success.svg" className={styles.success_icon} alt="" />
-            </div>
+                <img className={styles.notification__image} src="/src/assets/images/success.svg" alt="" />
+            </motion.div>
         )
-    ))
+    )
 
     return (
         <div className={styles.notification_list}>
-            {notificationList}
+            <AnimatePresence>
+                {notifications.map(renderNotification)}
+            </AnimatePresence >
         </div>
     )
 }

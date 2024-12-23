@@ -29,7 +29,7 @@ function Tools() {
                 const src = reader.result as string
                 const dimensions = await getImageDimensions(src)
                 const aspectRatio = dimensions.w / dimensions.h
-                const pos = { x: dimensions.w / 2, y: dimensions.h / 2}
+                const pos = { x: dimensions.w / 2, y: dimensions.h / 2 }
                 if (currentSlide) dispatch(createImage(currentSlide?.id, src, { height: dimensions.h, width: dimensions.w, aspectRatio }, pos))
             }
             reader.readAsDataURL(file)
@@ -49,15 +49,35 @@ function Tools() {
     return (
         <>
             <div
-                className={styles.fileUpload}
+                className={`${styles.additionalMenu} ${styles.fileUpload}`}
                 style={{
-                    bottom: currentTool == 'image' ? '60px' : '8px'
+                    bottom: currentTool.type == 'image' ? '60px' : '8px'
                 }}
                 onClick={handleFileUploadClick}
             >
                 <div className={styles.fileUpload__text}>Выбрать файл</div>
-                <img className={styles.fileUpload__icon} src='/src/assets/images/folder.svg' height='11px' width='11px' />
+                <img className={styles.fileUpload__icon} src='/src/assets/images/folder.svg' />
             </div>
+
+            <div
+                className={`${styles.additionalMenu} ${styles.shapeSelect}`}
+                style={{
+                    bottom: currentTool.type == 'shape' ? '60px' : '8px'
+                }}
+            >
+                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'circle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'circle' }))}>
+                    <img src="/src/assets/images/circle.svg" alt="" />
+                </div>
+
+                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'rectangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'rectangle' }))}>
+                    <img src="/src/assets/images/rectangle.svg" alt="" />
+                </div>
+
+                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'triangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'triangle' }))}>
+                    <img src="/src/assets/images/triangle.svg" alt="" />
+                </div>
+            </div>
+
             <input
                 type="file"
                 accept='.jpg, .png, .svg, .jpeg'
@@ -67,21 +87,21 @@ function Tools() {
             />
 
             <div className={styles.tools}>
-                <div className={`${styles.tools__item} ${currentTool === 'cursor' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('cursor'))}>
+                <div className={`${styles.tools__item} ${currentTool.type === 'cursor' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'cursor' }))}>
                     <img src="/src/assets/images/cursor.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool === 'text' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('text'))}>
+                <div className={`${styles.tools__item} ${currentTool.type === 'text' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'text' }))}>
                     <img src="/src/assets/images/text.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool === 'image' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool('image'))}>
+                <div className={`${styles.tools__item} ${currentTool.type === 'image' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'image' }))}>
                     <img src="/src/assets/images/image.svg" alt="" className={styles.item__image} />
                 </div>
 
-                {/* <div className={`${styles.tools__item} ${currentTool === 'shape' ? styles.selectedTool : ''}`} onClick={() => handleToolSelect('shape')}>
-                    <img src="/src/assets/shape.svg" alt="" className={styles.item__image} />
-                </div> */}
+                <div className={`${styles.tools__item} ${currentTool.type === 'shape' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: null }))}>
+                    <img src="/src/assets/images/shape.svg" alt="" className={styles.item__image} />
+                </div>
             </div>
         </>
     )

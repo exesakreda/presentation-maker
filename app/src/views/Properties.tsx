@@ -1,6 +1,6 @@
 import styles from '../assets/styles/Properties.module.css'
 import { Background } from '../../../types'
-import { resizeInput } from '../services/hooks/resizeInput'
+import { resizeInput } from '../services/resizeInput'
 import { useEffect, useRef } from 'react'
 
 import { RootState } from '../store/reducers/rootReducer'

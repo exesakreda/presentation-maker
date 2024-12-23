@@ -1,39 +1,39 @@
-import Ajv from "ajv"
+import Ajv from 'ajv'
 
 function validateJSON(object: any) {
     const ajv = new Ajv({ allErrors: true })
     const schema = {
-        type: "object",
+        type: 'object',
         properties: {
             presentation: {
-                type: "object",
+                type: 'object',
                 properties: {
-                    title: { type: "string" },
+                    title: { type: 'string' },
                     slideList: {
-                        type: "array",
+                        type: 'array',
                         items: {
-                            type: "object",
+                            type: 'object',
                             properties: {
-                                id: { type: "string" },
+                                id: { type: 'string' },
                                 background: {
-                                    type: "object",
+                                    type: 'object',
                                     properties: {
-                                        type: { type: "string" },
-                                        value: { type: "string" },
-                                        src: { type: "string" }
+                                        type: { type: 'string' },
+                                        value: { type: 'string' },
+                                        src: { type: 'string' }
                                     },
-                                    required: ["type"],
+                                    required: ['type'],
                                     oneOf: [
-                                        { required: ["value"] },
-                                        { required: ["src"] }
+                                        { required: ['value'] },
+                                        { required: ['src'] }
                                     ],
                                     additionalProperties: false
                                 },
                                 objects: {
-                                    type: "array",
+                                    type: 'array',
                                     items: {
                                         type: 'object',
-                                        properites: {
+                                        properties: {
                                             id: { type: 'string' },
                                             position: {
                                                 type: 'object',
@@ -62,50 +62,65 @@ function validateJSON(object: any) {
                                             },
                                             value: { type: 'string' },
                                             src: { type: 'string' },
-                                            aspectRatio: { type: 'number' },
-                                            required: ['id', 'position', 'size', 'type'],
-                                            oneOf: [
-                                                { required: ['font', 'value'] },
-                                                { required: ['src', 'aspectRatio'] }
-                                            ]
-                                        }
+                                            aspectRatio: { type: 'number' }
+                                        },
+                                        required: ['id', 'position', 'size', 'type'],
+                                        oneOf: [
+                                            { required: ['font', 'value'] },
+                                            { required: ['src', 'aspectRatio'] }
+                                        ]
                                     }
                                 }
                             },
-                            required: ["id", "background", "objects"],
+                            required: ['id', 'background', 'objects'],
                             additionalProperties: false
                         }
                     }
                 },
-                required: ["title", "slideList"],
+                required: ['title', 'slideList'],
                 additionalProperties: false
             },
             notifications: {
-                type: "array",
+                type: 'array',
                 items: {
-                    type: "object",
+                    type: 'object',
                     properties: {
-                        id: { type: "string" },
-                        message: { type: "string" },
-                        info: { type: ["string", "null"] },
-                        type: { type: "string", enum: ["error", "success", "info"] }
+                        id: { type: 'string' },
+                        message: { type: 'string' },
+                        info: { type: ['string', 'null'] },
+                        type: { type: 'string', enum: ['error', 'success', 'info'] }
                     },
-                    required: ["id", "message", "type"],
+                    required: ['id', 'message', 'type'],
                     additionalProperties: false
                 }
             },
             selection: {
-                type: "object",
+                type: 'object',
                 properties: {
-                    objects: { type: "array", items: { type: "string" } },
-                    slides: { type: "array", items: { type: "string" } }
+                    objects: { type: 'array', items: { type: 'string' } },
+                    slides: { type: 'array', items: { type: 'string' } }
                 },
-                required: ["objects", "slides"],
+                required: ['objects', 'slides'],
                 additionalProperties: false
             },
-            tool: { type: "string" }
+            tool: {
+                type: 'object',
+                oneOf: [
+                    { properties: { type: { const: 'cursor' } }, required: ['type'] },
+                    { properties: { type: { const: 'text' } }, required: ['type'] },
+                    { properties: { type: { const: 'image' } }, required: ['type'] },
+                    {
+                        properties: {
+                            type: { const: 'shape' },
+                            shape: { anyOf: [{ type: 'string', enum: ['circle', 'rectangle', 'triangle'] }, { type: 'null' }] }
+                        },
+                        required: ['type', 'shape'],
+                        additionalProperties: false
+                    }
+                ]
+            }
         },
-        required: ["presentation", "notifications", "selection", "tool"],
+        required: ['presentation', 'notifications', 'selection', 'tool'],
         additionalProperties: false
     }
     const validate = ajv.compile(schema)

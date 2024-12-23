@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from '../assets/styles/Slide.module.css'
-import { resizeInput } from "../services/hooks/resizeInput"
+import { resizeInput } from "../services/resizeInput"
 import { RootState } from "../store/reducers/rootReducer"
 import { useDispatch, useSelector } from "react-redux"
 import { setSelectedObjects } from "../store/actions/selectionActions"

@@ -13,7 +13,7 @@ const notificationReducer = (state = initialState, action: any) => {
                 type: action.payload.type,
                 info: action.payload.type == 'error' ? action.payload.info : null
             }
-            return [...state, notification]
+            return [notification, ...state]
 
         case NotificationActionType.REMOVE_NOTIFICATION:
             return state.filter(notification => notification.id !== action.payload.id)

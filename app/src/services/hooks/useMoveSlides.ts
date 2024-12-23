@@ -3,7 +3,7 @@ import { Slide } from "../../../../types"
 import { useDispatch } from "react-redux"
 import { updateSlideList } from "../../store/actions/presentationActions"
 
-type DragAndDropProps = {
+type useMoveSlidesProps = {
     ref: RefObject<HTMLElement>,
     shift: number,
     setShift: (y: number) => void,
@@ -15,7 +15,7 @@ type DragAndDropProps = {
 }
 
 
-function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: DragAndDropProps) {
+function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: useMoveSlidesProps) {
     const dispatch = useDispatch()
 
     const isDraggingRef = useRef(isDragging)

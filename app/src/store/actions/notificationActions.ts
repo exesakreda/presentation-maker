@@ -1,8 +1,8 @@
 import { NotificationActionType } from "../types/notificationType"
 
-export const addNotification = (message: string, type: 'error' | 'success' | 'info', info?: string) => ({
+export const addNotification = (type: 'error' | 'success', message: string, info?: string) => ({
     type: NotificationActionType.ADD_NOTIFICATION,
-    payload: { message, type, info }
+    payload: { type, message, info }
 })
 
 export const removeNotification = (id: string) => ({

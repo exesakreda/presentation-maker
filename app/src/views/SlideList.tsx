@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../store/reducers/rootReducer.ts"
 import { addSlide, removeSlides } from "../store/actions/presentationActions.ts"
 import { setSelectedSlides, setSelectedObjects } from "../store/actions/selectionActions.ts"
+import { addNotification } from "../store/actions/notificationActions.ts"
 
 type SlideItemProps = {
     slide: SlideType
@@ -77,7 +78,7 @@ function SlideList() {
                     const newSelectedSlides = selection.slides.filter(id => id !== slideId)
                     dispatch(setSelectedSlides(newSelectedSlides))
                 }
-            } else {
+            } else {    
                 const newSelectedSlides = [...selection.slides, slideId]
                 dispatch(setSelectedSlides(newSelectedSlides))
             }
@@ -107,6 +108,8 @@ function SlideList() {
             } else {
                 dispatch(setSelectedSlides([]))
             }
+        } else {
+            dispatch(addNotification('error', 'Ошибка удаления слайда.', 'Нельзя удалить единственный слайд.'))
         }
     }
 

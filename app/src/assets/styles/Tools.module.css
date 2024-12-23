@@ -33,6 +33,7 @@
     align-items: center;
 
     transition: .1s ease-in;
+    cursor: pointer;
 }
 
 .tools__item:hover {
@@ -50,7 +51,7 @@
     background-color: #004FFF;
 }
 
-.fileUpload {
+.additionalMenu {
     width: 176px;
     height: 39px;
 
@@ -73,6 +74,7 @@
     cursor: pointer;
     transition: ease-in-out 0.2s;
 }
+
 .fileUpload:hover {
     background-color: #004FFF;
     
@@ -88,4 +90,39 @@
 .fileUpload__icon {
     float: right;
     margin-right: 16px;
+}
+
+.shapeSelect {
+    left: calc(50% + 22px);
+    width: 132px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    user-select: none;
+    cursor: default;
+}
+
+.shapeSelect__item {
+    height: 28px;
+    width: 28px;
+    background-color: #2C2C2C;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: .1s ease-in;
+    cursor: pointer;
+}
+.shapeSelect__item:hover {
+    background-color: #004FFF;
+    transition: .1s ease-in;
+}
+
+.selectedShape {
+    background-color: #004FFF;
 }

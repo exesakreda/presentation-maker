@@ -6,29 +6,53 @@ import { setTitle, updateSlideList } from "../store/actions/presentationActions"
 import { setSelectedSlides } from "../store/actions/selectionActions"
 import validateJSON from "../services/validateJSON"
 import { addNotification, removeNotification } from "../store/actions/notificationActions"
-import { Root } from "react-dom/client"
 
 function FileMenu() {
     const dispatch = useDispatch()
-    const storeState = useSelector((state: Root) => state)
-    const notifications = useSelector((state: RootState) => state.notifications)
+    const presentationState = useSelector((state: RootState) => state.presentation)
+    const selectionState = useSelector((state: RootState) => state.selection)
+    const notificationsState = useSelector((state: RootState) => state.notifications)
+    const toolState = useSelector((state: RootState) => state.tool)
     useEffect(() => {
-        notifications.forEach((notification) => {
+        notificationsState.forEach((notification) => {
             const timer = setTimeout(() => {
                 dispatch(removeNotification(notification.id))
             }, 10000)
 
             return () => clearTimeout(timer)
         })
-    }, [notifications, dispatch])
+    }, [notificationsState, dispatch])
     const presentation = useSelector((state: RootState) => state.presentation)
 
+    const menuRef = useRef<HTMLDivElement>(null)
     const [isMenuActive, setIsMenuActive] = useState(false)
     function handleClickOnMenu() {
         setIsMenuActive(!isMenuActive)
     }
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuActive(false);
+            }
+        }
+
+        if (isMenuActive) {
+            document.addEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isMenuActive])
+
     function savePresentationAsJSON() {
-        const jsonData = storeState
+        const jsonData = {
+            notifications: notificationsState,
+            presentation: presentationState,
+            selection: selectionState,
+            tool: toolState
+        }
 
         const jsonString = JSON.stringify(jsonData, null, 2)
         const blob = new Blob([jsonString], { type: 'application/json' })
@@ -64,9 +88,9 @@ function FileMenu() {
                     dispatch(setTitle(parsedObject.presentation.title))
                     dispatch(updateSlideList(parsedObject.presentation.slideList))
                     dispatch(setSelectedSlides([parsedObject.presentation.slideList[0].id]))
-                    dispatch(addNotification('Презентация успешно загружена', 'success'))
+                    dispatch(addNotification('success', 'Презентация успешно загружена!'))
                 } else {
-                    dispatch(addNotification('Не удалось загрузить презентацию', 'error', 'Неправильный формат JSON'))
+                    dispatch(addNotification('error', 'Не удалось загрузить презентацию.', 'Неправильный формат JSON'))
                 }
             }
             reader.readAsText(file)
@@ -82,27 +106,30 @@ function FileMenu() {
             objects: []
         }]))
         dispatch(setSelectedSlides(['1']))
-        dispatch(addNotification('Создана новая презентация.', 'success'))
+        dispatch(addNotification('success', 'Создана новая презентация.'))
     }
 
     return (
         <>
             <div
-                className={styles.title__menu}
+                ref={menuRef}
+                className={`${styles.menu__title} ${isMenuActive ? styles.active : ''}`}
                 onMouseDown={handleClickOnMenu}
-                style={{
-                    transform: isMenuActive ? 'rotate(180deg)' : 'rotate(0deg)',
-                    opacity: isMenuActive ? '1' : '0.3'
-                }}
             >
-                <img src='src/assets/images/arrowdown.svg' className={styles.arrowdown} />
+                Файл
             </div>
             <div className={styles.menu} style={{
                 opacity: isMenuActive ? '1' : '0',
                 pointerEvents: isMenuActive ? 'all' : 'none'
             }}>
-                <div className={styles.menu__item} onClick={createNewPresentation}>Новая презентация</div>
-                <div className={styles.menu__item} onClick={handleFileUploadClick}>Открыть</div>
+                <div className={styles.menu__item} onClick={createNewPresentation}>
+                    <div className={styles.item__title}>Новая презентация</div>
+                    <div className={styles.item__hotkeys}>CTRL+N</div>
+                </div>
+                <div className={styles.menu__item} onClick={handleFileUploadClick}>
+                    <div className={styles.item__title}>Открыть</div>
+                    <div className={styles.item__hotkeys}>CTRL+O</div>
+                </div>
                 <input
                     type="file"
                     accept=".json"
@@ -112,8 +139,14 @@ function FileMenu() {
                     }}
                     onChange={handleFileChange}
                 />
-                <div className={styles.menu__item} onMouseDown={savePresentationAsJSON}>Сохранить как JSON</div>
-                <div className={styles.menu__item}>Экспорт в PDF</div>
+                <div className={styles.menu__item} onMouseDown={savePresentationAsJSON}>
+                    <div className={styles.item__title}>Сохранить</div>
+                    <div className={styles.item__hotkeys}>CTRL+S</div>
+                </div>
+                <div className={styles.menu__item}>
+                    <div className={styles.item__title}>Экспорт в PDF</div>
+                    <div className={styles.item__hotkeys}>CTRL+E</div>
+                </div>
             </div>
 
         </>

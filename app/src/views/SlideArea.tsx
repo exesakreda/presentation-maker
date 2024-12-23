@@ -50,13 +50,13 @@ function SlideArea() {
             className={styles.slideArea}
             id='slideArea'
             style={{
-                cursor: currentTool == 'text' ? 'text' : 'default',
+                cursor: currentTool.type == 'text' ? 'text' : 'default',
                 '--scale': scale
             } as CSSProperties}
             onClick={(e: MouseEvent) => {
-                if (currentTool == 'text' && currentSlide) {
+                if (currentTool.type == 'text' && currentSlide) {
                     dispatch(createTextarea(currentSlide.id, getCursorPosOnSlide(e, scale)))
-                    dispatch(setTool('cursor'))
+                    dispatch(setTool({ type: 'cursor' }))
                 }
             }}
         >

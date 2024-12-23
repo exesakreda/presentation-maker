@@ -3,7 +3,7 @@ import { RefObject, useEffect, useRef } from "react"
 import { setObjectPosition } from "../../store/actions/presentationActions"
 import { useDispatch } from "react-redux"
 
-type DragAndDropProps = {
+type useMoveObjectsProps = {
     ref: RefObject<HTMLElement>,
     setPos: (pos: { x: number, y: number }) => void,
     slideId: string,
@@ -16,7 +16,7 @@ type DragAndDropProps = {
     isEditing: boolean
 }
 
-function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, isResizing, isDragging, setIsDragging, isEditing }: DragAndDropProps) {
+function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, isResizing, isDragging, setIsDragging, isEditing }: useMoveObjectsProps) {
     const dispatch = useDispatch()
 
     const isDraggingRef = useRef(isDragging)

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux"
 import { setObjectSize, setObjectPosition } from "../../store/actions/presentationActions"
 import { setSelectedObjects } from "../../store/actions/selectionActions"
 
-type DragAndDropProps = {
+type useResizeObjectsProps = {
     anchorPoint: 'topleft' | 'topright' | 'botleft' | 'botright' | 'top' | 'bot' | 'left' | 'right',
     ref: RefObject<HTMLElement>,
     size: { h: number, w: number },
@@ -18,7 +18,7 @@ type DragAndDropProps = {
     aspectRatio: number
 }
 
-function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, scale, isResizing, setIsResizing, pos, setPos, aspectRatio }: DragAndDropProps) {
+function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, scale, isResizing, setIsResizing, pos, setPos, aspectRatio }: useResizeObjectsProps) {
     const dispatch = useDispatch()
     
     const isResizingRef = useRef(isResizing)

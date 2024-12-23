@@ -1,5 +1,5 @@
 import styles from '../assets/styles/Title.module.css'
-import { resizeInput } from "../services/hooks/resizeInput"
+import { resizeInput } from "../services/resizeInput"
 
 import React, { useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -15,7 +15,7 @@ function Title() {
     const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {
         resizeInput(inputRef.current!)
-        document.title = title
+        document.title = title + ' | Presentation Maker'
     }, [title])
 
     const onTitleChange: React.ChangeEventHandler = (event) => {

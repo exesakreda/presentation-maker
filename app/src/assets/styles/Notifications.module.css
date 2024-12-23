@@ -10,7 +10,21 @@
     gap: 8px;
     flex-direction: column-reverse;
 
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 5px;
+}
+.notification_list::-webkit-scrollbar {
+    width: 3px;
+}
+.notification_list::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #2c2c2c; 
+}
+
+.notification_list::-webkit-scrollbar-thumb {
+    background-color: #595959; 
+    border-radius: 10px;
 }
 
 .notification {
@@ -34,14 +48,20 @@
 .notification__message {
     font: 600 12px 'Inter';
     color: #ffffff;
-    width: 235px;
+    width: 225px;
+    min-width: 225px;
 }
 
 .notification__info {
     font: 600 12px 'Inter';
     color: #ffffff50;
+    width: 225px;
 }
 
 .notification__text {
-    width: 233px;
+    width: 225px;
+}
+
+.notification__image {
+    margin-left: 5px;
 }

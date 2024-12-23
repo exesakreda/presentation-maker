@@ -3,12 +3,14 @@ import presentationReducer from "./presentationReducer";
 import toolReducer from "./toolReducer";
 import selectionReducer from "./selectionReducer";
 import notificationReducer from "./notificationReducer";
+// import changesReducer from "./changesReducer";
 
 const rootReducer = combineReducers({
     presentation: presentationReducer,
     tool: toolReducer,
     selection: selectionReducer,
-    notifications: notificationReducer
+    notifications: notificationReducer,
+    // changes: changesReducer
 })
 
 export default rootReducer

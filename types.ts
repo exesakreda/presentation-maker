@@ -55,13 +55,18 @@ type ImageArea = CommonObject & {
     aspectRatio: number
 }
 
-type Tool = 'cursor' | 'text' | 'image' | 'shape'
+type Tool = 
+  | { type: 'cursor' }
+  | { type: 'text' }
+  | { type: 'image' }
+  | { type: 'shape'; shape: 'circle' | 'rectangle' | 'triangle' | null }
+
 
 type Notification = {
-    id: string,
+    id: string,    
+    type: 'error' | 'success',
     message: string,
     info?: string,
-    type: 'error' | 'success' | 'info'
 }
 
 export type {

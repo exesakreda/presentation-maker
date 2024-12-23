@@ -1,0 +1,74 @@
+.menu__title {
+    height: 23px;
+    width: 60px;
+    
+    position: absolute;
+    top: 8px;
+    left: 64px;
+    border-radius: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s ease;
+
+    transition: 0.2s ease;
+
+    color: #ffffff;
+    font: 600 12px 'Inter' 
+}
+
+.menu__title:hover {
+    transition: 0.2s ease;
+    background-color: #2C2C2C;
+}
+
+.menu__title.active {
+    background-color: #2C2C2C;
+}
+
+.menu {
+    width: 341px;
+    height: 62px;
+    display: block;
+    position: absolute;
+    top: 35px;
+    left: 64px;
+    background-color: #2C2C2C;
+    box-sizing: border-box;
+    padding: 4px;
+    border-radius: 5px;
+    display: grid;
+
+    transition: 0.2s ease;
+    z-index: 100;
+
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+.menu__item {
+    font: 600 12px 'Inter';
+    color: #ffffff;
+
+    border-radius: 5px;
+    width: 333px;
+    height: 27px;
+    display: flex;
+    align-items: center;
+    padding: 6px 26px;
+    box-sizing: border-box;
+    cursor: pointer;
+    
+    transition: 0.2s ease;
+}
+
+.menu__item:hover {
+    /* background-color: #004FFF; */
+    background-color: #595959;
+    transition: 0.2s ease;
+}
+
+.item__hotkeys {
+    margin-left: auto;
+}
