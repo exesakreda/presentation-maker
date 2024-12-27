@@ -1,13 +1,35 @@
+import { PresentationRecordState, PresentationState } from "../../../../types";
 import { PresentationActionType } from "../types/presentationType";
-import { Presentation } from "../../../../types";
 import { uid } from 'uid';
 
-const initialState: Presentation = {
+const initialState: PresentationState = {
     title: '',
-    slideList: []
+    slideList: [],
+    history: {
+        undoable: [],
+        redoable: []
+    },
+    selection: {
+        objects: [],
+        slides: []
+    }
 }
 
-const presentationReducer = (state = initialState, action: any): Presentation => {
+const areStatesEqual = (state1: PresentationRecordState, state2: PresentationRecordState): boolean => {
+    return (
+        state1 === state2 &&
+        JSON.stringify(state1.title) === JSON.stringify(state2.title) &&
+        JSON.stringify(state1.slideList) === JSON.stringify(state2.slideList)
+    )
+}
+
+const presentationReducer = (state = initialState, action: any): PresentationState => {
+    const currentState: PresentationRecordState = {
+        title: state.title,
+        slideList: state.slideList,
+        selection: state.selection,
+    }
+
     switch (action.type) {
         case PresentationActionType.PRESENTATION_SET_TITLE:
             return {
@@ -137,7 +159,7 @@ const presentationReducer = (state = initialState, action: any): Presentation =>
                         ? {
                             ...slide,
                             objects: slide.objects.map(object =>
-                                object.id == action.payload.objectId
+                                object.id === action.payload.objectId
                                     ? {
                                         ...object,
                                         position: action.payload.newPosition
@@ -167,6 +189,83 @@ const presentationReducer = (state = initialState, action: any): Presentation =>
                         }
                         : slide
                 )
+            }
+
+        case PresentationActionType.NEW_ACTION:
+            if (!action.payload) return state
+            if (areStatesEqual(currentState, action.payload)) return state
+            return {
+                ...state,
+                history: {
+                    undoable: [
+                        currentState,
+                        ...state.history.undoable
+                    ],
+                    redoable: []
+                }
+            }
+
+
+        case PresentationActionType.UNDO: {
+            if (state.history.undoable.length === 0) return state
+            const [previousState, ...remainingUndoable] = state.history.undoable
+            return {
+                ...state,
+                title: previousState.title,
+                slideList: previousState.slideList,
+                selection: previousState.selection,
+                history: {
+                    undoable: remainingUndoable,
+                    redoable: [
+                        currentState,
+                        ...state.history.redoable
+                    ]
+                }
+            }
+        }
+        case PresentationActionType.REDO: {
+            if (state.history.redoable.length === 0) return state
+            const [nextState, ...remainingRedoable] = state.history.redoable;
+            return {
+                ...state,
+                title: nextState.title,
+                slideList: nextState.slideList,
+                selection: nextState.selection,
+                history: {
+                    undoable: [
+                        currentState,
+                        ...state.history.undoable
+                    ],
+                    redoable: remainingRedoable
+                }
+            }
+        }
+
+        case PresentationActionType.SLIDES_SET_SELECTION:
+            return {
+                ...state,
+                selection: {
+                    ...state.selection,
+                    slides: action.payload.newSelectedSlides
+                }
+            }
+
+        case PresentationActionType.OBJECTS_SET_SELECTION:
+            return {
+                ...state,
+                selection: {
+                    ...state.selection,
+                    objects: action.payload.newSelectedObjects
+                }
+            }
+
+        case PresentationActionType.RESET_HISTORY:
+            return {
+                ...state,
+                history: {
+                    undoable: [],
+                    redoable: []
+                }
             }
 
         default:

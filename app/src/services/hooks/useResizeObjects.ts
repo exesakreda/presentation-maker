@@ -1,7 +1,8 @@
 import { RefObject, useCallback, useEffect, useRef } from "react"
-import { useDispatch } from "react-redux"
+import createDispatch from "../../store/utils/createDispatch"
 import { setObjectSize, setObjectPosition } from "../../store/actions/presentationActions"
-import { setSelectedObjects } from "../../store/actions/selectionActions"
+import { setSelectedObjects } from "../../store/actions/presentationActions"
+import store from "../../store"
 
 type useResizeObjectsProps = {
     anchorPoint: 'topleft' | 'topright' | 'botleft' | 'botright' | 'top' | 'bot' | 'left' | 'right',
@@ -19,7 +20,7 @@ type useResizeObjectsProps = {
 }
 
 function useResizeObjects({ anchorPoint, ref, size, setSize, slideId, objId, scale, isResizing, setIsResizing, pos, setPos, aspectRatio }: useResizeObjectsProps) {
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
     
     const isResizingRef = useRef(isResizing)
 

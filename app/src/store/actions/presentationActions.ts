@@ -1,4 +1,4 @@
-import { Background, Slide } from "../../../../types";
+import { AppState, Background, Slide } from "../../../../types";
 import { PresentationActionType, } from "../types/presentationType";
 
 export const setTitle = (newTitle: string) => ({
@@ -54,4 +54,35 @@ export const setObjectPosition = (slideId: string, objectId: string, newPosition
 export const setObjectSize = (slideId: string, objectId: string, newSize: { w: number, h: number }) => ({
     type: PresentationActionType.SLIDEOBJECT_SET_SIZE,
     payload: { slideId, objectId, newSize }
+})
+
+export const undo = () => ({
+    type: PresentationActionType.UNDO
+})
+
+export const redo = () => ({
+    type: PresentationActionType.REDO
+})
+
+export const addNewAction = (newState: AppState) => ({
+    type: PresentationActionType.NEW_ACTION,
+    payload: {
+        title: newState.presentation.title,
+        slideList: newState.presentation.slideList,
+        selection: newState.presentation.selection
+    }
+})
+
+export const setSelectedSlides = (newSelectedSlides: string[]) => ({
+    type: PresentationActionType.SLIDES_SET_SELECTION,
+    payload: { newSelectedSlides }
+})
+
+export const setSelectedObjects = (newSelectedObjects: string[]) => ({
+    type: PresentationActionType.OBJECTS_SET_SELECTION,
+    payload: { newSelectedObjects }
+})
+
+export const resetHistory = () => ({
+    type: PresentationActionType.RESET_HISTORY
 })

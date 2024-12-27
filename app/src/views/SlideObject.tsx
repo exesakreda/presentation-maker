@@ -1,13 +1,13 @@
-import React, { useRef, useState, MouseEvent } from "react"
+import React, { useRef, useState, MouseEvent, useCallback, useEffect } from "react"
 import { useMoveObjects } from "../services/hooks/useMoveObjects"
 import styles from '../assets/styles/Slide.module.css'
 import { TextArea, ImageArea } from "../../../types"
 import { useResizeObjects } from "../services/hooks/useResizeObjects"
-
 import { RootState } from "../store/reducers/rootReducer"
-import { useDispatch, useSelector } from "react-redux"
-import { setSelectedObjects } from "../store/actions/selectionActions"
-import { setTextAreaValue } from "../store/actions/presentationActions"
+import { useSelector } from "react-redux"
+import createDispatch from "../store/utils/createDispatch"
+import { setSelectedObjects, setTextAreaValue } from "../store/actions/presentationActions"
+import store from "../store"
 
 type SlideObjectProps = {
     obj: TextArea | ImageArea,
@@ -17,17 +17,35 @@ type SlideObjectProps = {
 }
 
 function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
-    const selectedObjects = useSelector((state: RootState) => state.selection.objects)
-    const dispatch = useDispatch()
-
+    const selectedObjects = useSelector((state: RootState) => state.presentation.selection.objects)
+    const dispatch = createDispatch(store)
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
     const ref = obj.type == 'text' ? textAreaRef : imageRef
 
     const [pos, setPos] = useState(obj.position)
+    useEffect(() => {
+        if (obj?.position) {
+            setPos(obj.position)
+        }
+    }, [obj?.position])
 
     const [size, setSize] = useState(obj.size)
+    useEffect(() => {
+        if (obj?.size) {
+            setSize(obj.size)
+        }
+    }, [obj?.size])
+
+
+    const [localTextareaValue, setLocalTextareaValue] = useState((obj as TextArea).value)
+    useEffect(() => {
+        if (obj.type === 'text') {
+            setLocalTextareaValue((obj as TextArea).value)
+        }
+    }, [obj.type === 'text' ? (obj as TextArea).value : null])
+
     const [isResizing, setIsResizing] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
     const [isEditing, setIsEditing] = useState(false)
@@ -75,7 +93,7 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
     }
 
     const onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-        dispatch(setTextAreaValue(slideId, obj.id, e.currentTarget.value))
+        setLocalTextareaValue(e.currentTarget.value)
     }
 
     const TopLeftRH = () => {
@@ -286,7 +304,6 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
         )
     }
 
-
     switch (obj.type) {
         case 'text':
             return (
@@ -324,17 +341,19 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
                     <textarea
                         ref={textAreaRef}
                         className={styles.textArea}
-                        defaultValue={obj.value}
+                        value={localTextareaValue}
+                        onChange={onTextAreaChange}
                         onDoubleClick={handleStartEditing}
                         onBlur={(e) => {
-                            onTextAreaChange(e)
+
+                            dispatch(setTextAreaValue(slideId, obj.id, e.currentTarget.value))
                             handleFinishEditing()
                         }}
                         style={{
                             border: isSelected ? 'none' : '1px solid #59595950',
-                            fontSize: `${obj.textSize}px`,
-                            fontFamily: obj.fontFamily,
-                            fontWeight: obj.fontWeight
+                            fontSize: `${obj.font.size}px`,
+                            fontFamily: obj.font.fontFamily,
+                            fontWeight: obj.font.weight
                         }}
                     />
                 </div>

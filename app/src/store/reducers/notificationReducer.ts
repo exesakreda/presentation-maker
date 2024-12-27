@@ -6,7 +6,7 @@ const initialState: Notification[] = []
 
 const notificationReducer = (state = initialState, action: any) => {
     switch (action.type) {
-        case NotificationActionType.ADD_NOTIFICATION:
+        case NotificationActionType.ADD_NOTIFICATION: {
             const notification: Notification = {
                 id: 'notification_' + uid(10),
                 message: action.payload.message,
@@ -14,11 +14,12 @@ const notificationReducer = (state = initialState, action: any) => {
                 info: action.payload.type == 'error' ? action.payload.info : null
             }
             return [notification, ...state]
+        }
 
         case NotificationActionType.REMOVE_NOTIFICATION:
             return state.filter(notification => notification.id !== action.payload.id)
 
-        default: 
+        default:
             return state
     }
 }

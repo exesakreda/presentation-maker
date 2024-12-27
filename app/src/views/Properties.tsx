@@ -4,13 +4,15 @@ import { resizeInput } from '../services/resizeInput'
 import { useEffect, useRef } from 'react'
 
 import { RootState } from '../store/reducers/rootReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import createDispatch from '../store/utils/createDispatch'
 import { changeBackground } from '../store/actions/presentationActions'
+import store from '../store'
 
 function Properties() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
-    const selectedSlides = useSelector((state: RootState) => state.selection.slides)
-    const dispatch = useDispatch()
+    const selectedSlides = useSelector((state: RootState) => state.presentation.selection.slides)
+    const dispatch = createDispatch(store)
 
     const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
     const currentSlideId = currentSlide ? currentSlide.id : '0'

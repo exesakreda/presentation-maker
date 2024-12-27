@@ -2,15 +2,17 @@ import styles from '../assets/styles/Title.module.css'
 import { resizeInput } from "../services/resizeInput"
 
 import React, { useRef, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import createDispatch from '../store/utils/createDispatch'
 import { RootState } from '../store/reducers/rootReducer'
 import { setTitle } from '../store/actions/presentationActions'
+import store from '../store'
 
 function Title() {
     const {
         title,
     } = useSelector((state: RootState) => state.presentation)
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
 
     const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {

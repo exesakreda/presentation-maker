@@ -1,7 +1,8 @@
 
 import { RefObject, useEffect, useRef } from "react"
 import { setObjectPosition } from "../../store/actions/presentationActions"
-import { useDispatch } from "react-redux"
+import createDispatch from "../../store/utils/createDispatch"
+import store from "../../store"
 
 type useMoveObjectsProps = {
     ref: RefObject<HTMLElement>,
@@ -17,7 +18,7 @@ type useMoveObjectsProps = {
 }
 
 function useMoveObjects({ ref, setPos, slideId, objId, objType, scale, isResizing, isDragging, setIsDragging, isEditing }: useMoveObjectsProps) {
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
 
     const isDraggingRef = useRef(isDragging)
     const isResizingRef = useRef(isResizing)

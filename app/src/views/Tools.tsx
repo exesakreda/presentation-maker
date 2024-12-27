@@ -1,15 +1,17 @@
 import { useRef } from 'react'
 import styles from '../assets/styles/Tools.module.css'
 import { RootState } from '../store/reducers/rootReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
+import createDispatch from '../store/utils/createDispatch'
 import { createImage } from '../store/actions/presentationActions'
 import { setTool } from '../store/actions/toolActions'
+import store from '../store'
 
 function Tools() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
-    const selectedSlides = useSelector((state: RootState) => state.selection.slides)
+    const selectedSlides = useSelector((state: RootState) => state.presentation.selection.slides)
     const currentTool = useSelector((state: RootState) => state.tool)
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
 
     const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
 
@@ -19,7 +21,6 @@ function Tools() {
             fileInputRef.current.click()
         }
     }
-
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
@@ -73,9 +74,9 @@ function Tools() {
                     <img src="/src/assets/images/rectangle.svg" alt="" />
                 </div>
 
-                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'triangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'triangle' }))}>
+                {/* <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'triangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'triangle' }))}>
                     <img src="/src/assets/images/triangle.svg" alt="" />
-                </div>
+                </div> */}
             </div>
 
             <input

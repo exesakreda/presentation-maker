@@ -1,13 +1,15 @@
 import styles from '../assets/styles/Notifications.module.css'
 import { removeNotification } from '../store/actions/notificationActions'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import createDispatch from '../store/utils/createDispatch'
 import { RootState } from '../store/reducers/rootReducer'
 import { motion, AnimatePresence } from 'motion/react'
 import { Notification } from '../../../types'
+import store from '../store'
 
 function Notifications() {
     const notifications = useSelector((state: RootState) => state.notifications)
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
 
     const renderNotification = (notification: Notification) => (
         notification.type === 'error' ? (

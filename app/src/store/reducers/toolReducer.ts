@@ -5,7 +5,7 @@ const initialState: Tool = {
     type: 'cursor'
 }
 
-const toolReducer = (state = initialState, action: any): Tool => {
+const toolReducer = (state: Tool = initialState, action: any): Tool => {
     switch (action.type) {
         case ToolActionType.SET_TOOL:
             return action.payload.newTool

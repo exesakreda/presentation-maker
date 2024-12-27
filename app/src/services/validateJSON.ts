@@ -5,34 +5,39 @@ function validateJSON(object: any) {
     const schema = {
         type: 'object',
         properties: {
-            presentation: {
-                type: 'object',
-                properties: {
-                    title: { type: 'string' },
-                    slideList: {
-                        type: 'array',
-                        items: {
+            title: { type: 'string' },
+            slideList: {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string' },
+                        background: {
                             type: 'object',
-                            properties: {
-                                id: { type: 'string' },
-                                background: {
-                                    type: 'object',
+                            oneOf: [
+                                {
                                     properties: {
-                                        type: { type: 'string' },
-                                        value: { type: 'string' },
+                                        type: { type: 'string', enum: ['color'] },
+                                        value: { type: 'string' }
+                                    },
+                                    required: ['type', 'value']
+                                },
+                                {
+                                    properties: {
+                                        type: { type: 'string', enum: ['image'] },
                                         src: { type: 'string' }
                                     },
-                                    required: ['type'],
-                                    oneOf: [
-                                        { required: ['value'] },
-                                        { required: ['src'] }
-                                    ],
+                                    required: ['type', 'src'],
                                     additionalProperties: false
-                                },
-                                objects: {
-                                    type: 'array',
-                                    items: {
-                                        type: 'object',
+                                }
+                            ]
+                        },
+                        objects: {
+                            type: 'array',
+                            items: {
+                                type: 'object',
+                                oneOf: [
+                                    {
                                         properties: {
                                             id: { type: 'string' },
                                             position: {
@@ -41,86 +46,341 @@ function validateJSON(object: any) {
                                                     x: { type: 'number' },
                                                     y: { type: 'number' }
                                                 },
-                                                required: ['x', 'y']
+                                                required: ['x', 'y'],
+                                                additionalProperties: false
                                             },
                                             size: {
                                                 type: 'object',
                                                 properties: {
-                                                    w: { type: 'number' },
-                                                    h: { type: 'number' }
+                                                    h: { type: 'number' },
+                                                    w: { type: 'number' }
                                                 },
-                                                required: ['w', 'h']
+                                                required: ['h', 'w'],
+                                                additionalProperties: false
                                             },
-                                            type: { type: 'string', enum: ['image', 'text', 'shape'] },
+                                            value: { type: 'string' },
+                                            type: { type: 'string', enum: ['text'] },
                                             font: {
                                                 type: 'object',
                                                 properties: {
                                                     weight: { type: 'number' },
                                                     fontFamily: { type: 'string' },
                                                     size: { type: 'number' }
-                                                }
+                                                },
+                                                required: ['weight', 'fontFamily', 'size'],
+                                                additionalProperties: false
+                                            }
+                                        },
+                                        required: ['id', 'position', 'size', 'value', 'type', 'font'],
+                                        additionalProperties: false
+                                    },
+                                    {
+                                        properties: {
+                                            id: { type: 'string' },
+                                            position: {
+                                                type: 'object',
+                                                properties: {
+                                                    x: { type: 'number' },
+                                                    y: { type: 'number' }
+                                                },
+                                                required: ['x', 'y'],
+                                                additionalProperties: false
                                             },
-                                            value: { type: 'string' },
+                                            size: {
+                                                type: 'object',
+                                                properties: {
+                                                    h: { type: 'number' },
+                                                    w: { type: 'number' }
+                                                },
+                                                required: ['h', 'w'],
+                                                additionalProperties: false
+                                            },
                                             src: { type: 'string' },
+                                            type: { type: 'string', enum: ['image'] },
                                             aspectRatio: { type: 'number' }
                                         },
-                                        required: ['id', 'position', 'size', 'type'],
-                                        oneOf: [
-                                            { required: ['font', 'value'] },
-                                            { required: ['src', 'aspectRatio'] }
-                                        ]
+                                        required: ['id', 'position', 'size', 'src', 'type', 'aspectRatio'],
+                                        additionalProperties: false
                                     }
-                                }
-                            },
-                            required: ['id', 'background', 'objects'],
-                            additionalProperties: false
+                                ],
+                            }
                         }
-                    }
-                },
-                required: ['title', 'slideList'],
-                additionalProperties: false
-            },
-            notifications: {
-                type: 'array',
-                items: {
-                    type: 'object',
-                    properties: {
-                        id: { type: 'string' },
-                        message: { type: 'string' },
-                        info: { type: ['string', 'null'] },
-                        type: { type: 'string', enum: ['error', 'success', 'info'] }
                     },
-                    required: ['id', 'message', 'type'],
+                    required: ['id', 'background', 'objects'],
                     additionalProperties: false
                 }
             },
-            selection: {
+            selectedSlides: {
+                type: 'array',
+                items: {
+                    type: 'string'
+                }
+            },
+            history: {
                 type: 'object',
                 properties: {
-                    objects: { type: 'array', items: { type: 'string' } },
-                    slides: { type: 'array', items: { type: 'string' } }
-                },
-                required: ['objects', 'slides'],
-                additionalProperties: false
-            },
-            tool: {
-                type: 'object',
-                oneOf: [
-                    { properties: { type: { const: 'cursor' } }, required: ['type'] },
-                    { properties: { type: { const: 'text' } }, required: ['type'] },
-                    { properties: { type: { const: 'image' } }, required: ['type'] },
-                    {
-                        properties: {
-                            type: { const: 'shape' },
-                            shape: { anyOf: [{ type: 'string', enum: ['circle', 'rectangle', 'triangle'] }, { type: 'null' }] }
-                        },
-                        required: ['type', 'shape'],
-                        additionalProperties: false
+                    undoable: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                title: { type: 'string' },
+                                slideList: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'string' },
+                                            background: {
+                                                type: 'object',
+                                                oneOf: [
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['color'] },
+                                                            value: { type: 'string' }
+                                                        },
+                                                        required: ['type', 'value']
+                                                    },
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['image'] },
+                                                            src: { type: 'string' }
+                                                        },
+                                                        required: ['type', 'src'],
+                                                        additionalProperties: false
+                                                    }
+                                                ]
+                                            },
+                                            objects: {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    oneOf: [
+                                                        {
+                                                            properties: {
+                                                                id: { type: 'string' },
+                                                                position: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        x: { type: 'number' },
+                                                                        y: { type: 'number' }
+                                                                    },
+                                                                    required: ['x', 'y'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                size: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        h: { type: 'number' },
+                                                                        w: { type: 'number' }
+                                                                    },
+                                                                    required: ['h', 'w'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                value: { type: 'string' },
+                                                                type: { type: 'string', enum: ['text'] },
+                                                                font: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        weight: { type: 'number' },
+                                                                        fontFamily: { type: 'string' },
+                                                                        size: { type: 'number' }
+                                                                    },
+                                                                    required: ['weight', 'fontFamily', 'size'],
+                                                                    additionalProperties: false
+                                                                }
+                                                            },
+                                                            required: ['id', 'position', 'size', 'value', 'type', 'font'],
+                                                            additionalProperties: false
+                                                        },
+                                                        {
+                                                            properties: {
+                                                                id: { type: 'string' },
+                                                                position: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        x: { type: 'number' },
+                                                                        y: { type: 'number' }
+                                                                    },
+                                                                    required: ['x', 'y'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                size: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        h: { type: 'number' },
+                                                                        w: { type: 'number' }
+                                                                    },
+                                                                    required: ['h', 'w'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                src: { type: 'string' },
+                                                                type: { type: 'string', enum: ['image'] },
+                                                                aspectRatio: { type: 'number' }
+                                                            },
+                                                            required: ['id', 'position', 'size', 'src', 'type', 'aspectRatio'],
+                                                            additionalProperties: false
+                                                        }
+                                                    ],
+                                                }
+                                            }
+                                        },
+                                        required: ['id', 'background', 'objects'],
+                                        additionalProperties: false
+                                    }
+                                },
+                                selection: {
+                                    type: 'object',
+                                    properties: {
+                                        slides: {
+                                            type: 'array',
+                                            items: { type: 'string' }
+                                        },
+                                        objects: {
+                                            type: 'array',
+                                            items: { type: 'string' }
+                                        }
+                                    },
+                                    required: ['slides', 'objects']
+                                }
+                            },
+                            required: ['title', 'slideList', 'selection']
+                        }
+                    },
+                    redoable: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                title: { type: 'string' },
+                                slideList: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        properties: {
+                                            id: { type: 'string' },
+                                            background: {
+                                                type: 'object',
+                                                oneOf: [
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['color'] },
+                                                            value: { type: 'string' }
+                                                        },
+                                                        required: ['type', 'value']
+                                                    },
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['image'] },
+                                                            src: { type: 'string' }
+                                                        },
+                                                        required: ['type', 'src'],
+                                                        additionalProperties: false
+                                                    }
+                                                ]
+                                            },
+                                            objects: {
+                                                type: 'array',
+                                                items: {
+                                                    type: 'object',
+                                                    oneOf: [
+                                                        {
+                                                            properties: {
+                                                                id: { type: 'string' },
+                                                                position: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        x: { type: 'number' },
+                                                                        y: { type: 'number' }
+                                                                    },
+                                                                    required: ['x', 'y'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                size: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        h: { type: 'number' },
+                                                                        w: { type: 'number' }
+                                                                    },
+                                                                    required: ['h', 'w'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                value: { type: 'string' },
+                                                                type: { type: 'string', enum: ['text'] },
+                                                                font: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        weight: { type: 'number' },
+                                                                        fontFamily: { type: 'string' },
+                                                                        size: { type: 'number' }
+                                                                    },
+                                                                    required: ['weight', 'fontFamily', 'size'],
+                                                                    additionalProperties: false
+                                                                }
+                                                            },
+                                                            required: ['id', 'position', 'size', 'value', 'type', 'font'],
+                                                            additionalProperties: false
+                                                        },
+                                                        {
+                                                            properties: {
+                                                                id: { type: 'string' },
+                                                                position: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        x: { type: 'number' },
+                                                                        y: { type: 'number' }
+                                                                    },
+                                                                    required: ['x', 'y'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                size: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        h: { type: 'number' },
+                                                                        w: { type: 'number' }
+                                                                    },
+                                                                    required: ['h', 'w'],
+                                                                    additionalProperties: false
+                                                                },
+                                                                src: { type: 'string' },
+                                                                type: { type: 'string', enum: ['image'] },
+                                                                aspectRatio: { type: 'number' }
+                                                            },
+                                                            required: ['id', 'position', 'size', 'src', 'type', 'aspectRatio'],
+                                                            additionalProperties: false
+                                                        }
+                                                    ],
+                                                }
+                                            }
+                                        },
+                                        required: ['id', 'background', 'objects'],
+                                        additionalProperties: false
+                                    }
+                                },
+                                selection: {
+                                    type: 'object',
+                                    properties: {
+                                        slides: {
+                                            type: 'array',
+                                            items: { type: 'string' }
+                                        },
+                                        objects: {
+                                            type: 'array',
+                                            items: { type: 'string' }
+                                        }
+                                    },
+                                    required: ['slides', 'objects']
+                                }
+                            },
+                            required: ['title', 'slideList', 'selection']
+                        }
                     }
-                ]
+                },
+                required: ['undoable', 'redoable'],
+                additionalProperties: false
             }
         },
-        required: ['presentation', 'notifications', 'selection', 'tool'],
+        required: ['title', 'slideList', 'selectedSlides', 'history'],
         additionalProperties: false
     }
     const validate = ajv.compile(schema)

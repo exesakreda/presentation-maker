@@ -71,4 +71,5 @@
 
 .item__hotkeys {
     margin-left: auto;
+    opacity: .5;
 }

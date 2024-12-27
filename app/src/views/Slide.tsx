@@ -4,9 +4,11 @@ import type { Slide } from "../../../types"
 import styles from '../assets/styles/Slide.module.css'
 import { resizeInput } from "../services/resizeInput"
 import { RootState } from "../store/reducers/rootReducer"
-import { useDispatch, useSelector } from "react-redux"
-import { setSelectedObjects } from "../store/actions/selectionActions"
+import { useSelector } from "react-redux"
+import { setSelectedObjects } from "../store/actions/presentationActions"
 import { deleteObjects } from "../store/actions/presentationActions"
+import createDispatch from "../store/utils/createDispatch"
+import store from "../store"
 
 type SlideProps = {
     slide: Slide,
@@ -15,8 +17,8 @@ type SlideProps = {
 }
 
 function Slide({ slide, scale, showSelection }: SlideProps) {
-    const selectedObjects = useSelector((state: RootState) => state.selection.objects)
-    const dispatch = useDispatch()
+    const selectedObjects = useSelector((state: RootState) => state.presentation.selection.objects)
+    const dispatch = createDispatch(store)
 
     useEffect(() => {
         document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))

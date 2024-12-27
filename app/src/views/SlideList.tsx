@@ -4,11 +4,13 @@ import styles from '../assets/styles/SlideList.module.css'
 import { MouseEvent, useRef, useState } from "react"
 import { useMoveSlides } from "../services/hooks/useMoveSlides.ts"
 
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
+import createDispatch from "../store/utils/createDispatch.ts"
 import { RootState } from "../store/reducers/rootReducer.ts"
 import { addSlide, removeSlides } from "../store/actions/presentationActions.ts"
-import { setSelectedSlides, setSelectedObjects } from "../store/actions/selectionActions.ts"
+import { setSelectedSlides, setSelectedObjects } from "../store/actions/presentationActions.ts"
 import { addNotification } from "../store/actions/notificationActions.ts"
+import store from "../store/index.ts"
 
 type SlideItemProps = {
     slide: SlideType
@@ -63,8 +65,8 @@ function SlideListItem({
 
 function SlideList() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
-    const selection = useSelector((state: RootState) => state.selection)
-    const dispatch = useDispatch()
+    const selection = useSelector((state: RootState) => state.presentation.selection)
+    const dispatch = createDispatch(store)
 
     const [isDragging, setIsDragging] = useState(false)
     const [insertionTop, setInsertionTop] = useState(60)

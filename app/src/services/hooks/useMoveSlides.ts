@@ -1,7 +1,8 @@
 import { RefObject, useCallback, useEffect, useRef } from "react"
 import { Slide } from "../../../../types"
-import { useDispatch } from "react-redux"
+import createDispatch from "../../store/utils/createDispatch"
 import { updateSlideList } from "../../store/actions/presentationActions"
+import store from "../../store"
 
 type useMoveSlidesProps = {
     ref: RefObject<HTMLElement>,
@@ -16,7 +17,7 @@ type useMoveSlidesProps = {
 
 
 function useMoveSlides({ ref, shift, setShift, slide, slides, isDragging, setIsDragging, setInsertionTop }: useMoveSlidesProps) {
-    const dispatch = useDispatch()
+    const dispatch = createDispatch(store)
 
     const isDraggingRef = useRef(isDragging)
     useEffect(() => {

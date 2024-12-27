@@ -1,36 +1,59 @@
-// import { MouseEvent, useCallback } from "react"
-// import { useDispatch, useSelector } from "react-redux"
+import { RefObject, useCallback } from "react"
+import createDispatch from "../../store/utils/createDispatch"
+import store from "../../store"
+import { setObjectPosition, setObjectSize } from "../../store/actions/presentationActions"
 
-// type useCreateShapeProps = {
-//     slideId: string,
-//     scale: number,
-//     setPos: (pos: { x: number, y: number }) => void
-// }
+type useCreateShapeProps = {
+    ref: RefObject<HTMLDivElement>,
+    slideId: string,
+    objId: string,
+    scale: number,
+    setSize: (size: { w: number, h: number }) => void,
+    setPos: (pos: { x: number, y: number }) => void,
+}
 
-// function useCreateShape({ slideId, scale, setPos }: useCreateShapeProps) {
-//     const dispatch = useDispatch()
-//     const slideArea = document.getElementById('slideArea')
+function useCreateShape({ ref, slideId, objId, scale, setSize, setPos }: useCreateShapeProps) {
+    const element = ref.current
+    if (!element) return
 
-//     const onMouseDown = useCallback((e: MouseEvent) => {
-//         e.preventDefault()
+    const dispatch = createDispatch(store)
 
-//         const startPos = { x: e.pageX, y: e.pageY }
-//         const initialPos = {
-//             x: slideArea?.offsetLeft,
-//             y: slideArea?.offsetTop
-//         }
-//         let newPos = { x: initialPos.x, y: initialPos.y }
+    const onMouseDown = useCallback((e: MouseEvent) => {
+        e.preventDefault()
 
-//         const onMouseMove = (e: MouseEvent) => {
-//             const delta = {
-//                 x: (e.pageX - startPos.x) / scale,
-//                 y: (e.pageY - startPos.y) / scale,
-//             }
-//             newPos = {
-//                 x: delta.x - startPos.x,
-//                 y: delta.y - startPos.y
-//             }
-//             setPos(newPos)
-//         }
-//     }, [])
-// }
+        const startPos = { x: e.pageX, y: e.pageY }
+        let newPos = startPos
+        let newSize = { w: startPos.x, h: startPos.y }
+
+        const onMouseMove = (e: MouseEvent) => {
+            const deltaSize = {
+                x: - ((e.pageX - startPos.x) / scale),
+                y: - ((e.pageY - startPos.y) / scale)
+            }
+            newSize = {
+                w: Math.max(deltaSize.x, 10),
+                h: Math.max(deltaSize.y, 10)
+            }
+            newPos = {
+                x: deltaSize.x / 2,
+                y: deltaSize.y / 2,
+            }
+            setSize(newSize)
+            setPos(newPos)
+        }
+
+        const onMouseUp = () => {
+            dispatch(setObjectSize(slideId, objId, newSize))
+            dispatch(setObjectPosition(slideId, objId, newPos))
+            element.removeEventListener('mousemove', onMouseMove)
+            element.removeEventListener('mouseup', onMouseUp)
+        }
+
+        element.addEventListener('mousemove', onMouseMove)
+        element.addEventListener('mouseup', onMouseUp)
+    }, [scale, setSize])
+
+    element.addEventListener('mousedown', onMouseDown)
+}
+
+export { useCreateShape }

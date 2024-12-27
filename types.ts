@@ -1,8 +1,3 @@
-type Presentation = {
-    title: string,
-    slideList: Slide[]
-}
-
 type Slide = {
     id: string,
     background: Background,
@@ -55,22 +50,75 @@ type ImageArea = CommonObject & {
     aspectRatio: number
 }
 
-type Tool = 
-  | { type: 'cursor' }
-  | { type: 'text' }
-  | { type: 'image' }
-  | { type: 'shape'; shape: 'circle' | 'rectangle' | 'triangle' | null }
+type Tool =
+    | { type: 'cursor' }
+    | { type: 'text' }
+    | { type: 'image' }
+    | { type: 'shape'; shape: 'circle' | 'rectangle' | 'triangle' | null }
 
 
 type Notification = {
-    id: string,    
+    id: string,
     type: 'error' | 'success',
     message: string,
     info?: string,
 }
 
+
+type PresentationState = {
+    title: string,
+    slideList: Slide[],
+    selection: {
+        slides: string[],
+        objects: string[]
+    },
+    history: {
+        undoable: PresentationRecordState[],
+        redoable: PresentationRecordState[]
+    } 
+}
+
+// запись в истории состояний 
+type PresentationRecordState = {
+    title: string,
+    slideList: Slide[],
+    selection: {
+        slides: string[],
+        objects: string[]
+    }
+}
+
+// текущее состояние (все поля) 
+type AppState = {
+    presentation: {
+        title: string,
+        slideList: Slide[],
+        selection: {
+            slides: string[],
+            objects: string[]
+        },
+        history: {
+            undoable: PresentationRecordState[],
+            redoable: PresentationRecordState[]
+        }
+    },
+    notifications: Notification[],
+    tool: Tool
+}
+
+// для обмена с localStorage.  
+// При загрузке поля CurrentState заполняются из этого типа, недостающие обнуляются (реализация ниже) 
+type StoredPresentationState = {
+    title: string,
+    slideList: Slide[],
+    selectedSlides: string[],
+    history: {
+        undoable: PresentationRecordState[],
+        redoable: PresentationRecordState[]
+    }
+}
+
 export type {
-    Presentation,
     Slide,
     SlideObject,
     Background,
@@ -82,5 +130,9 @@ export type {
     TextArea,
     ImageArea,
     Tool,
-    Notification
+    Notification,
+    PresentationState,
+    PresentationRecordState,
+    AppState,
+    StoredPresentationState
 }

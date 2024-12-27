@@ -93,13 +93,13 @@
 }
 
 .shapeSelect {
-    left: calc(50% + 22px);
-    width: 132px;
+    left: calc(50% + 48px);
+    width: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 16px;
+    gap: 8px;
 
     user-select: none;
     cursor: default;
