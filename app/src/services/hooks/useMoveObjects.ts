@@ -9,7 +9,7 @@ type useMoveObjectsProps = {
     setPos: (pos: { x: number, y: number }) => void,
     slideId: string,
     objId: string,
-    objType: 'image' | 'text',
+    objType: 'image' | 'text' | 'shape',
     scale: number
     isResizing: boolean,
     isDragging: boolean,

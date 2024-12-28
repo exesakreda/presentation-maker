@@ -41,6 +41,11 @@ export const createImage = (slideId: string, src: string, dimensions: { height: 
     payload: { slideId, src, dimensions, position }
 })
 
+export const createShape = (slideId: string, size: { h: number, w: number }, pos: { x: number, y: number }, shapeType: string) => ({
+    type: PresentationActionType.SLIDE_CREATE_SHAPE,
+    payload: { slideId, size, pos, shapeType }
+})
+
 export const setTextAreaValue = (slideId: string, textareaId: string, newValue: string) => ({
     type: PresentationActionType.TEXTAREA_SET_VALUE,
     payload: { slideId, textareaId, newValue }

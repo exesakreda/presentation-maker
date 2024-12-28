@@ -6,7 +6,7 @@ import { CSSProperties } from "react"
 import { RootState } from '../store/reducers/rootReducer'
 import { useSelector } from 'react-redux'
 import createDispatch from '../store/utils/createDispatch'
-import { createTextarea } from '../store/actions/presentationActions'
+import { createShape, createTextarea } from '../store/actions/presentationActions'
 import { setTool } from '../store/actions/toolActions'
 import getCursorPosOnSlide from '../services/getCursorPosOnSlide'
 import store from '../store'
@@ -58,6 +58,11 @@ function SlideArea() {
             onClick={(e: MouseEvent) => {
                 if (currentTool.type == 'text' && currentSlide) {
                     dispatch(createTextarea(currentSlide.id, getCursorPosOnSlide(e, scale)))
+                    dispatch(setTool({ type: 'cursor' }))
+                }
+
+                if (currentTool.type == 'shape' && currentTool.shapeType && currentSlide) {
+                    dispatch(createShape(currentSlide.id, { h: 0, w: 0 }, getCursorPosOnSlide(e, scale), currentTool.shapeType || 'rectangle'))
                     dispatch(setTool({ type: 'cursor' }))
                 }
             }}

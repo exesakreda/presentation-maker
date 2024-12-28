@@ -1,7 +1,7 @@
-import React, { useRef, useState, MouseEvent, useCallback, useEffect } from "react"
+import React, { useRef, useState, MouseEvent, useEffect } from "react"
 import { useMoveObjects } from "../services/hooks/useMoveObjects"
 import styles from '../assets/styles/Slide.module.css'
-import { TextArea, ImageArea } from "../../../types"
+import { TextArea, ImageArea, Shape } from "../../../types"
 import { useResizeObjects } from "../services/hooks/useResizeObjects"
 import { RootState } from "../store/reducers/rootReducer"
 import { useSelector } from "react-redux"
@@ -10,7 +10,7 @@ import { setSelectedObjects, setTextAreaValue } from "../store/actions/presentat
 import store from "../store"
 
 type SlideObjectProps = {
-    obj: TextArea | ImageArea,
+    obj: TextArea | ImageArea | Shape,
     slideId: string,
     scale: number,
     showSelection: boolean
@@ -21,6 +21,7 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
     const dispatch = createDispatch(store)
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
+    // const shapeRef = useRef<HTMLDivElement>(null)
 
     const ref = obj.type == 'text' ? textAreaRef : imageRef
 
@@ -44,7 +45,7 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
         if (obj.type === 'text') {
             setLocalTextareaValue((obj as TextArea).value)
         }
-    }, [obj.type === 'text' ? (obj as TextArea).value : null])
+    }, [obj.type === 'text' ? (obj as TextArea).value : null, obj])
 
     const [isResizing, setIsResizing] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
@@ -400,6 +401,50 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
                     />
                 </div>
             )
+
+        // case 'shape':
+        //     return (
+        //         <div
+        //             id={obj.id}
+        //             key={obj.id}
+        //             ref={shapeRef}
+        //             className={`${styles.slideObject} ${styles.imageArea} ${(selectedObjects?.includes(obj.id) && showSelection) ? styles.selectedObject : ''}`}
+        //             style={{
+        //                 left: `${pos.x}px`,
+        //                 top: `${pos.y}px`,
+        //                 width: `${size.w}px`,
+        //                 height: `${size.h}px`
+        //             }}
+        //             onMouseDown={(e: MouseEvent<HTMLDivElement>) => {
+        //                 if (!isDragging) {
+        //                     handleObjectSelect(e)
+        //                 }
+        //             }}
+        //         >
+        //             <div
+        //                 className={styles.resizeHandles}
+        //                 style={{
+        //                     display: (isSelected && showSelection) ? 'block' : 'none'
+        //                 }}
+        //             >
+        //                 {TopLeftRH()}
+        //                 {TopRightRH()}
+        //                 {BotLeftRH()}
+        //                 {BotRightRH()}
+        //                 {TopHorizontalRH()}
+        //                 {BotHorizontalRH()}
+        //                 {LetftVerticalRH()}
+        //                 {RightVerticalRH()}
+        //             </div>
+        //             <div
+        //                 style={{
+        //                     width: `${size.w}px`,
+        //                     height: `${size.h}px`
+        //                 }}
+        //             />
+
+        //         </div>
+        //     )
 
         default:
             return null

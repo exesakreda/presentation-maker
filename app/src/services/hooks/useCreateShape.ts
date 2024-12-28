@@ -51,7 +51,7 @@ function useCreateShape({ ref, slideId, objId, scale, setSize, setPos }: useCrea
 
         element.addEventListener('mousemove', onMouseMove)
         element.addEventListener('mouseup', onMouseUp)
-    }, [scale, setSize])
+    }, [scale, setSize, dispatch, element, objId, setPos, slideId])
 
     element.addEventListener('mousedown', onMouseDown)
 }

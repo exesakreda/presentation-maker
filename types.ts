@@ -4,7 +4,7 @@ type Slide = {
     objects: SlideObject[],
 }
 
-type SlideObject = TextArea | ImageArea
+type SlideObject = TextArea | ImageArea | Shape
 
 type Background = Color | Image
 
@@ -50,11 +50,16 @@ type ImageArea = CommonObject & {
     aspectRatio: number
 }
 
+type Shape = CommonObject & {
+    type: 'shape',
+    shapeType: 'rectangle' | 'circle'
+}
+
 type Tool =
     | { type: 'cursor' }
     | { type: 'text' }
     | { type: 'image' }
-    | { type: 'shape'; shape: 'circle' | 'rectangle' | 'triangle' | null }
+    | { type: 'shape'; shapeType: 'circle' | 'rectangle' | 'triangle' | null }
 
 
 type Notification = {
@@ -75,7 +80,7 @@ type PresentationState = {
     history: {
         undoable: PresentationRecordState[],
         redoable: PresentationRecordState[]
-    } 
+    }
 }
 
 // запись в истории состояний 
@@ -124,6 +129,7 @@ export type {
     Background,
     Color,
     Image,
+    Shape,
     CommonObject,
     Position,
     Size,

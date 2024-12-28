@@ -95,6 +95,29 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                 )
             }
 
+        // case PresentationActionType.SLIDE_CREATE_SHAPE:
+        //     return {
+        //         ...state,
+        //         slideList: state.slideList.map(slide =>
+        //             slide.id == action.payload.slideId
+        //                 ? {
+        //                     ...slide,
+        //                     objects: [
+        //                         ...slide.objects,
+        //                         {
+        //                             id: 'shape_' + uid(10),
+        //                             type: 'shape',
+        //                             shapeType: action.payload.shapeType,
+        //                             position: action.payload.position,
+        //                             size: { h: 0, w: 0 },
+        //                             value: 'Текст'
+        //                         }
+        //                     ]
+        //                 }
+        //                 : slide
+        //         )
+        //     }
+
         case PresentationActionType.SLIDE_DELETE_OBJECTS:
             return {
                 ...state,
@@ -223,6 +246,7 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                 }
             }
         }
+
         case PresentationActionType.REDO: {
             if (state.history.redoable.length === 0) return state
             const [nextState, ...remainingRedoable] = state.history.redoable;

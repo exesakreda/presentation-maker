@@ -35,6 +35,8 @@ function Tools() {
             }
             reader.readAsDataURL(file)
         }
+
+        dispatch(setTool({ type: 'cursor' }))
     }
 
     const getImageDimensions = (src: string): Promise<{ h: number, w: number }> => {
@@ -66,11 +68,11 @@ function Tools() {
                     bottom: currentTool.type == 'shape' ? '60px' : '8px'
                 }}
             >
-                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'circle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'circle' }))}>
+                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shapeType === 'circle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: 'circle' }))}>
                     <img src="/src/assets/images/circle.svg" alt="" />
                 </div>
 
-                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'rectangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'rectangle' }))}>
+                <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shapeType === 'rectangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: 'rectangle' }))}>
                     <img src="/src/assets/images/rectangle.svg" alt="" />
                 </div>
 
@@ -100,7 +102,7 @@ function Tools() {
                     <img src="/src/assets/images/image.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool.type === 'shape' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: null }))}>
+                <div className={`${styles.tools__item} ${currentTool.type === 'shape' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: null }))}>
                     <img src="/src/assets/images/shape.svg" alt="" className={styles.item__image} />
                 </div>
             </div>

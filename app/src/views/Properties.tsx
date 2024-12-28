@@ -46,15 +46,17 @@ function Properties() {
         dispatch(changeBackground(currentSlideId, newBackground))
     }
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {
-        resizeInput(inputRef.current!);
-    }, []);
+        resizeInput(inputRef.current!)
+    }, [])
+
+    const currentSlideIndex = currentSlide ? slideList.indexOf(currentSlide) : 1
 
     return (
         <div className={styles.properties} id="properties">
             <div className={styles.slideid}>
-                <p>Слайд id: {currentSlideId}</p>
+                <p>Слайд {currentSlideIndex + 1} (id: {currentSlideId})</p>
             </div>
 
             <div className={styles.divider} />
