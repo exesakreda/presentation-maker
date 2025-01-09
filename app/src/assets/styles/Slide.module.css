@@ -1,6 +1,7 @@
 .slide {
     position: relative;
-    width: 1240px;
+    /* width: 1240px; */
+    width: 1920px;
     aspect-ratio: 16 / 9;
     transform-origin: top left;
     border-radius: 10px;
@@ -12,6 +13,8 @@
     height: 100%;
     width: 100%;
     z-index: 1;
+
+    background-size: cover;
 }
 
 .textArea {

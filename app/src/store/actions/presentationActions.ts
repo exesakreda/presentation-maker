@@ -31,6 +31,26 @@ export const createTextarea = (slideId: string, position: { x: number, y: number
     payload: { slideId, position }
 })
 
+export const setFontFamily = (slideId: string, objectId: string, newFontFamily: string) => ({
+    type: PresentationActionType.TEXTAREA_SET_FONTFAMILY,
+    payload: { slideId, objectId, newFontFamily }
+})
+
+export const setFontSize = (slideId: string, objectId: string, newTextSize: number) => ({
+    type: PresentationActionType.TEXTAREA_SET_FONTSIZE,
+    payload: { slideId, objectId, newTextSize }
+})
+
+export const setFontWeight = (slideId: string, objectId: string, newTextWeight: number) => ({
+    type: PresentationActionType.TEXTAREA_SET_FONTWEIGHT,
+    payload: { slideId, objectId, newTextWeight }
+})
+
+export const setFontColor = (slideId: string, objectId: string, newFontColor: string) => ({
+    type: PresentationActionType.TEXTAREA_SET_TEXTCOLOR,
+    payload: { slideId, objectId, newFontColor }
+})
+
 export const deleteObjects = (slideId: string, objectsId: string[]) => ({
     type: PresentationActionType.SLIDE_DELETE_OBJECTS,
     payload: { slideId, objectsId }

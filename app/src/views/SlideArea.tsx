@@ -19,8 +19,8 @@ function SlideArea() {
 
     const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
 
-    const innerWidth = 2560
-    const [scale, setScale] = useState(window.innerWidth / innerWidth)
+    const innerWidth = 3000
+    const [scale, setScale] = useState(1)
     const [zoom, setZoom] = useState(1)
 
     useEffect(() => {

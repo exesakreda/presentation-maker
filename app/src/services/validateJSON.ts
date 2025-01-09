@@ -1,6 +1,6 @@
 import Ajv from 'ajv'
 
-function validateJSON(object: any) {
+function validateJSON(object: unknown) {
     const ajv = new Ajv({ allErrors: true })
     const schema = {
         type: 'object',
@@ -65,9 +65,10 @@ function validateJSON(object: any) {
                                                 properties: {
                                                     weight: { type: 'number' },
                                                     fontFamily: { type: 'string' },
-                                                    size: { type: 'number' }
+                                                    size: { type: 'number' },
+                                                    color: { type: 'string' }
                                                 },
-                                                required: ['weight', 'fontFamily', 'size'],
+                                                required: ['weight', 'fontFamily', 'size', 'color'],
                                                 additionalProperties: false
                                             }
                                         },
@@ -184,9 +185,10 @@ function validateJSON(object: any) {
                                                                     properties: {
                                                                         weight: { type: 'number' },
                                                                         fontFamily: { type: 'string' },
-                                                                        size: { type: 'number' }
+                                                                        size: { type: 'number' },
+                                                                        color: { type: 'string' }
                                                                     },
-                                                                    required: ['weight', 'fontFamily', 'size'],
+                                                                    required: ['weight', 'fontFamily', 'size', 'color'],
                                                                     additionalProperties: false
                                                                 }
                                                             },
@@ -312,9 +314,10 @@ function validateJSON(object: any) {
                                                                     properties: {
                                                                         weight: { type: 'number' },
                                                                         fontFamily: { type: 'string' },
-                                                                        size: { type: 'number' }
+                                                                        size: { type: 'number' },
+                                                                        color: { type: 'string' }
                                                                     },
-                                                                    required: ['weight', 'fontFamily', 'size'],
+                                                                    required: ['weight', 'fontFamily', 'size', 'color'],
                                                                     additionalProperties: false
                                                                 }
                                                             },

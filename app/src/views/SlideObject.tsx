@@ -39,13 +39,13 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
         }
     }, [obj?.size])
 
-
     const [localTextareaValue, setLocalTextareaValue] = useState((obj as TextArea).value)
+    const textValue = obj.type === 'text' ? (obj as TextArea).value : null
     useEffect(() => {
         if (obj.type === 'text') {
             setLocalTextareaValue((obj as TextArea).value)
         }
-    }, [obj.type === 'text' ? (obj as TextArea).value : null, obj])
+    }, [textValue, obj])
 
     const [isResizing, setIsResizing] = useState(false)
     const [isDragging, setIsDragging] = useState(false)
@@ -316,7 +316,7 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
                         left: `${pos.x}px`,
                         top: `${pos.y}px`,
                         width: `${size.w}px`,
-                        height: `${size.h}px`,
+                        height: `${size.h}px`
                     }}
                     onMouseDown={(e: MouseEvent<HTMLDivElement>) => {
                         if (!isDragging) {
@@ -346,15 +346,16 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
                         onChange={onTextAreaChange}
                         onDoubleClick={handleStartEditing}
                         onBlur={(e) => {
-
                             dispatch(setTextAreaValue(slideId, obj.id, e.currentTarget.value))
                             handleFinishEditing()
                         }}
                         style={{
-                            border: isSelected ? 'none' : '1px solid #59595950',
+                            // border: isSelected ? 'none' : '1px solid #59595950',
+                            border: 'none',
                             fontSize: `${obj.font.size}px`,
                             fontFamily: obj.font.fontFamily,
-                            fontWeight: obj.font.weight
+                            fontWeight: obj.font.weight,
+                            color: obj.font.color
                         }}
                     />
                 </div>

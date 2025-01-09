@@ -54,7 +54,9 @@ function Tools() {
             <div
                 className={`${styles.additionalMenu} ${styles.fileUpload}`}
                 style={{
-                    bottom: currentTool.type == 'image' ? '60px' : '8px'
+                    bottom: currentTool.type == 'image' ? '60px' : '8px',
+                    opacity: currentTool.type == 'image' ? '1' : '0',
+                    pointerEvents: currentTool.type == 'image' ? 'all' : 'none'
                 }}
                 onClick={handleFileUploadClick}
             >
@@ -65,7 +67,9 @@ function Tools() {
             <div
                 className={`${styles.additionalMenu} ${styles.shapeSelect}`}
                 style={{
-                    bottom: currentTool.type == 'shape' ? '60px' : '8px'
+                    bottom: currentTool.type == 'shape' ? '60px' : '8px',
+                    opacity: currentTool.type == 'shape' ? '1' : '0',
+                    pointerEvents: currentTool.type == 'shape' ? 'all' : 'none'
                 }}
             >
                 <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shapeType === 'circle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: 'circle' }))}>
@@ -76,7 +80,7 @@ function Tools() {
                     <img src="/src/assets/images/rectangle.svg" alt="" />
                 </div>
 
-                {/* <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shape === 'triangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'triangle' }))}>
+                {/* <div className={`${styles.shapeSelect__item} ${currentTool.type === 'shape' && currentTool.shapeType === 'triangle' ? styles.selectedShape : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shape: 'triangle' }))}>
                     <img src="/src/assets/images/triangle.svg" alt="" />
                 </div> */}
             </div>

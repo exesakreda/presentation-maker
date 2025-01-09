@@ -8,11 +8,14 @@ import { setSelectedSlides } from "../store/actions/presentationActions"
 import validateJSON from "../services/validateJSON"
 import { addNotification, removeNotification } from "../store/actions/notificationActions"
 import store from "../store"
+import { generatePDF } from "../services/generatePDF"
 
 function FileMenu() {
     const dispatch = createDispatch(store)
     const currentState = store.getState()
     const notificationsState = currentState.notifications
+    const title = useSelector((state: RootState) => state.presentation.title)
+    const slideList = useSelector((state: RootState) => state.presentation.slideList)
 
     useEffect(() => {
         notificationsState.forEach((notification) => {
@@ -153,6 +156,16 @@ function FileMenu() {
         }
     }, [openPresentationFromFile])
 
+    const handleExportToPDF = async () => {
+        try {
+            await generatePDF(slideList, title)
+            dispatch(addNotification('success', 'PDF создан', 'Презентация успешно экспортирована'))
+        } catch (error) {
+            console.error('Ошибка при экспорте в PDF:', error);
+            dispatch(addNotification('error', 'Ошибка', 'Не удалось создать PDF'));
+        }
+    }
+
     return (
         <>
             <div
@@ -162,10 +175,13 @@ function FileMenu() {
             >
                 Файл
             </div>
-            <div className={styles.menu} style={{
-                opacity: isMenuActive ? '1' : '0',
-                pointerEvents: isMenuActive ? 'all' : 'none'
-            }}>
+            <div
+                className={styles.menu}
+                style={{
+                    opacity: isMenuActive ? '1' : '0',
+                    pointerEvents: isMenuActive ? 'all' : 'none'
+                }}
+            >
                 <div className={styles.menu__item} onClick={createNewPresentation}>
                     <div className={styles.item__title}>Новая презентация</div>
                     <div className={styles.item__hotkeys}>CTRL + ALT + N</div>
@@ -187,7 +203,7 @@ function FileMenu() {
                     <div className={styles.item__title}>Сохранить</div>
                     <div className={styles.item__hotkeys}>CTRL + S</div>
                 </div>
-                <div className={styles.menu__item_inactive}>
+                <div className={styles.menu__item} onClick={handleExportToPDF}>
                     <div className={styles.item__title}>Экспорт в PDF</div>
                     <div className={styles.item__hotkeys}>CTRL + E</div>
                 </div>

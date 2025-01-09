@@ -87,6 +87,7 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                                         fontFamily: 'Inter',
                                         weight: 800,
                                         size: 24,
+                                        color: '#000000'
                                     }
                                 }
                             ]
@@ -95,28 +96,97 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                 )
             }
 
-        // case PresentationActionType.SLIDE_CREATE_SHAPE:
-        //     return {
-        //         ...state,
-        //         slideList: state.slideList.map(slide =>
-        //             slide.id == action.payload.slideId
-        //                 ? {
-        //                     ...slide,
-        //                     objects: [
-        //                         ...slide.objects,
-        //                         {
-        //                             id: 'shape_' + uid(10),
-        //                             type: 'shape',
-        //                             shapeType: action.payload.shapeType,
-        //                             position: action.payload.position,
-        //                             size: { h: 0, w: 0 },
-        //                             value: 'Текст'
-        //                         }
-        //                     ]
-        //                 }
-        //                 : slide
-        //         )
-        //     }
+        case PresentationActionType.TEXTAREA_SET_FONTFAMILY:
+            return {
+                ...state,
+                slideList: state.slideList.map(slide =>
+                    slide.id == action.payload.slideId
+                        ? {
+                            ...slide,
+                            objects: slide.objects.map(object =>
+                                (object.id == action.payload.objectId && object.type == 'text')
+                                    ? {
+                                        ...object,
+                                        font: {
+                                            ...object.font,
+                                            fontFamily: action.payload.newFontFamily
+                                        }
+                                    }
+                                    : object
+                            )
+                        }
+                        : slide
+                )
+            }
+
+        case PresentationActionType.TEXTAREA_SET_FONTSIZE:
+            return {
+                ...state,
+                slideList: state.slideList.map(slide =>
+                    slide.id == action.payload.slideId
+                        ? {
+                            ...slide,
+                            objects: slide.objects.map(object =>
+                                (object.id == action.payload.objectId && object.type == 'text')
+                                    ? {
+                                        ...object,
+                                        font: {
+                                            ...object.font,
+                                            size: action.payload.newTextSize
+                                        }
+                                    }
+                                    : object
+                            )
+                        }
+                        : slide
+                )
+            }
+
+        case PresentationActionType.TEXTAREA_SET_FONTWEIGHT:
+            return {
+                ...state,
+                slideList: state.slideList.map(slide =>
+                    slide.id == action.payload.slideId
+                        ? {
+                            ...slide,
+                            objects: slide.objects.map(object =>
+                                (object.id == action.payload.objectId && object.type == 'text')
+                                    ? {
+                                        ...object,
+                                        font: {
+                                            ...object.font,
+                                            weight: action.payload.newTextWeight
+                                        }
+                                    }
+                                    : object
+                            )
+                        }
+                        : slide
+                )
+            }
+
+        case PresentationActionType.TEXTAREA_SET_TEXTCOLOR:
+            return {
+                ...state,
+                slideList: state.slideList.map(slide =>
+                    slide.id == action.payload.slideId
+                        ? {
+                            ...slide,
+                            objects: slide.objects.map(object =>
+                                (object.id == action.payload.objectId && object.type == 'text')
+                                    ? {
+                                        ...object,
+                                        font: {
+                                            ...object.font,
+                                            color: action.payload.newFontColor
+                                        }
+                                    }
+                                    : object
+                            )
+                        }
+                        : slide
+                )
+            }
 
         case PresentationActionType.SLIDE_DELETE_OBJECTS:
             return {
@@ -222,7 +292,7 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                 history: {
                     undoable: [
                         currentState,
-                        ...state.history.undoable
+                        ...state.history.undoable.slice(0, 49)
                     ],
                     redoable: []
                 }

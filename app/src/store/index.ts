@@ -1,12 +1,8 @@
-import { createStore } from "redux";
-import rootReducer from "./reducers/rootReducer";
-import validateJSON from "../services/validateJSON";
-import { AppState, StoredPresentationState } from "../../../types";
-import { uid } from "uid";
-
-const storedState = localStorage['redux-store']
-const parsedState = storedState ? JSON.parse(storedState) : null
-const isStateValid = parsedState ? validateJSON(parsedState) : null
+import { createStore } from "redux"
+import rootReducer from "./reducers/rootReducer"
+import validateJSON from "../services/validateJSON"
+import { AppState, StoredPresentationState } from "../../../types"
+import { uid } from "uid"
 
 const defaultState: AppState = {
     presentation: {
@@ -39,6 +35,10 @@ const defaultStateWithError: AppState = {
     }]
 }
 
+const storedState = localStorage['redux-store']
+const parsedState = storedState ? JSON.parse(storedState) : defaultState
+const isStateValid = validateJSON(parsedState)
+
 let modifiedParsedState = defaultState
 if (parsedState) {
     modifiedParsedState = {
@@ -55,7 +55,7 @@ if (parsedState) {
         tool: { type: 'cursor' }
     }
 } else {
-   modifiedParsedState = defaultStateWithError
+    modifiedParsedState = defaultStateWithError
 }
 
 const inititalState = isStateValid ? modifiedParsedState : defaultStateWithError
@@ -65,20 +65,23 @@ const store = createStore(rootReducer, inititalState)
 store.subscribe(() => {
     const currentState = store.getState()
 
-    const stateForSave: StoredPresentationState = currentState ? {
-        title: currentState.presentation.title,
-        slideList: currentState.presentation.slideList,
-        selectedSlides: currentState.presentation.selection.slides,
-        history: currentState.presentation.history
-    } : {
-        title: '',
-        slideList: [],
-        selectedSlides: [],
-        history: {
-            undoable: [],
-            redoable: []
+    const stateForSave: StoredPresentationState = currentState
+        ? {
+            title: currentState.presentation.title,
+            slideList: currentState.presentation.slideList,
+            selectedSlides: currentState.presentation.selection.slides,
+            history: currentState.presentation.history
         }
-    }
+
+        : {
+            title: '',
+            slideList: [],
+            selectedSlides: [],
+            history: {
+                undoable: [],
+                redoable: []
+            }
+        }
 
     localStorage['redux-store'] = JSON.stringify(stateForSave)
 })

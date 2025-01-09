@@ -51,7 +51,7 @@ function SlideListItem({
             <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
             <div
                 className={styles.slidePreview}
-                style={{ transform: 'scale(0.1362903225806452)' }}
+                style={{ transform: 'scale(0.088020833)' }}
             >
                 <Slide
                     slide={slide}
@@ -80,7 +80,7 @@ function SlideList() {
                     const newSelectedSlides = selection.slides.filter(id => id !== slideId)
                     dispatch(setSelectedSlides(newSelectedSlides))
                 }
-            } else {    
+            } else {
                 const newSelectedSlides = [...selection.slides, slideId]
                 dispatch(setSelectedSlides(newSelectedSlides))
             }
@@ -91,7 +91,7 @@ function SlideList() {
     }
 
     function handleRemoveSlide() {
-        if (slideList.length - selection.slides.length > 0 ) {
+        if (slideList.length - selection.slides.length > 0) {
             dispatch(removeSlides(selection.slides))
             const newSlides = slideList.filter(slide => !selection.slides.includes(slide.id))
             let closestSlideId = null
@@ -158,7 +158,7 @@ function SlideList() {
                 />
                 {slideListItems}
             </div>
-                    
+
             <button className={styles.actionbar__deleteslide}>
                 <div className={styles.deleteslidebutton__text} onClick={() => handleRemoveSlide()}>Удалить выбранные слайды</div>
                 <img src="/src/assets/images/minus.svg" alt="" />

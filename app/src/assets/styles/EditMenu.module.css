@@ -16,7 +16,7 @@
     transition: 0.2s ease;
 
     color: #ffffff;
-    font: 600 12px 'Inter' 
+    font: 700 12px 'Inter' 
 }
 
 .menu__title:hover {
@@ -48,7 +48,7 @@
 }
 
 .menu__item {
-    font: 600 12px 'Inter';
+    font: 700 12px 'Inter';
     color: #ffffff;
 
     border-radius: 5px;

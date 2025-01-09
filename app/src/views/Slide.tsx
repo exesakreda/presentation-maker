@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from '../assets/styles/Slide.module.css'
-import { resizeInput } from "../services/resizeInput"
 import { RootState } from "../store/reducers/rootReducer"
 import { useSelector } from "react-redux"
 import { setSelectedObjects } from "../store/actions/presentationActions"
@@ -21,8 +20,6 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
     const dispatch = createDispatch(store)
 
     useEffect(() => {
-        document.querySelectorAll('input').forEach(input => resizeInput(input as HTMLInputElement))
-
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Delete' && selectedObjects.length > 0) {
                 dispatch(deleteObjects(slide.id, selectedObjects))
@@ -47,14 +44,12 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
         />
     ))
 
-    const backgroundValue = slide.background.type == 'color' ? String(slide.background.value) : ''
+    const backgroundType = slide.background.type
+    const backgroundValue = backgroundType == 'color' ? String(slide.background.value) : String(slide.background.src)
 
     return (
         <div
             className={styles.slide}
-            style={{
-                backgroundColor: backgroundValue
-            }}
             id='slide'
         >
             {slideObjects}
@@ -62,7 +57,10 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
             <div
                 id="blankArea"
                 className={styles.blankArea}
-                style={{ backgroundColor: backgroundValue }}
+                style={{
+                    backgroundColor: backgroundType == 'color' ? backgroundValue : '#ffffff',
+                    backgroundImage: backgroundType == 'image' ? `url(${backgroundValue})` : 'none'
+                }}
                 onClick={() => { dispatch(setSelectedObjects([])) }}
             >
             </div>

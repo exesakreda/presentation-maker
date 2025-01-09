@@ -1,5 +1,6 @@
 .tools {
     width: 176px;
+    /* width: 148px; */
     height: 44px;
 
     transform: scale(calc(1vw / (176 / 100)));

@@ -40,7 +40,8 @@ type TextArea = CommonObject & {
     font: {
         weight: number,
         fontFamily: string,
-        size: number
+        size: number,
+        color: string
     }
 }
 
