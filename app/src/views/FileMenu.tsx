@@ -9,6 +9,7 @@ import validateJSON from "../services/validateJSON"
 import { addNotification, removeNotification } from "../store/actions/notificationActions"
 import store from "../store"
 import { generatePDF } from "../services/generatePDF"
+import { PDFViewer } from "./PDFViewer"
 
 function FileMenu() {
     const dispatch = createDispatch(store)
@@ -16,6 +17,8 @@ function FileMenu() {
     const notificationsState = currentState.notifications
     const title = useSelector((state: RootState) => state.presentation.title)
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
+
+    const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
 
     useEffect(() => {
         notificationsState.forEach((notification) => {
@@ -156,15 +159,30 @@ function FileMenu() {
         }
     }, [openPresentationFromFile])
 
-    const handleExportToPDF = async () => {
+    
+    const exportPresentationToPDF = async () => {
         try {
-            await generatePDF(slideList, title)
+            const blob = await generatePDF(slideList, title)
+            setPdfBlob(blob)
             dispatch(addNotification('success', 'PDF создан', 'Презентация успешно экспортирована'))
         } catch (error) {
             console.error('Ошибка при экспорте в PDF:', error);
             dispatch(addNotification('error', 'Ошибка', 'Не удалось создать PDF'));
         }
     }
+
+    useEffect(() => {
+        const handleExportPresentationWithHotkeys = (event: KeyboardEvent) => {
+            if ((event.ctrlKey || event.metaKey) && (event.altKey) && (event.key.toLowerCase() === 'e' || event.key.toLocaleLowerCase() === 'у')) {
+                exportPresentationToPDF()
+            }
+        }
+
+        document.addEventListener('keydown', handleExportPresentationWithHotkeys)
+        return () => {
+            document.removeEventListener('keydown', handleExportPresentationWithHotkeys)
+        }
+    }, [exportPresentationToPDF])
 
     return (
         <>
@@ -203,12 +221,19 @@ function FileMenu() {
                     <div className={styles.item__title}>Сохранить</div>
                     <div className={styles.item__hotkeys}>CTRL + S</div>
                 </div>
-                <div className={styles.menu__item} onClick={handleExportToPDF}>
+                <div className={styles.menu__item} onClick={exportPresentationToPDF}>
                     <div className={styles.item__title}>Экспорт в PDF</div>
-                    <div className={styles.item__hotkeys}>CTRL + E</div>
+                    <div className={styles.item__hotkeys}>CTRL + ALT + E</div>
                 </div>
             </div>
 
+            {pdfBlob && (
+                <PDFViewer
+                    pdfBlob={pdfBlob}
+                    onClose={() => setPdfBlob(null)}
+                    name={title}
+                />
+            )}
         </>
     )
 }

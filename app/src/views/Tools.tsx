@@ -35,7 +35,7 @@ function Tools() {
             }
             reader.readAsDataURL(file)
         }
-
+        event.target.value = ''
         dispatch(setTool({ type: 'cursor' }))
     }
 
