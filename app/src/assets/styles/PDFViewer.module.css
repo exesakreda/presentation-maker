@@ -149,3 +149,11 @@
     background-color: #595959;
     transition: .1s
 }
+
+.divider {
+    opacity: .5;
+}
+
+.totalPages {
+    opacity: .5;
+}

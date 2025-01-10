@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import styles from '../assets/styles/Tools.module.css'
 import { RootState } from '../store/reducers/rootReducer'
 import { useSelector } from 'react-redux'
@@ -6,12 +6,14 @@ import createDispatch from '../store/utils/createDispatch'
 import { createImage } from '../store/actions/presentationActions'
 import { setTool } from '../store/actions/toolActions'
 import store from '../store'
+import { UnsplashUploadMenu } from './unsplashUploadMenu'
 
 function Tools() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
     const selectedSlides = useSelector((state: RootState) => state.presentation.selection.slides)
     const currentTool = useSelector((state: RootState) => state.tool)
     const dispatch = createDispatch(store)
+    const [unsplashUploadActive, setUnsplashUploadActive] = useState<boolean>(false)
 
     const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
 
@@ -65,6 +67,24 @@ function Tools() {
             </div>
 
             <div
+                className={`${styles.additionalMenu} ${styles.unsplashUpload}`}
+                style={{
+                    bottom: currentTool.type == 'image' ? '107px' : '8px',
+                    opacity: currentTool.type == 'image' ? '1' : '0',
+                    pointerEvents: currentTool.type == 'image' ? 'all' : 'none'
+                }}
+                onClick={() => {
+                    setUnsplashUploadActive(true)
+                    dispatch(setTool({ type: 'cursor' }))
+                }}
+            >
+                <div className={styles.fileUpload__text}>Загрузить с Unsplash</div>
+                <img className={styles.fileUpload__icon} src='/src/assets/images/unsplash.svg' width={'13px'} style={{
+                    filter: 'invert(1)'
+                }} />
+            </div>
+
+            <div
                 className={`${styles.additionalMenu} ${styles.shapeSelect}`}
                 style={{
                     bottom: currentTool.type == 'shape' ? '60px' : '8px',
@@ -106,10 +126,12 @@ function Tools() {
                     <img src="/src/assets/images/image.svg" alt="" className={styles.item__image} />
                 </div>
 
-                <div className={`${styles.tools__item} ${currentTool.type === 'shape' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: null }))}>
+                {/* <div className={`${styles.tools__item} ${currentTool.type === 'shape' ? styles.selectedTool : ''}`} onClick={() => dispatch(setTool({ type: 'shape', shapeType: null }))}>
                     <img src="/src/assets/images/shape.svg" alt="" className={styles.item__image} />
-                </div>
+                </div> */}
             </div>
+
+            {unsplashUploadActive ? (<UnsplashUploadMenu currentSlideId={currentSlide?.id || '1'} setUnsplashUploadActive={setUnsplashUploadActive} />) : ''}
         </>
     )
 }

@@ -4,7 +4,7 @@ import { PresentationActionType } from "../types/presentationType";
 
 const createDispatch = (store: Store) => {
     return (action: any) => {
-        console.log(action)
+        // console.log(action)
         if (action.type == PresentationActionType.RESET_HISTORY) {
             store.dispatch(resetHistory())
         }

@@ -164,7 +164,6 @@ function FileMenu() {
         try {
             const blob = await generatePDF(slideList, title)
             setPdfBlob(blob)
-            dispatch(addNotification('success', 'PDF создан', 'Презентация успешно экспортирована'))
         } catch (error) {
             console.error('Ошибка при экспорте в PDF:', error);
             dispatch(addNotification('error', 'Ошибка', 'Не удалось создать PDF'));

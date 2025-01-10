@@ -1,4 +1,4 @@
-import { ReactEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import styles from '../assets/styles/PDFViewer.module.css';

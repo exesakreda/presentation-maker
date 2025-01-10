@@ -21,6 +21,7 @@
     gap: 16px;
 
     user-select: none;
+    z-index: 100;
 }
 
 .tools__item {
@@ -55,6 +56,7 @@
 .additionalMenu {
     width: 176px;
     height: 39px;
+    z-index: 100;
 
     transform: scale(calc(1vw / (176 / 100)));
     transform-origin: top left;
@@ -78,7 +80,16 @@
 
 .fileUpload:hover {
     background-color: #004FFF;
-    
+
+    transition: ease-in-out 0.2s;
+}
+
+.unsplashUpload {
+    height: 50px;
+}
+
+.unsplashUpload:hover {
+    background-color: #004FFF;
     transition: ease-in-out 0.2s;
 }
 
@@ -119,6 +130,7 @@
     transition: .1s ease-in;
     cursor: pointer;
 }
+
 .shapeSelect__item:hover {
     background-color: #004FFF;
     transition: .1s ease-in;

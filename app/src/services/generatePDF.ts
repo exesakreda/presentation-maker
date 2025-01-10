@@ -24,7 +24,6 @@ const createSlideHTML = (slide: Slide, isLast: boolean): HTMLDivElement => {
     }
 
     if (slide.background.type === 'image') {
-        // slideDiv.style.backgroundImage = `url(${slide.background.src})`
         const backgroundImg = document.createElement('img')
         backgroundImg.src = slide.background.src
         backgroundImg.style.cssText = `
@@ -35,8 +34,6 @@ const createSlideHTML = (slide: Slide, isLast: boolean): HTMLDivElement => {
             left: 0
         `
         slideDiv.appendChild(backgroundImg)
-        // slideDiv.style.backgroundSize = 'cover'
-        // slideDiv.style.backgroundPosition = 'center'
     }
 
     slide.objects.forEach(obj => {
@@ -45,7 +42,7 @@ const createSlideHTML = (slide: Slide, isLast: boolean): HTMLDivElement => {
             position: absolute;
             left: ${obj.position.x - obj.size.w / 2}px;
             top: ${obj.position.y - obj.size.h / 2}px;
-            textWrap: wrap
+            text-wrap: wrap
         `
 
         if (obj.type === 'text') {

@@ -292,7 +292,7 @@ const presentationReducer = (state = initialState, action: any): PresentationSta
                 history: {
                     undoable: [
                         currentState,
-                        ...state.history.undoable.slice(0, 5)
+                        ...state.history.undoable.slice(0, 10)
                     ],
                     redoable: []
                 }
