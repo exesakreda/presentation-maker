@@ -40,13 +40,15 @@ const parsedState = storedState ? JSON.parse(storedState) : defaultState
 const isStateValid = validateJSON(parsedState)
 
 let modifiedParsedState = defaultState
-if (parsedState) {
+if (parsedState !== undefined) {
     modifiedParsedState = {
         presentation: {
             title: parsedState.title,
             slideList: parsedState.slideList,
             selection: {
-                slides: [parsedState.selectedSlides[0]],
+                slides: parsedState.selectedSlides && parsedState.selectedSlides.length > 0
+                    ? [parsedState.selectedSlides[0]]
+                    : [],
                 objects: []
             },
             history: parsedState.history

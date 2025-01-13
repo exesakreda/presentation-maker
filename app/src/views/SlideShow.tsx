@@ -26,28 +26,33 @@ function SlideShow({ slideIndex }: { slideIndex: number }) {
 
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
 
-    const [curentSlideIndex, setCurrentSlideIndex] = useState(slideIndex)
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(slideIndex)
 
     const [viewportHeight, setViewportHeight] = useState(window.innerHeight)
-    window.addEventListener('resize', () => {
-        setViewportHeight(window.innerHeight)
-    })
+    useEffect(() => {
+        const handleResize = () => {
+            setViewportHeight(window.innerHeight)
+        }
+
+        window.addEventListener('resize', handleResize)
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
 
     const scale = viewportHeight / 1080
 
     function changeSlideIndex(action: 'next' | 'previous') {
-        switch (action) {
-            case 'next':
-                setCurrentSlideIndex(Math.min(slideList.length - 1, curentSlideIndex + 1))
-                break
-
-            case 'previous':
-                setCurrentSlideIndex(Math.max(0, curentSlideIndex - 1))
-                break
-
-            default:
-                return
-        }
+        setCurrentSlideIndex((prevIndex) => {
+            if (action === 'next') {
+                return Math.min(slideList.length - 1, prevIndex + 1)
+            }
+            if (action === 'previous') {
+                return Math.max(0, prevIndex - 1)
+            }
+            return prevIndex
+        })
     }
 
     useEffect(() => {
@@ -66,15 +71,15 @@ function SlideShow({ slideIndex }: { slideIndex: number }) {
             }
         }
 
-        document.addEventListener('keydown', event => handleChangeSlideIndexWithKey(event))
+        document.addEventListener('keydown', handleChangeSlideIndexWithKey)
 
         return () => {
-            document.removeEventListener('keydown', event => handleChangeSlideIndexWithKey(event))
+            document.removeEventListener('keydown', handleChangeSlideIndexWithKey)
         }
     }, [])
 
-    const renderCurrentSlide = (curentSlideIndex: number) => {
-        const currentSlide = slideList[curentSlideIndex]
+    const renderCurrentSlide = (currentSlideIndex: number) => {
+        const currentSlide = slideList[currentSlideIndex]
         return (
             <div className={styles.slideShow}>
                 <div className={styles.controls}>
@@ -100,7 +105,7 @@ function SlideShow({ slideIndex }: { slideIndex: number }) {
 
     return (
         <>
-            {renderCurrentSlide(curentSlideIndex)}
+            {renderCurrentSlide(currentSlideIndex)}
         </>
     )
 }
