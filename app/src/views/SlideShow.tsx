@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import styles from '../assets/styles/SlideShow.module.css'
 import { Slide } from "./Slide"
 import { useNavigate } from "react-router-dom"
+import { Slide as SlideType } from "../../../types"
 
 function SlideShow({ slideIndex }: { slideIndex: number }) {
     const navigate = useNavigate()
@@ -24,7 +25,27 @@ function SlideShow({ slideIndex }: { slideIndex: number }) {
         }
     }, [navigate])
 
-    const slideList = useSelector((state: RootState) => state.presentation.slideList)
+    const finalSlide: SlideType = {
+        id: 'final_slide',
+        background: { type: 'color', value: '#000000' },
+        objects: [
+            {
+                id: 'end_of_slideshow',
+                position: { x: 965, y: 30 },
+                size: { w: 410, h: 50 },
+                value: `Конец слайдшоу. Нажмите 'Escape' для выхода.`,
+                type: 'text',
+                font: {
+                    weight: 700,
+                    size: 16,
+                    fontFamily: 'Inter',
+                    color: '#FFFFFF'
+                },
+            }
+        ]
+    }
+
+    const slideList = [...useSelector((state: RootState) => state.presentation.slideList), finalSlide]
 
     const [currentSlideIndex, setCurrentSlideIndex] = useState(slideIndex)
 
