@@ -11,7 +11,7 @@ function App() {
         } />
 
         <Route path='/slideshow' element={
-          <SlideShow slideIndex={0} />
+          <SlideShow />
         } />
       </Routes>
     </Router>

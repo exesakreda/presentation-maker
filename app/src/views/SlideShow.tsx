@@ -6,7 +6,7 @@ import { Slide } from "./Slide"
 import { useNavigate } from "react-router-dom"
 import { Slide as SlideType } from "../../../types"
 
-function SlideShow({ slideIndex }: { slideIndex: number }) {
+function SlideShow() {
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -47,7 +47,7 @@ function SlideShow({ slideIndex }: { slideIndex: number }) {
 
     const slideList = [...useSelector((state: RootState) => state.presentation.slideList), finalSlide]
 
-    const [currentSlideIndex, setCurrentSlideIndex] = useState(slideIndex)
+    const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
 
     const [viewportHeight, setViewportHeight] = useState(window.innerHeight)
     useEffect(() => {
