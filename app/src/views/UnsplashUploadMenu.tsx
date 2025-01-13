@@ -16,8 +16,8 @@ function UnsplashUploadMenu({ currentSlideId, setUnsplashUploadActive }: Unsplas
     })
 
     useEffect(() => {
-        function handleClose(event: KeyboardEvent){
-            if(event.key === 'Escape') {
+        function handleClose(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
                 setUnsplashUploadActive(false)
             }
         }
@@ -43,19 +43,21 @@ function UnsplashUploadMenu({ currentSlideId, setUnsplashUploadActive }: Unsplas
         const dimensions = await getImageDimensions(src)
         const aspectRatio = dimensions.w / dimensions.h
         const pos = { x: dimensions.w / 2, y: dimensions.h / 2 }
-                
-        dispatch(createImage(currentSlideId, src, {height: dimensions.h, width: dimensions.w, aspectRatio: aspectRatio}, pos))
+
+        dispatch(createImage(currentSlideId, src, { height: dimensions.h, width: dimensions.w, aspectRatio: aspectRatio }, pos))
         setUnsplashUploadActive(false)
     }
 
     const dispatch = createDispatch(store)
     const [photos, setPhotos] = useState<any[]>([])
+    const [page, setPage] = useState(1)
+    const [query, setQuery] = useState<string>('')
 
-    const imagesFromUnsplash = (query: string) => {
+    const imagesFromUnsplash = () => {
         unsplash.search.getPhotos({
             query: query,
-            page: 1,
-            perPage: 10
+            page: page,
+            perPage: 24
         })
             .then(result => {
                 if (result.type === 'success') {
@@ -66,6 +68,10 @@ function UnsplashUploadMenu({ currentSlideId, setUnsplashUploadActive }: Unsplas
             })
     }
 
+    useEffect(() => {
+        imagesFromUnsplash()
+    }, [page])
+
     return (
         <div className={styles.unsplashUpload}>
             <div className={styles.menu}>
@@ -74,7 +80,10 @@ function UnsplashUploadMenu({ currentSlideId, setUnsplashUploadActive }: Unsplas
                         type='text'
                         placeholder='Введите запрос'
                         className={styles.search__input}
-                        onBlur={(event) => imagesFromUnsplash(event.target.value)}
+                        onBlur={(event) => {
+                            setQuery(event.target.value)
+                            imagesFromUnsplash()
+                        }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 e.currentTarget.blur()
@@ -91,7 +100,29 @@ function UnsplashUploadMenu({ currentSlideId, setUnsplashUploadActive }: Unsplas
                                 <img src={photo.urls.small} alt="" className={styles.image} />
                             </div>
                         ))}
+
+                        <div
+                            className={styles.pages}
+                            style={
+                                photos.length > 0
+                                    ? { display: 'flex' }
+                                    : { display: 'none' }
+                            }
+                        >
+                            <div className={styles.page_title}>Страница</div>
+                            <div className={styles.page_contol}>
+                                <div className={styles.previous_page} onClick={() => setPage(Math.max(1, page - 1))}>
+                                    <img src='/src/assets/images/chevron-left.svg' alt="" />
+                                </div>
+                                <div className={styles.current_page}>{page}</div>
+                                <div className={styles.next_page} onClick={() => setPage(page + 1)}>
+                                    <img src='/src/assets/images/chevron-right.svg' alt="" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+
                 </div>
             </div>
         </div>

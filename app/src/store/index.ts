@@ -46,7 +46,7 @@ if (parsedState) {
             title: parsedState.title,
             slideList: parsedState.slideList,
             selection: {
-                slides: parsedState.selectedSlides,
+                slides: [parsedState.selectedSlides[0]],
                 objects: []
             },
             history: parsedState.history

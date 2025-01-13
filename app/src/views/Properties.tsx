@@ -333,7 +333,7 @@ function TextSelected({ textId }: { textId: string }) {
     }
 
     const getSelectedFontIndicatorTop = (fontFamily: string) => {
-        const fonts = ['Inter', 'Geologica', 'JetBrains Mono', 'Montserrat', 'Open Sans', 'Roboto Flex', 'Alumni Sans', 'Unbounded', 'Tilda Sans']
+        const fonts = ['Inter', 'Geologica', 'JetBrains Mono', 'Montserrat', 'Open Sans', 'Roboto Flex', 'Alumni Sans', 'Unbounded']
         const fontIndex = fonts.findIndex(font => font == fontFamily)
         return fontIndex*28 + 43
     }
@@ -654,13 +654,6 @@ function TextSelected({ textId }: { textId: string }) {
                         onClick={() => handleChangeFontFamily('Unbounded')}
                     >
                         Unbounded
-                    </div>
-
-                    <div
-                        className={`${styles.font_selection__element} ${styles.font_tildasans} ${selectedText.font.fontFamily === 'Tilda Sans' ? styles.font_selection__element_selected : ''}`}
-                        onClick={() => handleChangeFontFamily('Tilda Sans')}
-                    >
-                        Tilda Sans
                     </div>
 
                     <div

@@ -1,0 +1,39 @@
+.slideShow {
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.slide {
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+    transform-origin: center;
+    position: absolute;
+}
+
+.controls {
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    pointer-events: all;
+    display: flex;
+    flex-direction: row;
+}
+
+.controls__previous_slide {
+    height: 100%;
+    width: 50%;
+}
+
+.controls__next_slide {
+    height: 100%;
+    width: 50%;
+}

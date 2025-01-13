@@ -1,102 +1,133 @@
-import type { Slide as SlideType } from "../../../types.ts"
 import { Slide } from "./Slide.tsx"
 import styles from '../assets/styles/SlideList.module.css'
-import { MouseEvent, useRef, useState } from "react"
-import { useMoveSlides } from "../services/hooks/useMoveSlides.ts"
+import { useCallback, useEffect, useState } from "react"
 
 import { useSelector } from "react-redux"
 import createDispatch from "../store/utils/createDispatch.ts"
 import { RootState } from "../store/reducers/rootReducer.ts"
-import { addSlide, removeSlides } from "../store/actions/presentationActions.ts"
+import { addSlide, removeSlides, updateSlideList } from "../store/actions/presentationActions.ts"
 import { setSelectedSlides, setSelectedObjects } from "../store/actions/presentationActions.ts"
 import { addNotification } from "../store/actions/notificationActions.ts"
 import store from "../store/index.ts"
 
-type SlideItemProps = {
-    slide: SlideType
-    slides: SlideType[]
-    isDragging: boolean
-    setIsDragging: (value: boolean) => void
-    setInsertionTop: (value: number) => void
-    selectedSlides: string[]
-    onSlideClick: (e: React.MouseEvent, slideId: string) => void
-}
 
-function SlideListItem({
-    slide,
-    slides,
-    isDragging,
-    setIsDragging,
-    setInsertionTop,
-    selectedSlides,
-    onSlideClick
-}: SlideItemProps) {
-    const [shift, setShift] = useState(0)
-    const ref = useRef<HTMLDivElement>(null)
-    useMoveSlides({ ref, shift, setShift, slide: slide, slides: slides, isDragging, setIsDragging, setInsertionTop })
-    return (
-        <div
-            key={slide.id}
-            ref={ref}
-            id={slide.id}
-            onMouseDown={(event) => onSlideClick(event, slide.id)}
-            className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
-                ? styles.selectedSlide
-                : ''
-                }`}
-            style={{
-                top: `${shift}px`,
-            }}
-        >
-            <p className={styles.slide__id}>{slides.indexOf(slide) + 1}</p>
-            <div
-                className={styles.slidePreview}
-                style={{ transform: 'scale(0.088020833)' }}
-            >
-                <Slide
-                    slide={slide}
-                    scale={0.1362903225806452}
-                    showSelection={false}
-                />
-            </div>
-        </div>
-    )
-}
 
 function SlideList() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
-    const selection = useSelector((state: RootState) => state.presentation.selection)
+    const selectedSlides = useSelector((state: RootState) => state.presentation.selection.slides)
     const dispatch = createDispatch(store)
 
     const [isDragging, setIsDragging] = useState(false)
     const [insertionTop, setInsertionTop] = useState(60)
+    const [activeShift, setActiveShift] = useState(0)
 
-    function onSlideClick(e: MouseEvent, slideId: string) {
-        if (isDragging) return
-        dispatch(setSelectedObjects([]))
-        if (e.ctrlKey) {
-            if (selection.slides.includes(slideId)) {
-                if (selection.slides.length > 1 && slideList.length > 1) {
-                    const newSelectedSlides = selection.slides.filter(id => id !== slideId)
-                    dispatch(setSelectedSlides(newSelectedSlides))
-                }
-            } else {
-                const newSelectedSlides = [...selection.slides, slideId]
-                dispatch(setSelectedSlides(newSelectedSlides))
-            }
+    const handleSlideClick = useCallback((e: React.MouseEvent, slideId: string) => {
+        e.stopPropagation()
+
+        if (e.shiftKey) {
+            const currentIndex = slideList.findIndex(slide => slide.id === slideId)
+            const lastSelectedIndex = slideList.findIndex(
+                slide => slide.id === selectedSlides[selectedSlides.length - 1]
+            )
+
+            const start = Math.min(currentIndex, lastSelectedIndex)
+            const end = Math.max(currentIndex, lastSelectedIndex)
+
+            const newSelection = slideList
+                .slice(start, end + 1)
+                .map(slide => slide.id)
+
+            dispatch(setSelectedSlides(newSelection))
+        } else if (e.ctrlKey || e.metaKey) {
+            const newSelection = selectedSlides.includes(slideId)
+                ? selectedSlides.filter(id => id !== slideId)
+                : [...selectedSlides, slideId]
+
+            dispatch(setSelectedSlides(newSelection))
         } else {
-            const newSelectedSlides = [slideId]
-            dispatch(setSelectedSlides(newSelectedSlides))
+            dispatch(setSelectedSlides([slideId]))
         }
-    }
+
+        dispatch(setSelectedObjects([]))
+    }, [slideList, selectedSlides, dispatch])
+
+    useEffect(() => {
+        const handleMouseDown = (e: MouseEvent) => {
+            const target = e.target as HTMLElement
+            const slideContainer = target.closest(`.${styles.slideContainer}`)
+            if (slideContainer && selectedSlides.includes(slideContainer.id)) {
+                const initialMouseY = e.pageY
+                setIsDragging(true)
+
+                let index = 0
+                const handleMouseMove = (e: MouseEvent) => {
+                    const deltaY = e.pageY - initialMouseY
+                    setActiveShift(deltaY)
+
+                    const slideListElement = document.getElementById('slidelist')
+                    const slideElement = e.target as HTMLElement
+                    const elementTop = slideElement.getBoundingClientRect().top - 60
+                    if (slideListElement) {
+                        index = Math.round(elementTop / 107)
+                        index = Math.max(0, Math.min(index, slideList.length - 1))
+                        const newInsertionTop = index * 107 + 60 + 80.5
+
+                        setInsertionTop(newInsertionTop)
+                    }
+                }
+
+                const handleMouseUp = (e: MouseEvent) => {
+                    const deltaY = e.pageY - initialMouseY
+                    if (Math.abs(deltaY) > 10) {
+                        const selectedSlidesIndexes = selectedSlides
+                            .map(id => slideList.findIndex(slide => slide.id === id))
+                            .sort((a, b) => a - b)
+
+                        const newSlideList = [...slideList]
+                        const slidesToMove = selectedSlidesIndexes.map(index => newSlideList[index])
+
+                        selectedSlidesIndexes.reverse().forEach(index => {
+                            newSlideList.splice(index, 1)
+                        })
+
+                        const targetIndex = Math.min(Math.max(0, index), newSlideList.length)
+                        newSlideList.splice(targetIndex, 0, ...slidesToMove)
+
+                        setTimeout(() => {
+                            dispatch(updateSlideList(newSlideList))
+                            dispatch(setSelectedSlides(slidesToMove.map(slide => slide.id)))
+                        }, 1)
+
+                    }
+
+                    setActiveShift(0)
+                    setIsDragging(false)
+
+                    document.removeEventListener('mousemove', handleMouseMove)
+                    document.removeEventListener('mouseup', handleMouseUp)
+                }
+
+                document.addEventListener('mousemove', handleMouseMove)
+                document.addEventListener('mouseup', handleMouseUp)
+
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        }
+
+        document.addEventListener('mousedown', handleMouseDown)
+        return () => {
+            document.removeEventListener('mousedown', handleMouseDown)
+        }
+    }, [selectedSlides])
 
     function handleRemoveSlide() {
-        if (slideList.length - selection.slides.length > 0) {
-            dispatch(removeSlides(selection.slides))
-            const newSlides = slideList.filter(slide => !selection.slides.includes(slide.id))
+        if (slideList.length - selectedSlides.length > 0) {
+            dispatch(removeSlides(selectedSlides))
+            const newSlides = slideList.filter(slide => !selectedSlides.includes(slide.id))
             let closestSlideId = null
             if (newSlides.length > 0) {
-                const firstSelectedIndex = slideList.findIndex(slide => selection.slides.includes(slide.id))
+                const firstSelectedIndex = slideList.findIndex(slide => selectedSlides.includes(slide.id))
                 if (firstSelectedIndex !== -1) {
                     if (firstSelectedIndex < newSlides.length) {
                         closestSlideId = newSlides[firstSelectedIndex].id
@@ -118,16 +149,34 @@ function SlideList() {
     const slideListItems = slideList.map((slide) => {
         if (!slide || !slide.id) return null
         return (
-            <SlideListItem
+            <div
                 key={slide.id}
-                slide={slide}
-                slides={slideList}
-                isDragging={isDragging}
-                setIsDragging={setIsDragging}
-                setInsertionTop={setInsertionTop}
-                selectedSlides={selection.slides}
-                onSlideClick={onSlideClick}
-            />)
+                id={slide.id}
+                className={`${styles.slideContainer} ${selectedSlides.includes(slide.id)
+                    ? styles.selectedSlide
+                    : ''
+                    }`}
+                onClick={(event) => handleSlideClick(event, slide.id)}
+                style={{
+                    transform: isDragging && selectedSlides.includes(slide.id)
+                        ? `translateY(${activeShift}px)`
+                        : 'translateY(0px)',
+                    // transition: isDragging ? 'none' : ' 0.2s ease-out'
+                }}
+            >
+                <p className={styles.slide__id}>{slideList.indexOf(slide) + 1}</p>
+                <div
+                    className={styles.slidePreview}
+                    style={{ transform: 'scale(0.088020833)' }}
+                >
+                    <Slide
+                        slide={slide}
+                        scale={0.1362903225806452}
+                        showSelection={false}
+                    />
+                </div>
+            </div>
+        )
     })
 
     return (
