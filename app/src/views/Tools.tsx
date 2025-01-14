@@ -6,7 +6,8 @@ import createDispatch from '../store/utils/createDispatch'
 import { createImage } from '../store/actions/presentationActions'
 import { setTool } from '../store/actions/toolActions'
 import store from '../store'
-import { UnsplashUploadMenu } from './unsplashUploadMenu'
+import { UnsplashUploadMenu } from './UnsplashUploadMenu'
+import { getImageDimensions } from '../services/getImageDimensions'
 
 function Tools() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
@@ -39,16 +40,6 @@ function Tools() {
         }
         event.target.value = ''
         dispatch(setTool({ type: 'cursor' }))
-    }
-
-    const getImageDimensions = (src: string): Promise<{ h: number, w: number }> => {
-        return new Promise((resolve) => {
-            const img = new Image()
-            img.src = src
-            img.onload = () => {
-                resolve({ w: img.width / 2, h: img.height / 2 })
-            }
-        })
     }
 
     return (
@@ -131,7 +122,7 @@ function Tools() {
                 </div> */}
             </div>
 
-            {unsplashUploadActive ? (<UnsplashUploadMenu currentSlideId={currentSlide?.id || '1'} setUnsplashUploadActive={setUnsplashUploadActive} />) : ''}
+            {unsplashUploadActive ? (<UnsplashUploadMenu currentSlideId={currentSlide?.id || '1'} setUnsplashUploadActive={setUnsplashUploadActive} source='createImage' />) : ''}
         </>
     )
 }

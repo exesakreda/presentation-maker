@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux'
 import createDispatch from '../store/utils/createDispatch'
 import { changeBackground, setFontFamily, setFontWeight, setFontSize, setFontColor } from '../store/actions/presentationActions'
 import store from '../store'
+import { UnsplashUploadMenu } from './UnsplashUploadMenu'
+import { getImageDimensions } from '../services/getImageDimensions'
 
 function SlideSelected() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
@@ -19,6 +21,7 @@ function SlideSelected() {
     const [colorValue, setColorValue] = useState('')
     const [bgType, setBgType] = useState<'color' | 'image'>('color')
     const [isImageUploaded, setIsImageUploaded] = useState<boolean>(false)
+    const [unsplashUploadToBgActive, setUnsplashUploadToBgActive] = useState<boolean>(false)
 
     const inputRef = useRef<HTMLInputElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
@@ -142,6 +145,18 @@ function SlideSelected() {
                         style={{ display: 'none' }}
                         onChange={handleFileChange}
                     />
+
+                    <div
+                        className={`${styles.additionalMenu} ${styles.unsplashUpload}`}
+                        onClick={() => {
+                            setUnsplashUploadToBgActive(true)
+                        }}
+                    >
+                        <div className={styles.fileUpload__text}>Загрузить с Unsplash</div>
+                        <img className={styles.fileUpload__icon} src='/src/assets/images/unsplash.svg' width={'13px'} style={{
+                            filter: 'invert(1)'
+                        }} />
+                    </div>
                 </>
             )
         }
@@ -191,47 +206,50 @@ function SlideSelected() {
     }
 
     return (
-        <div className={styles.properties} id="properties">
-            <div className={styles.slideid}>
-                <p>Слайд {currentSlideIndex + 1} (id: {currentSlideId})</p>
-            </div>
-
-            <div className={styles.divider} />
-
-            <div className={styles.backgroudSettings}>
-                <div className={styles.backgroudSettings__title}>Фон</div>
-                <div className={styles.backgroudSettings__bgType}>
-                    <div className={`${styles.bgType__item} ${bgType == 'color' ? '' : styles.bgType__item_inactive}`} onClick={() => {
-                        if (bgType !== 'color') {
-                            setBgType('color')
-                        }
-                    }}>
-                        Цвет
-                    </div>
-                    <div className={`${styles.bgType__item} ${bgType == 'image' ? '' : styles.bgType__item_inactive}`} onClick={() => {
-                        if (bgType !== 'image') {
-                            setBgType('image')
-                        }
-                    }}>
-                        Изображение
-                    </div>
-                    <div
-                        className={styles.bgType__active}
-                        style={{
-                            right: bgType == 'color' ? '107px' : '13px'
-                        }}
-                    ></div>
+        <>
+            <div className={styles.properties} id="properties">
+                <div className={styles.slideid}>
+                    <p>Слайд {currentSlideIndex + 1} (id: {currentSlideId})</p>
                 </div>
 
-                {
-                    bgType == 'color'
-                        ? renderColorField()
-                        : renderImageField()
-                }
+                <div className={styles.divider} />
 
+                <div className={styles.backgroudSettings}>
+                    <div className={styles.backgroudSettings__title}>Фон</div>
+                    <div className={styles.backgroudSettings__bgType}>
+                        <div className={`${styles.bgType__item} ${bgType == 'color' ? '' : styles.bgType__item_inactive}`} onClick={() => {
+                            if (bgType !== 'color') {
+                                setBgType('color')
+                            }
+                        }}>
+                            Цвет
+                        </div>
+                        <div className={`${styles.bgType__item} ${bgType == 'image' ? '' : styles.bgType__item_inactive}`} onClick={() => {
+                            if (bgType !== 'image') {
+                                setBgType('image')
+                            }
+                        }}>
+                            Изображение
+                        </div>
+                        <div
+                            className={styles.bgType__active}
+                            style={{
+                                right: bgType == 'color' ? '107px' : '13px'
+                            }}
+                        ></div>
+                    </div>
 
+                    {
+                        bgType == 'color'
+                            ? renderColorField()
+                            : renderImageField()
+                    }
+                </div>
             </div>
-        </div>
+
+
+            {unsplashUploadToBgActive ? (<UnsplashUploadMenu currentSlideId={currentSlide?.id || '1'} setUnsplashUploadActive={setUnsplashUploadToBgActive} source='changeBackground' />) : ''}
+        </>
     )
 }
 
@@ -335,7 +353,7 @@ function TextSelected({ textId }: { textId: string }) {
     const getSelectedFontIndicatorTop = (fontFamily: string) => {
         const fonts = ['Inter', 'Geologica', 'JetBrains Mono', 'Montserrat', 'Open Sans', 'Roboto Flex', 'Alumni Sans', 'Unbounded']
         const fontIndex = fonts.findIndex(font => font == fontFamily)
-        return fontIndex*28 + 43
+        return fontIndex * 28 + 43
     }
 
     const getSelectedWeightIndicatorTop = (weight: number) => {
@@ -747,6 +765,8 @@ function Properties() {
             <SlideSelected />
         )
     }
+
+
 
 }
 

@@ -70,6 +70,10 @@ type Notification = {
     info?: string,
 }
 
+type HistoryState = {
+    undoable: PresentationRecordState[],
+    redoable: PresentationRecordState[]
+}
 
 type PresentationState = {
     title: string,
@@ -78,10 +82,7 @@ type PresentationState = {
         slides: string[],
         objects: string[]
     },
-    history: {
-        undoable: PresentationRecordState[],
-        redoable: PresentationRecordState[]
-    }
+    history: HistoryState
 }
 
 // запись в истории состояний 
@@ -103,10 +104,7 @@ type AppState = {
             slides: string[],
             objects: string[]
         },
-        history: {
-            undoable: PresentationRecordState[],
-            redoable: PresentationRecordState[]
-        }
+        history: HistoryState
     },
     notifications: Notification[],
     tool: Tool
@@ -118,10 +116,7 @@ type StoredPresentationState = {
     title: string,
     slideList: Slide[],
     selectedSlides: string[],
-    history: {
-        undoable: PresentationRecordState[],
-        redoable: PresentationRecordState[]
-    }
+    history: HistoryState
 }
 
 export type {
@@ -141,5 +136,6 @@ export type {
     PresentationState,
     PresentationRecordState,
     AppState,
-    StoredPresentationState
+    StoredPresentationState,
+    HistoryState
 }

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import { RootState } from "../store/reducers/rootReducer"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import styles from '../assets/styles/SlideShow.module.css'
 import { Slide } from "./Slide"
 import { useNavigate } from "react-router-dom"
@@ -64,7 +64,7 @@ function SlideShow() {
 
     const scale = viewportHeight / 1080
 
-    function changeSlideIndex(action: 'next' | 'previous') {
+    const changeSlideIndex = useCallback((action: 'next' | 'previous') => {
         setCurrentSlideIndex((prevIndex) => {
             if (action === 'next') {
                 return Math.min(slideList.length - 1, prevIndex + 1)
@@ -74,7 +74,7 @@ function SlideShow() {
             }
             return prevIndex
         })
-    }
+    }, [slideList.length])
 
     useEffect(() => {
         const handleChangeSlideIndexWithKey = (event: KeyboardEvent) => {
@@ -97,7 +97,7 @@ function SlideShow() {
         return () => {
             document.removeEventListener('keydown', handleChangeSlideIndexWithKey)
         }
-    }, [])
+    }, [changeSlideIndex])
 
     const renderCurrentSlide = (currentSlideIndex: number) => {
         const currentSlide = slideList[currentSlideIndex]

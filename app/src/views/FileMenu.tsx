@@ -159,8 +159,8 @@ function FileMenu() {
         }
     }, [openPresentationFromFile])
 
-    
-    const exportPresentationToPDF = async () => {
+
+    const exportPresentationToPDF = useCallback(async () => {
         try {
             const blob = await generatePDF(slideList, title)
             setPdfBlob(blob)
@@ -168,7 +168,7 @@ function FileMenu() {
             console.error('Ошибка при экспорте в PDF:', error);
             dispatch(addNotification('error', 'Ошибка', 'Не удалось создать PDF'));
         }
-    }
+    }, [dispatch, slideList, title])
 
     useEffect(() => {
         const handleExportPresentationWithHotkeys = (event: KeyboardEvent) => {

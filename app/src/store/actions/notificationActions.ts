@@ -9,3 +9,4 @@ export const removeNotification = (id: string) => ({
     type: NotificationActionType.REMOVE_NOTIFICATION,
     payload: { id }
 })
+

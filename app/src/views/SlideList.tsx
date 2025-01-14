@@ -119,7 +119,7 @@ function SlideList() {
         return () => {
             document.removeEventListener('mousedown', handleMouseDown)
         }
-    }, [selectedSlides])
+    }, [selectedSlides, dispatch, slideList])
 
     function handleRemoveSlide() {
         if (slideList.length - selectedSlides.length > 0) {
