@@ -10,6 +10,7 @@ import { addNotification, removeNotification } from "../store/actions/notificati
 import store from "../store"
 import { generatePDF } from "../services/generatePDF"
 import { PDFViewer } from "./PDFViewer"
+import { Loader } from "./Loader"
 
 function FileMenu() {
     const dispatch = createDispatch(store)
@@ -19,6 +20,7 @@ function FileMenu() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
 
     const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         notificationsState.forEach((notification) => {
@@ -161,12 +163,16 @@ function FileMenu() {
 
 
     const exportPresentationToPDF = useCallback(async () => {
+        setIsLoading(true)
+
         try {
             const blob = await generatePDF(slideList, title)
             setPdfBlob(blob)
         } catch (error) {
             console.error('Ошибка при экспорте в PDF:', error);
             dispatch(addNotification('error', 'Ошибка', 'Не удалось создать PDF'));
+        } finally {
+            setIsLoading(false)
         }
     }, [dispatch, slideList, title])
 
@@ -233,6 +239,15 @@ function FileMenu() {
                     name={title}
                 />
             )}
+
+            {isLoading ? (
+                <div className={styles.loaderContainer}>
+                    <Loader />
+                    <div className={styles.loaderText}>Создание PDF...</div>
+                </div>
+            )
+                : (<></>)
+            }
         </>
     )
 }

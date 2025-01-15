@@ -2,6 +2,31 @@
     user-select: none;
 }
 
+.loaderContainer {
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 1050;
+
+    background-color: #00000070;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    box-sizing: border-box;
+}
+
+.loaderText {
+    font: 700 16px 'Inter';
+    color: #ffffff;
+    margin-top: 24px;
+}
+
 .menu__title {
     height: 23px;
     width: 48px;

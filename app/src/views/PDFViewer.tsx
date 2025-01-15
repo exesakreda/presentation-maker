@@ -23,8 +23,6 @@ function downloadPDF(blob: Blob, fileName: string) {
     document.body.removeChild(link)
 }
 
-
-
 function PDFViewer({ pdfBlob, onClose, name }: PDFViewerProps) {
     const [numPages, setNumPages] = useState<number>()
     const [pageNumber, setPageNumber] = useState<number>(1)
@@ -58,14 +56,16 @@ function PDFViewer({ pdfBlob, onClose, name }: PDFViewerProps) {
                     <Document
                         file={url}
                         onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                        loading={null}
                     >
                         <Page
                             pageNumber={pageNumber}
                             scale={1}
                             width={1440}
                             height={810}
-                            renderTextLayer={false} // Отключение текстового слоя
+                            renderTextLayer={false}
                             renderAnnotationLayer={false}
+                            loading={null}
                         />
                     </Document>
                 </div>

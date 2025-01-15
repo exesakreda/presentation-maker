@@ -69,7 +69,7 @@ function Tools() {
                     dispatch(setTool({ type: 'cursor' }))
                 }}
             >
-                <div className={styles.fileUpload__text}>Загрузить с Unsplash</div>
+                <div className={styles.fileUpload__text}>Найти в Unsplash</div>
                 <img className={styles.fileUpload__icon} src='/src/assets/images/unsplash.svg' width={'13px'} style={{
                     filter: 'invert(1)'
                 }} />
