@@ -8,6 +8,7 @@ import { Slide as SlideType } from "../../../types"
 
 function SlideShow() {
     const navigate = useNavigate()
+    document.title = 'Слайдшоу'
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

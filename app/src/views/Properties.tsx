@@ -261,7 +261,7 @@ function SlideSelected() {
                         className={styles.color__gradient}
                         key={`gradient_${i}`}
                     >
-                        <div className={styles.gradientColor}                        >
+                        <div className={styles.gradientColor}>
                             <div className={styles.gradientColor__input}>
                                 <input
                                     type="color"
@@ -500,7 +500,7 @@ function SlideSelected() {
         <>
             <div className={styles.properties} id="properties">
                 <div className={styles.slideid}>
-                    <p>Слайд {currentSlideIndex + 1} (id: {currentSlideId})</p>
+                    <p>Слайд {currentSlideIndex + 1}</p>
                 </div>
 
                 <div className={styles.divider} />

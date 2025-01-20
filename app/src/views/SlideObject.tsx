@@ -21,7 +21,6 @@ function SlideObject({ obj, slideId, scale, showSelection }: SlideObjectProps) {
     const dispatch = createDispatch(store)
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
-    // const shapeRef = useRef<HTMLDivElement>(null)
 
     const ref = obj.type == 'text' ? textAreaRef : imageRef
 

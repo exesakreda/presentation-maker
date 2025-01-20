@@ -9,7 +9,7 @@ import { addSlide, removeSlides, updateSlideList } from "../store/actions/presen
 import { setSelectedSlides, setSelectedObjects } from "../store/actions/presentationActions.ts"
 import { addNotification } from "../store/actions/notificationActions.ts"
 import store from "../store/index.ts"
-
+import { uid } from 'uid'
 
 
 function SlideList() {
@@ -185,7 +185,8 @@ function SlideList() {
                 className={styles.actionbar__newslide}
                 onClick={() =>
                     dispatch(addSlide({
-                        id: String(Number(slideList[slideList.length - 1]?.id || 0) + 1),
+                        // id: String(Number(slideList[slideList.length - 1]?.id || 0) + 1),
+                        id: 'slide_' + uid(10),
                         background: { type: 'color', value: '#ffffff' },
                         objects: []
                     }))

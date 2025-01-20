@@ -9,15 +9,13 @@ import { setTitle } from '../store/actions/presentationActions'
 import store from '../store'
 
 function Title() {
-    const {
-        title,
-    } = useSelector((state: RootState) => state.presentation)
+    const { title } = useSelector((state: RootState) => state.presentation)
     const dispatch = createDispatch(store)
 
     const inputRef = useRef<HTMLInputElement>(null)
     useEffect(() => {
         resizeInput(inputRef.current!)
-        document.title = title + ' | Presentation Maker'
+        document.title = title
     }, [title])
 
     const onTitleChange: React.ChangeEventHandler = (event) => {
