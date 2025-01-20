@@ -231,13 +231,12 @@ function SlideSelected() {
                     color: '#FFFFFF',
                     position: 100
                 }
-                const newGradientColors = [...currentSlide.background.colors, blankColor]
+                const newGradientColors = [blankColor, ...currentSlide.background.colors]
                 const newBackground: Gradient = {
                     type: 'gradient',
                     direction: currentSlide.background.direction,
                     colors: newGradientColors
                 }
-
                 dispatch(changeBackground(currentSlideId, newBackground))
             } else {
                 const blankColor = {
@@ -254,15 +253,15 @@ function SlideSelected() {
         }
 
         const renderGradientColors = currentSlide.background.type == 'gradient'
-            ? currentSlide.background.colors.map((color, i) => {
+            ? currentSlide.background.colors.sort((a, b) => {
+                return a.position - b.position
+            }).map((color, i) => {
                 return (
                     <div
                         className={styles.color__gradient}
+                        key={`gradient_${i}`}
                     >
-                        <div
-                            key={`gradient_${i}`}
-                            className={styles.gradientColor}
-                        >
+                        <div className={styles.gradientColor}                        >
                             <div className={styles.gradientColor__input}>
                                 <input
                                     type="color"
@@ -293,6 +292,11 @@ function SlideSelected() {
                                 value={`${positionValues[i]}%`}
                                 onChange={event => handleChangePosition(event, i)}
                                 onBlur={event => handleBlurPosition(event, i)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.currentTarget.blur()
+                                    }
+                                }}
                             />
                         </div>
                         <div

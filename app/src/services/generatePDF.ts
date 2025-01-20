@@ -10,30 +10,52 @@ const createSlideHTML = (slide: Slide, isLast: boolean): HTMLDivElement => {
         ${isLast ? '' : 'page-break-after: always;'}        
     `
 
-    if (slide.background.type === 'color') {
-        const backgroundDiv = document.createElement('div')
-        backgroundDiv.style.cssText = `
-            background-color: ${slide.background.value};
-            width: 1920px;
-            height: 1080px;
-            position: absolute;
-            top: 0;
-            left: 0
-        `
-        slideDiv.appendChild(backgroundDiv)
-    }
+    switch (slide.background.type) {
+        case 'color':
+            const backgroundDiv = document.createElement('div')
+            backgroundDiv.style.cssText = `
+                background-color: ${slide.background.value};
+                width: 1920px;
+                height: 1080px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            `
+            slideDiv.appendChild(backgroundDiv)
+            break
 
-    if (slide.background.type === 'image') {
-        const backgroundImg = document.createElement('img')
-        backgroundImg.src = slide.background.src
-        backgroundImg.style.cssText = `
-            width: 1920px;
-            height: 1080px;
-            object-fit: cover;
-            top: 0;
-            left: 0
-        `
-        slideDiv.appendChild(backgroundImg)
+        case 'image':
+            const backgroundImg = document.createElement('img')
+            backgroundImg.src = slide.background.src
+            backgroundImg.style.cssText = `
+                width: 1920px;
+                height: 1080px;
+                object-fit: cover;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            `
+            slideDiv.appendChild(backgroundImg)
+            break
+
+        case 'gradient':
+            const backgroundGradientDiv = document.createElement('div')
+            const colors = slide.background.colors.map((color) => {
+                return `${color.color} ${color.position}%`
+            }).join(', ')
+            backgroundGradientDiv.style.cssText = `
+                background: linear-gradient(${slide.background.direction}deg, ${colors});
+                width: 1920px;
+                height: 1080px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: -1;
+            `
+            slideDiv.appendChild(backgroundGradientDiv)
+            break
     }
 
     slide.objects.forEach(obj => {
