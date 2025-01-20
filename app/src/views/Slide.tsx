@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { SlideObject } from "./SlideObject"
 import type { Slide } from "../../../types"
 import styles from '../assets/styles/Slide.module.css'
@@ -44,8 +44,32 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
         />
     ))
 
-    const backgroundType = slide.background.type
-    const backgroundValue = backgroundType == 'color' ? String(slide.background.value) : String(slide.background.src)
+    const getBackgroundValue = useCallback(() => {
+        const backgroundType = slide.background.type
+        switch (backgroundType) {
+            case 'color':
+                return String(slide.background.value);
+
+            case 'image':
+                return `url(${String(slide.background.src)})`
+
+            case 'gradient': {
+                const colors = slide.background.colors.map((color) => {
+                    return `${color.color} ${color.position}%`
+                }).join(', ')
+
+                return `linear-gradient(${slide.background.direction}deg, ${colors})`
+            }
+
+            default:
+                return '#FFFFFF'
+        }
+    }, [slide.background])
+
+    const [backgroundStyle, setBackgroundStyle] = useState('')
+    useEffect(() => {
+        setBackgroundStyle(getBackgroundValue())
+    }, [slide, getBackgroundValue])
 
     return (
         <div
@@ -53,13 +77,11 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
             id='slide'
         >
             {slideObjects}
-
             <div
                 id="blankArea"
                 className={styles.blankArea}
                 style={{
-                    backgroundColor: backgroundType == 'color' ? backgroundValue : '#ffffff',
-                    backgroundImage: backgroundType == 'image' ? `url(${backgroundValue})` : 'none'
+                    background: backgroundStyle
                 }}
                 onClick={() => { dispatch(setSelectedObjects([])) }}
             >

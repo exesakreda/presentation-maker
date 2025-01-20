@@ -80,8 +80,12 @@
 }
 
 .bgType__item_inactive {
-    opacity: .6;
     transition: .2s;
+}
+
+.bgType__item_inactive p {
+    opacity: .6;
+    transition: .2s
 }
 
 .bgType__item_inactive:hover {
@@ -702,4 +706,224 @@
 .unsplashUpload:hover {
     background-color: #595959;
     transition: ease-in-out 0.2s;
+}
+
+.fillType {
+    margin-top: 16px;
+    font: 700 12px 'Inter';
+    color: #FFFFFF;
+}
+
+.fillType__selection {
+    width: 186px;
+    height: 28px;
+    background-color: #595959;
+    border-radius: 5px;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+}
+
+.fillType__item {
+    width: 93px;
+    height: 28px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: 700 10px 'Inter';
+    border-radius: 5px;
+    transition: .2s;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.fillType__item_inactive {
+    transition: .2s
+}
+
+.fillType__item_inactive p {
+    opacity: .6;
+    transition: .2s;
+}
+
+.fillType__active {
+    background-color: #2C2C2C;
+    height: 28px;
+    width: 93px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #595959;
+    z-index: 4;
+
+    transition: .2s;
+
+    position: absolute;
+}
+
+.gradient__direction {
+    margin-top: 16px;
+    font: 700 12px 'Inter';
+    color: #ffffff;
+}
+
+.direction__input {
+    margin-top: 8px;
+    background-color: #383838;
+    font: 700 12px 'Inter';
+    color: #ffffff;
+    outline: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 28px;
+    width: 50px;
+    border-radius: 5px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+}
+
+.gradient__colors {
+    margin-top: 16px;
+}
+
+.colors__title {
+    color: #ffffff;
+    font: 700 12px 'Inter';
+}
+
+.color__gradient {
+    margin-top: 8px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+.gradientColor {
+    width: 162px;
+    height: 28px;
+    background-color: #2C2C2C;
+    border: 1px solid #595959;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+
+    /* padding-left: 12px;
+    padding-right: 12px; */
+
+    border-radius: 5px;
+}
+
+.gradientColor__input {
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    background-color: #fff;
+    margin-left: 10px;
+    border-radius: 2px;
+}
+
+.gradientColor__color {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    display: inline-block;
+    transform: translate(-50%, -50%);
+}
+
+.gradientColor__color::-webkit-color-swatch {
+    width: 100px;
+}
+
+.gradientColor__text {
+    font: 500 12px "Inter";
+    background-color: transparent;
+    color: #F7F5FB;
+    /* E9F1F7 */
+    border: none;
+    border-radius: 5px;
+    margin-left: 8px;
+    outline: none;
+    transition: .1s;
+
+    text-align: left;
+
+    width: 50px;
+}
+
+.gradientColor__divider {
+    height: 26px;
+    width: 1px;
+    background-color: #595959;
+
+    margin-left: 24px;
+}
+
+.gradientColor__position {
+    text-align: right;
+    font: 500 12px 'Inter';
+    color: #ffffff;
+    margin-left: auto;
+    margin-right: 12px;
+    border: none;
+    outline: none;
+    width: 32px;
+    background-color: transparent;
+}
+
+.gradient__remove {
+    height: 20px;
+    width: 20px;
+    margin-left: 9px;
+    /* background-color: #fff; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.gradient__remove:hover {
+    background-color: #383838;
+    transition: .2s
+}
+
+.gradient__remove img {
+    height: 12px;
+    transform: rotate(45deg);
+}
+
+.colors__addItem {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    height: 15px;
+    transition: .2s;
+    cursor: pointer;   
+}
+
+.colors__addItem:hover .addItem__title{
+    color: #fff;
+    transition: .2s;
+}
+
+.colors__addItem:hover .addItem__image{
+    filter: brightness(0) invert(1);
+    transition: .2s;
+}
+
+.addItem__title {
+    color: #595959;
+    font: 500 12px 'Inter';
+    transition: .2s;
+}
+
+.addItem__image {
+    margin-left: 8px;
+    transition: .2s;
 }

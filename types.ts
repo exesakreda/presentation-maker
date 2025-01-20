@@ -6,7 +6,7 @@ type Slide = {
 
 type SlideObject = TextArea | ImageArea | Shape
 
-type Background = Color | Image
+type Background = Color | Image | Gradient
 
 type Color = {
     type: 'color',
@@ -16,6 +16,15 @@ type Color = {
 type Image = {
     type: 'image',
     src: string
+}
+
+type Gradient = {
+    type: 'gradient',
+    direction: number;
+    colors: {
+        color: string,
+        position: number
+    }[]
 }
 
 type CommonObject = {
@@ -137,5 +146,6 @@ export type {
     PresentationRecordState,
     AppState,
     StoredPresentationState,
-    HistoryState
+    HistoryState,
+    Gradient
 }

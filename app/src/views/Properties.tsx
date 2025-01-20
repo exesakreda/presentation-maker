@@ -1,5 +1,5 @@
 import styles from '../assets/styles/Properties.module.css'
-import { Background } from '../../../types'
+import { Background, Gradient } from '../../../types'
 import { useEffect, useRef, useState } from 'react'
 
 import { RootState } from '../store/reducers/rootReducer'
@@ -8,7 +8,6 @@ import createDispatch from '../store/utils/createDispatch'
 import { changeBackground, setFontFamily, setFontWeight, setFontSize, setFontColor } from '../store/actions/presentationActions'
 import store from '../store'
 import { UnsplashUploadMenu } from './UnsplashUploadMenu'
-import { getImageDimensions } from '../services/getImageDimensions'
 
 function SlideSelected() {
     const slideList = useSelector((state: RootState) => state.presentation.slideList)
@@ -19,22 +18,55 @@ function SlideSelected() {
     const currentSlideIndex = currentSlide ? slideList.indexOf(currentSlide) : 1
 
     const [colorValue, setColorValue] = useState('')
+    const [gradientColors, setGradientColors] = useState<string[]>([])
+
+    const [directionValue, setDirectionValue] = useState(0)
+    const [positionValues, setPositionValues] = useState<number[]>([])
+
     const [bgType, setBgType] = useState<'color' | 'image'>('color')
     const [isImageUploaded, setIsImageUploaded] = useState<boolean>(false)
     const [unsplashUploadToBgActive, setUnsplashUploadToBgActive] = useState<boolean>(false)
+
+    const [fillType, setFillType] = useState<'solid' | 'gradient'>('solid')
 
     const inputRef = useRef<HTMLInputElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         if (currentSlide) {
-            const backgroundValue = currentSlide?.background.type === 'color' && currentSlide.background.value
-                ? currentSlide.background.value.slice(1)
-                : ''
+            switch (currentSlide.background.type) {
+                case 'color':
+                    setBgType('color')
+                    setFillType('solid')
+                    setIsImageUploaded(false)
+                    setColorValue(String(currentSlide.background.value).slice(1).toUpperCase())
+                    setGradientColors([])
+                    setPositionValues([])
+                    setDirectionValue(0)
+                    break
 
-            setColorValue(backgroundValue.toUpperCase())
-            setBgType(currentSlide.background.type)
-            setIsImageUploaded(currentSlide.background.type === 'image')
+                case 'image':
+                    setBgType('image')
+                    setIsImageUploaded(true)
+                    setColorValue('')
+                    setGradientColors([])
+                    setPositionValues([])
+                    setDirectionValue(0)
+                    break
+
+                case 'gradient':
+                    setBgType('color')
+                    setFillType('gradient')
+                    setIsImageUploaded(false)
+                    setDirectionValue(currentSlide.background.direction)
+                    setGradientColors(currentSlide.background.colors.map(color => color.color.replace('#', '')))
+                    setPositionValues(currentSlide.background.colors.map(color => color.position))
+                    setColorValue('')
+                    break
+
+                default:
+                    return
+            }
         }
     }, [currentSlide])
 
@@ -69,39 +101,294 @@ function SlideSelected() {
         }
     }
 
-    const renderColorField = () => {
+    const onDirectionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value.replace('°', '')
+        if (!isNaN(Number(value))) {
+            const newDirection = Math.max(0, Math.min(Number(value), 360))
+            setDirectionValue(newDirection)
+        }
+    }
+
+    const onDirectionBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        const newDirection = Number(event.target.value.replace('°', ''))
+        const newBackground: Background = {
+            type: 'gradient',
+            direction: newDirection,
+            colors: currentSlide.background.type == 'gradient' ? currentSlide.background.colors : []
+        }
+        dispatch(changeBackground(currentSlideId, newBackground))
+    }
+
+    const renderSolidColorField = () => {
         return (
-            <div className={styles.backgroudSettings__colorField}>
-                <div className={styles.color__container}>
+            <>
+                <div className={styles.backgroudSettings__colorField}>
+                    <div className={styles.color__container}>
+                        <input
+                            type='color'
+                            className={styles.currentColor}
+                            onChange={onColorChange}
+                            onBlur={onColorBlur}
+                            value={`#${colorValue}`}
+                        />
+                    </div>
+
                     <input
-                        type='color'
-                        className={styles.currentColor}
-                        onChange={onColorChange}
-                        onBlur={onColorBlur}
-                        value={`#${colorValue}`}
+                        ref={inputRef}
+                        type="text"
+                        className={styles.currentColorText}
+                        value={colorValue}
+                        placeholder='FFFFFF'
+                        onBlur={onColorTextBlur}
+                        onChange={onColorTextChange}
+                        onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            const newValue = event.target.value.toUpperCase()
+                            setColorValue(newValue)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.currentTarget.blur()
+                            }
+                        }}
+                        maxLength={6}
+                    />
+                </div>
+            </>
+        )
+    }
+
+    const renderGradientColorField = () => {
+        const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>, i: number) => {
+            const newColor = event.currentTarget.value.replace('#', '').toUpperCase()
+            const newGradientColors = gradientColors.map((color, index) =>
+                index === i ? newColor : color
+            )
+            setGradientColors(newGradientColors)
+        }
+
+        const handleBlurColor = (event: React.ChangeEvent<HTMLInputElement>, i: number) => {
+            if (currentSlide.background.type !== 'gradient') return
+            const newColor = event.currentTarget.value.toUpperCase()
+            if (isValidColor(newColor) || isValidColor('#' + newColor)) {
+                const newBackground: Gradient = {
+                    type: 'gradient',
+                    direction: currentSlide.background.direction,
+                    colors: currentSlide.background.colors.map((color, index) =>
+                        index === i
+                            ? { ...color, color: newColor }
+                            : color
+                    )
+                }
+                dispatch(changeBackground(currentSlideId, newBackground))
+            }
+        }
+
+        const handleChangePosition = (event: React.ChangeEvent<HTMLInputElement>, i: number) => {
+            const value = event.currentTarget.value.replace('%', '')
+            if (!isNaN(Number(value))) {
+                const newPosition = Math.max(0, Math.min(Number(value), 100))
+                const newPositionValues = positionValues.map((position, index) =>
+                    index === i ? newPosition : position
+                )
+                setPositionValues(newPositionValues)
+            }
+        }
+
+        const handleBlurPosition = (event: React.ChangeEvent<HTMLInputElement>, i: number) => {
+            if (currentSlide.background.type !== 'gradient') return
+            const value = event.currentTarget.value.replace('%', '')
+            if (!isNaN(Number(value))) {
+                const newPosition = Math.max(0, Math.min(Number(value), 100))
+                const newBackground: Gradient = {
+                    type: 'gradient',
+                    direction: currentSlide.background.direction,
+                    colors: currentSlide.background.colors.map((color, index) =>
+                        index === i
+                            ? { ...color, position: newPosition }
+                            : color
+                    )
+                }
+                dispatch(changeBackground(currentSlideId, newBackground))
+            }
+        }
+
+        const handleRemoveColor = (i: number) => {
+            if (currentSlide.background.type !== 'gradient') return
+            const newGradientColors = [...currentSlide.background.colors]
+            newGradientColors.splice(i, 1)
+            const newBackground: Gradient = {
+                type: 'gradient',
+                direction: currentSlide.background.direction,
+                colors: newGradientColors
+            }
+
+            dispatch(changeBackground(currentSlideId, newBackground))
+        }
+
+        const handleAddColor = () => {
+            if (currentSlide.background.type == 'gradient') {
+                const blankColor = {
+                    color: '#FFFFFF',
+                    position: 100
+                }
+                const newGradientColors = [...currentSlide.background.colors, blankColor]
+                const newBackground: Gradient = {
+                    type: 'gradient',
+                    direction: currentSlide.background.direction,
+                    colors: newGradientColors
+                }
+
+                dispatch(changeBackground(currentSlideId, newBackground))
+            } else {
+                const blankColor = {
+                    color: '#FFFFFF',
+                    position: 100
+                }
+                const newBackground: Gradient = {
+                    type: 'gradient',
+                    direction: 0,
+                    colors: [blankColor]
+                }
+                dispatch(changeBackground(currentSlideId, newBackground))
+            }
+        }
+
+        const renderGradientColors = currentSlide.background.type == 'gradient'
+            ? currentSlide.background.colors.map((color, i) => {
+                return (
+                    <div
+                        className={styles.color__gradient}
+                    >
+                        <div
+                            key={`gradient_${i}`}
+                            className={styles.gradientColor}
+                        >
+                            <div className={styles.gradientColor__input}>
+                                <input
+                                    type="color"
+                                    className={styles.gradientColor__color}
+                                    value={`#${gradientColors[i] || '#FFFFFF'}`}
+                                    onChange={event => handleChangeColor(event, i)}
+                                    onBlur={event => handleBlurColor(event, i)}
+                                />
+                            </div>
+                            <input
+                                type="text"
+                                className={styles.gradientColor__text}
+                                value={`${gradientColors[i] || '#FFFFFF'}`}
+                                placeholder='FFFFFF'
+                                onChange={event => handleChangeColor(event, i)}
+                                onBlur={event => handleBlurColor(event, i)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.currentTarget.blur()
+                                    }
+                                }}
+                                maxLength={6}
+                            />
+                            <div className={styles.gradientColor__divider}></div>
+                            <input
+                                type='text'
+                                className={styles.gradientColor__position}
+                                value={`${positionValues[i]}%`}
+                                onChange={event => handleChangePosition(event, i)}
+                                onBlur={event => handleBlurPosition(event, i)}
+                            />
+                        </div>
+                        <div
+                            className={styles.gradient__remove}
+                            onClick={() => handleRemoveColor(i)}
+                        >
+                            <img
+                                src="/src/assets/images/remove_gradient.svg"
+                                alt=""
+                            />
+                        </div>
+                    </div>
+                )
+            })
+            : ''
+
+        return (
+            <>
+                <div className={styles.gradient__direction}>
+                    <div className={styles.direction__title}>Угол поворота</div>
+                    <input
+                        type="text"
+                        className={styles.direction__input}
+                        value={`${directionValue}\u00B0`}
+                        onChange={onDirectionChange}
+                        onBlur={onDirectionBlur}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.currentTarget.blur()
+                            }
+                        }}
                     />
                 </div>
 
-                <input
-                    ref={inputRef}
-                    type="text"
-                    className={styles.currentColorText}
-                    value={colorValue}
-                    placeholder='FFFFFF'
-                    onBlur={onColorTextBlur}
-                    onChange={onColorTextChange}
-                    onInput={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        const newValue = event.target.value.toUpperCase()
-                        setColorValue(newValue)
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            e.currentTarget.blur()
-                        }
-                    }}
-                    maxLength={6}
-                />
-            </div>
+                <div className={styles.gradient__colors}>
+                    <div className={styles.colors__title}>Цвета</div>
+                    <div className={styles.colors__items}>
+                        {renderGradientColors}
+                    </div>
+
+                    <div
+                        className={styles.colors__addItem}
+                        onClick={() => handleAddColor()}
+                    >
+                        <div className={styles.addItem__title}>Добавить цвет</div>
+                        <div className={styles.addItem__image}>
+                            <img src="/src/assets/images/add_gradient.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    const renderColorField = () => {
+        return (
+            <>
+                <div className={styles.fillType}>
+                    <div className={styles.fillType__title}>Тип заливки</div>
+                    <div className={styles.fillType__selection}>
+                        <div
+                            className={`${styles.fillType__item} ${fillType == 'solid' ? '' : styles.fillType__item_inactive}`}
+                            onClick={() => {
+                                if (fillType !== 'solid') {
+                                    setFillType('solid')
+                                }
+                            }}
+                        >
+                            <p>Сплошная</p>
+                        </div>
+
+                        <div
+                            className={`${styles.fillType__item} ${fillType == 'gradient' ? '' : styles.fillType__item_inactive}`}
+                            onClick={() => {
+                                if (fillType !== 'gradient') {
+                                    setFillType('gradient')
+                                }
+                            }}
+                        >
+                            <p >Градиент</p>
+                        </div>
+
+                        <div
+                            className={styles.fillType__active}
+                            style={{
+                                right: fillType == 'solid' ? '107px' : '13px'
+                            }}
+                        ></div>
+                    </div>
+                </div>
+                {
+                    fillType == 'solid'
+                        ? renderSolidColorField()
+                        : renderGradientColorField()
+                }
+            </>
         )
     }
 
@@ -222,14 +509,14 @@ function SlideSelected() {
                                 setBgType('color')
                             }
                         }}>
-                            Цвет
+                            <p>Цвет</p>
                         </div>
                         <div className={`${styles.bgType__item} ${bgType == 'image' ? '' : styles.bgType__item_inactive}`} onClick={() => {
                             if (bgType !== 'image') {
                                 setBgType('image')
                             }
                         }}>
-                            Изображение
+                            <p>Изображение</p>
                         </div>
                         <div
                             className={styles.bgType__active}

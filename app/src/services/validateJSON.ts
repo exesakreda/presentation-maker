@@ -24,6 +24,25 @@ function validateJSON(object: unknown) {
                                 },
                                 {
                                     properties: {
+                                        type: { type: 'string', enum: ['gradient'] },
+                                        direction: { type: 'number' },
+                                        colors: {
+                                            type: 'array',
+                                            items: {
+                                                type: 'object',
+                                                properties: {
+                                                    color: { type: 'string' },
+                                                    position: { type: 'number' }
+                                                },
+                                                required: ['color', 'position']
+                                            }
+                                        }
+                                    },
+                                    required: ['type', 'direction', 'colors'],
+                                    additionalProperties: false
+                                },
+                                {
+                                    properties: {
                                         type: { type: 'string', enum: ['image'] },
                                         src: { type: 'string' }
                                     },
@@ -141,6 +160,24 @@ function validateJSON(object: unknown) {
                                                             value: { type: 'string' }
                                                         },
                                                         required: ['type', 'value']
+                                                    },
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['gradient'] },
+                                                            direction: { type: 'number' },
+                                                            colors: {
+                                                                type: 'array',
+                                                                items: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        color: { type: 'string' },
+                                                                        position: { type: 'number' }
+                                                                    },
+                                                                    required: ['color', 'position']
+                                                                }
+                                                            }
+                                                        },
+                                                        required: ['type', 'direction', 'colors']
                                                     },
                                                     {
                                                         properties: {
@@ -270,6 +307,24 @@ function validateJSON(object: unknown) {
                                                             value: { type: 'string' }
                                                         },
                                                         required: ['type', 'value']
+                                                    },
+                                                    {
+                                                        properties: {
+                                                            type: { type: 'string', enum: ['gradient'] },
+                                                            direction: { type: 'number' },
+                                                            colors: {
+                                                                type: 'array',
+                                                                items: {
+                                                                    type: 'object',
+                                                                    properties: {
+                                                                        color: { type: 'string' },
+                                                                        position: { type: 'number' }
+                                                                    },
+                                                                    required: ['color', 'position']
+                                                                }
+                                                            }
+                                                        },
+                                                        required: ['type', 'direction', 'colors']
                                                     },
                                                     {
                                                         properties: {
