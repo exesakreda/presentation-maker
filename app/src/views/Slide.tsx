@@ -81,12 +81,14 @@ function Slide({ slide, scale, showSelection }: SlideProps) {
                 id="blankArea"
                 className={styles.blankArea}
                 style={{
-                    background: backgroundStyle
+                    background: backgroundStyle,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
                 }}
                 onClick={() => { dispatch(setSelectedObjects([])) }}
             >
             </div>
-        </div>
+        </div >
     )
 }
 

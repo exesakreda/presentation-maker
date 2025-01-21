@@ -13,6 +13,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 5px;
+    z-index: 2000;
 }
 .notification_list::-webkit-scrollbar {
     width: 3px;

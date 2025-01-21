@@ -1046,8 +1046,9 @@ function Properties() {
     const selectedSlides = useSelector((state: RootState) => state.presentation.selection.slides)
     const currentSlide = slideList.find(slide => slide.id == selectedSlides[selectedSlides.length - 1])
     const selectedObjectId = useSelector((state: RootState) => state.presentation.selection.objects[0])
+    const selectedObjectType = currentSlide?.objects.find(slide => slide.id === selectedObjectId)?.type
 
-    if (currentSlide && selectedObjectId) {
+    if (currentSlide && selectedObjectId && selectedObjectType === 'text') {
         return (
             <TextSelected textId={selectedObjectId} />
         )
@@ -1056,9 +1057,6 @@ function Properties() {
             <SlideSelected />
         )
     }
-
-
-
 }
 
 

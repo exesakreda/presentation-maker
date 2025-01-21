@@ -96,7 +96,7 @@ function SlideList() {
                         setTimeout(() => {
                             dispatch(updateSlideList(newSlideList))
                             dispatch(setSelectedSlides(slidesToMove.map(slide => slide.id)))
-                        }, 1)
+                        }, 0)
 
                     }
 
