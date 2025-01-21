@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import styles from '../assets/styles/PDFViewer.module.css';
+import { useSelector } from "react-redux";
+import { RootState } from "../store/reducers/rootReducer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -27,7 +29,8 @@ function PDFViewer({ pdfBlob, onClose, name }: PDFViewerProps) {
     const [numPages, setNumPages] = useState<number>()
     const [pageNumber, setPageNumber] = useState<number>(1)
 
-    const contentRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null)
+    const title = useSelector((state: RootState) => state.presentation.title)
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -68,6 +71,10 @@ function PDFViewer({ pdfBlob, onClose, name }: PDFViewerProps) {
                             loading={null}
                         />
                     </Document>
+                </div>
+
+                <div className={styles.title}>
+                    {`${title}.pdf`}
                 </div>
 
                 <div className={styles.pageControls}>

@@ -7,6 +7,6 @@ const resizeInput = (input: HTMLInputElement) => {
         const textWidth = getTextWidth(input.value || input.placeholder, font)
         input.style.width = `${textWidth}px`
     }
-};
+}
 
-export { resizeInput };
+export { resizeInput }

@@ -183,13 +183,15 @@ function SlideList() {
         <div className={styles.actionbar} id="actionbar">
             <button
                 className={styles.actionbar__newslide}
-                onClick={() =>
+                onClick={() => {
+                    const id = 'slide_' + uid(10)
                     dispatch(addSlide({
-                        // id: String(Number(slideList[slideList.length - 1]?.id || 0) + 1),
-                        id: 'slide_' + uid(10),
+                        id: id,
                         background: { type: 'color', value: '#ffffff' },
                         objects: []
                     }))
+                    dispatch(setSelectedSlides([id]))
+                }
                 }
             >
                 <div className={styles.newslidebutton__text}>Новый слайд</div>
